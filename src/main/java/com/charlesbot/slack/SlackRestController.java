@@ -82,7 +82,7 @@ public class SlackRestController {
 		SlackIncomingMessage slackIncomingMessage = new SlackIncomingMessage();
 		if (!tokens.isEmpty()) {
 			// only build the URL for the first symbol given
-			slackIncomingMessage.setText(MessageFormat.format("<http://chart.finance.yahoo.com/t?s={0}&lang=en-US&region=US&width=300&height=180>", tokens.get(0)));
+			slackIncomingMessage.setText(MessageFormat.format("<http://chart.finance.yahoo.com/t?s={0}&lang=en-US&region=US&width=300&height=180&cb={1,number,#}>", tokens.get(0), System.currentTimeMillis()));
 		}
 		return slackIncomingMessage;
 	}
