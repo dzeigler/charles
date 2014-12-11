@@ -33,6 +33,12 @@ public class SlackRestController {
 	@Inject
 	private ConversionService conversionService;
 
+	@RequestMapping(value = "/")
+	@ResponseBody
+	String alive() {
+		return "Nothing to see here!";
+	}
+	
 	@RequestMapping(value = "/q", method = { RequestMethod.POST }, consumes = { "text/plain", "application/*" }, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	SlackIncomingMessage quote(@RequestBody MultiValueMap<String, String> slackOutgoingMessage)
