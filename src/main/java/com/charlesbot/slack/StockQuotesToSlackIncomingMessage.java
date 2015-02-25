@@ -18,7 +18,7 @@ public class StockQuotesToSlackIncomingMessage implements Converter<StockQuotes,
 			sb.append(">>>");
 		}
 		for (StockQuote quote : stockQuotes.get()) {
-			sb.append(MessageFormat.format("{0}: {1} {2} {3}", quote.getSymbol(), quote.getPrice(), quote.getChange(), quote.getChangeInPercent()));
+			sb.append(MessageFormat.format("{0} ({4}): {1} {2} {3}", quote.getSymbol(), quote.getPrice(), quote.getChange(), quote.getChangeInPercent(), quote.getName()));
 			if (stockQuotes.get().size() > 1) {
 				sb.append("\n");
 			}
