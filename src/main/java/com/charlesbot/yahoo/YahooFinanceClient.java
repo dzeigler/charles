@@ -29,7 +29,7 @@ public class YahooFinanceClient {
 		Optional<StockQuotes> stockQuotes = null;
 		Map<String, String> variables = new HashMap<String, String>();
 		variables.put("symbols", symbolsString);
-		variables.put("fields", "c1p2h0g0m3l1s0n0");
+		variables.put("fields", "c1p2h0g0m3l1sn");
 		StockQuotes quotes = restTemplate.getForObject("http://finance.yahoo.com/d/quotes.csv?s={symbols}&f={fields}", StockQuotes.class, variables);
 		log.debug("Completed Request {}", stockQuotes);
 		return Optional.ofNullable(quotes);
