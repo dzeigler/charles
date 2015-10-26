@@ -25,7 +25,7 @@ public class GoogleFinanceClient {
 	
 	public Optional<StockQuotes> getStockQuotes(List<String> symbols) {
 		log.debug("Building Request from {}", symbols);
-		String symbolsString = Joiner.on(' ').join(symbols);
+		String symbolsString = Joiner.on(',').join(symbols);
 		Optional<StockQuotes> stockQuotes = null;
 		Map<String, String> variables = new HashMap<String, String>();
 		variables.put("symbols", symbolsString);
