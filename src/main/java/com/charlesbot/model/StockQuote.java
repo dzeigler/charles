@@ -1,21 +1,32 @@
 package com.charlesbot.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class StockQuote {
 	// c1
+	@JsonProperty("c")
 	private String change;
 	// p2
+	@JsonProperty("cp")
 	private String changeInPercent;
 	// h0
+	@JsonProperty("hi")
 	private String dayHigh;
 	// g0
+	@JsonProperty("lo")
 	private String dayLow;
 	// m3
 	private String fiftyDayMovingAverage;
 	// l1 - last price
+	@JsonProperty("l_cur")
 	private String price;
 	// s0
+	@JsonProperty("t")
 	private String symbol;
 	//  n0
+	@JsonProperty("name")
 	private String name;
 
 	public StockQuote() {

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.charlesbot.google.GoogleFinanceClient;
 import com.charlesbot.model.StockQuotes;
 import com.charlesbot.yahoo.YahooFinanceClient;
 import com.google.common.base.Splitter;
@@ -30,6 +31,8 @@ public class SlackRestController {
 	private static final Logger log = LoggerFactory.getLogger(SlackRestController.class);
 	@Inject
 	private YahooFinanceClient yahooFinanceClient;
+	@Inject
+	private GoogleFinanceClient googleFinanceClient;
 	@Inject
 	private ConversionService conversionService;
 
@@ -65,7 +68,7 @@ public class SlackRestController {
 		// Remove duplicate symbols
 		List<String> symbols = new ArrayList<>(new LinkedHashSet<>(tokens));
 
-		Optional<StockQuotes> stockQuotes = yahooFinanceClient.getStockQuotes(symbols);
+		Optional<StockQuotes> stockQuotes = googleFinanceClient.getStockQuotes(symbols);
 		log.debug("Returned stock quote {}", stockQuotes);
 		SlackIncomingMessage message = new SlackIncomingMessage();
 		if (stockQuotes.isPresent()) {
