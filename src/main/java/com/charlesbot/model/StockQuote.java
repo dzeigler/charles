@@ -41,14 +41,14 @@ public class StockQuote {
 
 
 	public String getChange() {
-		if (extendedHoursChange == null) {
+		if (extendedHoursChange != null) {
 			return extendedHoursChange;
 		}
 		return change;
 	}
 
 	public String getChangeInPercent() {
-		if (extendedHoursChangeInPercent == null) {
+		if (extendedHoursChangeInPercent != null) {
 			return extendedHoursChangeInPercent;
 		}
 		return changeInPercent;
@@ -73,7 +73,7 @@ public class StockQuote {
 	}
 
 	public String getPrice() {
-		if (extendedHoursPrice == null) {
+		if (extendedHoursPrice != null) {
 			return extendedHoursPrice;
 		}
 		return price;
