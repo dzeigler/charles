@@ -20,7 +20,7 @@ public class StockQuote {
 	// m3
 	private String fiftyDayMovingAverage;
 	// l1 - last price
-	@JsonProperty("l_cur")
+	@JsonProperty("l")
 	private String price;
 	// s0
 	@JsonProperty("t")
@@ -29,15 +29,28 @@ public class StockQuote {
 	@JsonProperty("name")
 	private String name;
 
+	@JsonProperty("el")
+	private String extendedHoursPrice;
+	@JsonProperty("ec")
+	private String extendedHoursChange;
+	@JsonProperty("ecp")
+	private String extendedHoursChangeInPercent;
+	
 	public StockQuote() {
 	}
 
 
 	public String getChange() {
+		if (extendedHoursChange == null) {
+			return extendedHoursChange;
+		}
 		return change;
 	}
 
 	public String getChangeInPercent() {
+		if (extendedHoursChangeInPercent == null) {
+			return extendedHoursChangeInPercent;
+		}
 		return changeInPercent;
 	}
 
@@ -60,6 +73,9 @@ public class StockQuote {
 	}
 
 	public String getPrice() {
+		if (extendedHoursPrice == null) {
+			return extendedHoursPrice;
+		}
 		return price;
 	}
 
