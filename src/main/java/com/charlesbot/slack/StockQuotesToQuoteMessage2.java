@@ -33,7 +33,7 @@ public class StockQuotesToQuoteMessage2 implements Converter<StockQuotes, QuoteM
 		StringBuffer sb = new StringBuffer();
 		sb.append(MessageFormat.format("{0} ({4}): {1} {2} {3}%", quote.getSymbol(), quote.getPrice(), quote.getChange(), quote.getChangeInPercent(), quote.getName()));
 		if (!StringUtils.isEmpty(quote.getExtendedHoursPrice())) {
-			sb.append(MessageFormat.format(" extended hours: {5} {6} {7}%", quote.getExtendedHoursPrice(), quote.getExtendedHoursChange(), quote.getExtendedHoursChangeInPercent()));
+			sb.append(MessageFormat.format(" extended hours: {0} {1} {2}%", quote.getExtendedHoursPrice(), quote.getExtendedHoursChange(), quote.getExtendedHoursChangeInPercent()));
 		}
 		return sb.toString();
 	}
@@ -65,11 +65,11 @@ public class StockQuotesToQuoteMessage2 implements Converter<StockQuotes, QuoteM
 		} else if (totalChangeInPercent <= -1) {
 			color = "#660000";
 		} else if (totalChangeInPercent < 0) {
-			color = "#330000";
+			color = "#550000";
 		} else if (totalChangeInPercent == 0) {
 			color = "#000000";
 		} else if (totalChangeInPercent <= 1) {
-			color = "#003300";
+			color = "#005500";
 		} else if (totalChangeInPercent <= 3) {
 			color = "#006600";
 		} else if (totalChangeInPercent <= 6) {

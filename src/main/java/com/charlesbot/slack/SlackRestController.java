@@ -13,7 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.concurrent.ListenableFutureCallback;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,6 +38,8 @@ public class SlackRestController {
 	@Inject
 	private ConversionService conversionService;
 
+	@Inject SlackPostMessageSender slackMessageSender;
+	
 	@RequestMapping(value = "/")
 	@ResponseBody
 	String alive() {
@@ -48,6 +52,7 @@ public class SlackRestController {
 			throws UnsupportedEncodingException {
 		log.debug("Request with outgoing slack message={}", slackOutgoingMessage);
 		String triggerWord = slackOutgoingMessage.get("trigger_word").get(0);
+		String channel = slackOutgoingMessage.get("channel").get(0);
 		List<String> tokens = parseText(slackOutgoingMessage.get("text").get(0), triggerWord);
 		SlackIncomingMessage slackIncomingMessage = null;
 		// ignore trigger words with no args
@@ -60,7 +65,7 @@ public class SlackRestController {
 				slackIncomingMessage = getStockQuotes(symbols);
 				break;
 			case "!testq":
-				slackIncomingMessage = getStockQuotes2(symbols);
+				getStockQuotes2(symbols, channel);
 				break;
 			case "!chart":
 				slackIncomingMessage = chart(symbols);
@@ -83,14 +88,27 @@ public class SlackRestController {
 		return message;
 	}
 	
-	private SlackIncomingMessage getStockQuotes2(List<String> symbols) {
-		Optional<StockQuotes> stockQuotes = googleFinanceClient.getStockQuotes(symbols);
-		log.debug("Returned stock quote {}", stockQuotes);
-		SlackIncomingMessage message = new QuoteMessage();
-		if (stockQuotes.isPresent()) {
-			message = conversionService.convert(stockQuotes.get(), QuoteMessage2.class);
-		}
-		return message;
+	private void getStockQuotes2(List<String> symbols, String channel) {
+		googleFinanceClient.getAsyncStockQuotes(symbols, new ListenableFutureCallback<ResponseEntity<StockQuotes>>() {
+
+			@Override
+			public void onSuccess(ResponseEntity<StockQuotes> result) {
+				// convert stock quotes to the message
+				QuoteMessage2 message= null;
+				if (result.hasBody()) {
+					message = conversionService.convert(result.getBody(), QuoteMessage2.class);
+					message.setChannel(channel);
+					slackMessageSender.send(message);
+				}
+				
+			}
+
+			@Override
+			public void onFailure(Throwable ex) {
+				log.error("Failure while retrieving the stock quotes", ex);
+			}
+			
+		});
 	}
 	
 	private SlackIncomingMessage getStockStats(List<String> symbols) {

@@ -12,7 +12,8 @@ public abstract class SlackIncomingMessage {
 
 	@JsonInclude(Include.NON_NULL)
 	private String text;
-	
+	@JsonInclude(Include.NON_NULL)
+	private String channel;
 	@JsonInclude(Include.NON_NULL)
 	private List<Attachment> attachments;
 
@@ -24,6 +25,14 @@ public abstract class SlackIncomingMessage {
 		this.text = text;
 	}
 
+	public String getChannel() {
+		return channel;
+	}
+
+	public void setChannel(String channel) {
+		this.channel = channel;
+	}
+
 	public List<Attachment> getAttachments() {
 		return attachments;
 	}
@@ -31,4 +40,5 @@ public abstract class SlackIncomingMessage {
 	public void setAttachments(List<Attachment> attachments) {
 		this.attachments = attachments;
 	}
+
 }
