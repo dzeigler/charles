@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  */
 public abstract class SlackIncomingMessage {
 
+	@JsonInclude(Include.NON_NULL)
 	private String text;
 	
 	@JsonInclude(Include.NON_NULL)

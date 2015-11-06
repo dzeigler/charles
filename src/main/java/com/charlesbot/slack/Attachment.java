@@ -2,39 +2,54 @@ package com.charlesbot.slack;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 public class Attachment {
 
 	/**
 	 * Required plain-text summary of the attachment.
 	 */
+	@JsonInclude(Include.NON_NULL)
 	private String fallback;
 
 	/**
 	 * Good, warning, danger, or any hex color code
 	 */
+	@JsonInclude(Include.NON_NULL)
 	private String color;
 
 	/**
 	 * Optional text that appears above the attachment block
 	 */
+	@JsonInclude(Include.NON_NULL)
 	private String pretext;
 
+	@JsonInclude(Include.NON_NULL)
 	private String authorName;
+	@JsonInclude(Include.NON_NULL)
 	private String authorLink;
+	@JsonInclude(Include.NON_NULL)
 	private String authorIcon;
 
 	/**
 	 * Title of the attachment
 	 */
+	@JsonInclude(Include.NON_NULL)
 	private String title;
+	@JsonInclude(Include.NON_NULL)
 	private String titleLink;
 
 	/**
 	 * Optional text that appears within the attachment
 	 */
+	@JsonInclude(Include.NON_NULL)
 	private String text;
+	@JsonInclude(Include.NON_NULL)
 	private List<Field> fields;
+	@JsonInclude(Include.NON_NULL)
 	private String imageUrl;
+	@JsonInclude(Include.NON_NULL)
 	private String thumbUrl;
 
 	public String getFallback() {
