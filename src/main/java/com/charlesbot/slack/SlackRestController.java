@@ -36,6 +36,10 @@ public class SlackRestController {
 	@Inject
 	private ConversionService conversionService;
 
+	public static final String QUOTE_COMMAND = "!q";
+	public static final String CHART_COMMAND = "!chart";
+	public static final String STATS_COMMAND = "!stats";
+	
 	@RequestMapping(value = "/")
 	@ResponseBody
 	String alive() {
@@ -59,6 +63,9 @@ public class SlackRestController {
 			case "!chart":
 				slackIncomingMessage = chart(tokens);
 				break;
+			case "!stats":
+				slackIncomingMessage = getStockStats(tokens);
+				break;
 			}
 		}
 		return slackIncomingMessage;
@@ -72,6 +79,21 @@ public class SlackRestController {
 		log.debug("Returned stock quote {}", stockQuotes);
 		SlackIncomingMessage message = new SlackIncomingMessage();
 		if (stockQuotes.isPresent()) {
+			stockQuotes.get().setCommand(QUOTE_COMMAND);
+			message = conversionService.convert(stockQuotes.get(), SlackIncomingMessage.class);
+		}
+		return message;
+	}
+	
+	private SlackIncomingMessage getStockStats(List<String> tokens) {
+		// Remove duplicate symbols
+		List<String> symbols = new ArrayList<>(new LinkedHashSet<>(tokens));
+
+		Optional<StockQuotes> stockQuotes = googleFinanceClient.getStockQuotes(symbols);
+		log.debug("Returned stock quote {}", stockQuotes);
+		SlackIncomingMessage message = new SlackIncomingMessage();
+		if (stockQuotes.isPresent()) {
+			stockQuotes.get().setCommand(STATS_COMMAND);
 			message = conversionService.convert(stockQuotes.get(), SlackIncomingMessage.class);
 		}
 		return message;

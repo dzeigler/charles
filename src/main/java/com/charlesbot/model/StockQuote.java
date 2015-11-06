@@ -1,5 +1,7 @@
 package com.charlesbot.model;
 
+import org.springframework.util.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -25,40 +27,49 @@ public class StockQuote {
 	// s0
 	@JsonProperty("t")
 	private String symbol;
-	//  n0
+	// n0
 	@JsonProperty("name")
 	private String name;
 
+	@JsonProperty("mc")
+	private String marketCap;
+	@JsonProperty("pe")
+	private String pe;
+	@JsonProperty("eps")
+	private String eps;
+	@JsonProperty("hi52")
+	private String highFiftyTwoWeek;
+	@JsonProperty("lo52")
+	private String lowFiftyTwoWeek;
+	@JsonProperty("shares")
+	private String shares;
+	@JsonProperty("beta")
+	private String beta;
+	@JsonProperty("div")
+	private String dividend;
+	@JsonProperty("yld")
+	private String yield;
 	@JsonProperty("el")
 	private String extendedHoursPrice;
 	@JsonProperty("ec")
 	private String extendedHoursChange;
 	@JsonProperty("ecp")
 	private String extendedHoursChangeInPercent;
-	
+
 	public StockQuote() {
 	}
 
-
 	public String getChange() {
-		if (extendedHoursChange != null) {
-			return extendedHoursChange;
-		}
 		return change;
 	}
 
 	public String getChangeInPercent() {
-		if (extendedHoursChangeInPercent != null) {
-			return extendedHoursChangeInPercent;
-		}
 		return changeInPercent;
 	}
-
 
 	public void setChangeInPercent(String changeInPercent) {
 		this.changeInPercent = changeInPercent;
 	}
-
 
 	public String getDayHigh() {
 		return dayHigh;
@@ -73,9 +84,6 @@ public class StockQuote {
 	}
 
 	public String getPrice() {
-		if (extendedHoursPrice != null) {
-			return extendedHoursPrice;
-		}
 		return price;
 	}
 
@@ -111,9 +119,114 @@ public class StockQuote {
 		return name;
 	}
 
-
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getMarketCap() {
+		return marketCap;
+	}
+
+	public void setMarketCap(String marketCap) {
+		this.marketCap = marketCap;
+	}
+
+	public String getPe() {
+		return pe;
+	}
+
+	public void setPe(String pe) {
+		this.pe = pe;
+	}
+
+	public String getEps() {
+		return eps;
+	}
+
+	public void setEps(String eps) {
+		this.eps = eps;
+	}
+
+	public String getHighFiftyTwoWeek() {
+		return highFiftyTwoWeek;
+	}
+
+	public void setHighFiftyTwoWeek(String highFiftyTwoWeek) {
+		this.highFiftyTwoWeek = highFiftyTwoWeek;
+	}
+
+	public String getLowFiftyTwoWeek() {
+		return lowFiftyTwoWeek;
+	}
+
+	public void setLowFiftyTwoWeek(String lowFiftyTwoWeek) {
+		this.lowFiftyTwoWeek = lowFiftyTwoWeek;
+	}
+
+	public String getShares() {
+		return shares;
+	}
+
+	public void setShares(String shares) {
+		this.shares = shares;
+	}
+
+	public String getBeta() {
+		return beta;
+	}
+
+	public void setBeta(String beta) {
+		this.beta = beta;
+	}
+
+	public String getExtendedHoursPrice() {
+		return extendedHoursPrice;
+	}
+
+	public void setExtendedHoursPrice(String extendedHoursPrice) {
+		this.extendedHoursPrice = extendedHoursPrice;
+	}
+
+	public String getExtendedHoursChange() {
+		return extendedHoursChange;
+	}
+
+	public void setExtendedHoursChange(String extendedHoursChange) {
+		this.extendedHoursChange = extendedHoursChange;
+	}
+
+	public String getExtendedHoursChangeInPercent() {
+		return extendedHoursChangeInPercent;
+	}
+
+	public void setExtendedHoursChangeInPercent(String extendedHoursChangeInPercent) {
+		this.extendedHoursChangeInPercent = extendedHoursChangeInPercent;
+	}
+
+	public String getFiftyDayMovingAverage() {
+		return fiftyDayMovingAverage;
+	}
+
+	public String getDividend() {
+		if (StringUtils.isEmpty(dividend)) {
+			return "-";
+		}
+		return dividend;
+	}
+
+	public void setDividend(String dividend) {
+		this.dividend = dividend;
+	}
+
+	public String getYield() {
+		if (StringUtils.isEmpty(yield)) {
+			return "-";
+		}
+		return yield;
+	}
+
+	public void setYield(String yield) {
+		this.yield = yield;
 	}
 
 	@Override
@@ -126,7 +239,8 @@ public class StockQuote {
 	}
 
 	public static String[] getHeader() {
-		return new String[] { "change", "changeInPercent", "dayHigh", "dayLow", "fiftyDayMovingAverage", "price", "symbol", "name" };
+		return new String[] { "change", "changeInPercent", "dayHigh", "dayLow", "fiftyDayMovingAverage", "price",
+				"symbol", "name" };
 	}
 
 }
