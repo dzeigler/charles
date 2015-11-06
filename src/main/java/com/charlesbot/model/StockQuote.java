@@ -172,6 +172,9 @@ public class StockQuote {
 	}
 
 	public String getBeta() {
+		if (StringUtils.isEmpty(beta)) {
+			return "-";
+		}
 		return beta;
 	}
 
