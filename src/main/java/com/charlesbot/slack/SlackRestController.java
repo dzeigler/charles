@@ -52,7 +52,7 @@ public class SlackRestController {
 			throws UnsupportedEncodingException {
 		log.debug("Request with outgoing slack message={}", slackOutgoingMessage);
 		String triggerWord = slackOutgoingMessage.get("trigger_word").get(0);
-		String channel = slackOutgoingMessage.get("channel").get(0);
+		String channel = slackOutgoingMessage.get("channel_id").get(0);
 		List<String> tokens = parseText(slackOutgoingMessage.get("text").get(0), triggerWord);
 		SlackIncomingMessage slackIncomingMessage = null;
 		// ignore trigger words with no args
