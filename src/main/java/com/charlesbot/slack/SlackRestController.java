@@ -36,10 +36,6 @@ public class SlackRestController {
 	@Inject
 	private ConversionService conversionService;
 
-	public static final String QUOTE_COMMAND = "!q";
-	public static final String CHART_COMMAND = "!chart";
-	public static final String STATS_COMMAND = "!stats";
-	
 	@RequestMapping(value = "/")
 	@ResponseBody
 	String alive() {
@@ -56,45 +52,53 @@ public class SlackRestController {
 		SlackIncomingMessage slackIncomingMessage = null;
 		// ignore trigger words with no args
 		if (!tokens.isEmpty()) {
+			// Remove duplicate symbols
+			List<String> symbols = new ArrayList<>(new LinkedHashSet<>(tokens));
+			
 			switch (triggerWord) {
 			case "!q":
-				slackIncomingMessage = getStockQuotes(tokens);
+				slackIncomingMessage = getStockQuotes(symbols);
+				break;
+			case "!q2":
+				slackIncomingMessage = getStockQuotes2(symbols);
 				break;
 			case "!chart":
-				slackIncomingMessage = chart(tokens);
+				slackIncomingMessage = chart(symbols);
 				break;
 			case "!stats":
-				slackIncomingMessage = getStockStats(tokens);
+				slackIncomingMessage = getStockStats(symbols);
 				break;
 			}
 		}
 		return slackIncomingMessage;
 	}
 
-	private SlackIncomingMessage getStockQuotes(List<String> tokens) {
-		// Remove duplicate symbols
-		List<String> symbols = new ArrayList<>(new LinkedHashSet<>(tokens));
-
+	private SlackIncomingMessage getStockQuotes(List<String> symbols) {
 		Optional<StockQuotes> stockQuotes = googleFinanceClient.getStockQuotes(symbols);
 		log.debug("Returned stock quote {}", stockQuotes);
-		SlackIncomingMessage message = new SlackIncomingMessage();
+		SlackIncomingMessage message = new QuoteMessage();
 		if (stockQuotes.isPresent()) {
-			stockQuotes.get().setCommand(QUOTE_COMMAND);
-			message = conversionService.convert(stockQuotes.get(), SlackIncomingMessage.class);
+			message = conversionService.convert(stockQuotes.get(), QuoteMessage.class);
 		}
 		return message;
 	}
 	
-	private SlackIncomingMessage getStockStats(List<String> tokens) {
-		// Remove duplicate symbols
-		List<String> symbols = new ArrayList<>(new LinkedHashSet<>(tokens));
-
+	private SlackIncomingMessage getStockQuotes2(List<String> symbols) {
 		Optional<StockQuotes> stockQuotes = googleFinanceClient.getStockQuotes(symbols);
 		log.debug("Returned stock quote {}", stockQuotes);
-		SlackIncomingMessage message = new SlackIncomingMessage();
+		SlackIncomingMessage message = new QuoteMessage();
 		if (stockQuotes.isPresent()) {
-			stockQuotes.get().setCommand(STATS_COMMAND);
-			message = conversionService.convert(stockQuotes.get(), SlackIncomingMessage.class);
+			message = conversionService.convert(stockQuotes.get(), QuoteMessage2.class);
+		}
+		return message;
+	}
+	
+	private SlackIncomingMessage getStockStats(List<String> symbols) {
+		Optional<StockQuotes> stockQuotes = googleFinanceClient.getStockQuotes(symbols);
+		log.debug("Returned stock quote {}", stockQuotes);
+		SlackIncomingMessage message = new QuoteMessage();
+		if (stockQuotes.isPresent()) {
+			message = conversionService.convert(stockQuotes.get(), StatsMessage.class);
 		}
 		return message;
 	}
@@ -109,11 +113,11 @@ public class SlackRestController {
 		return tokens;
 	}
 
-	private SlackIncomingMessage chart(List<String> tokens) {
-		SlackIncomingMessage slackIncomingMessage = new SlackIncomingMessage();
-		if (!tokens.isEmpty()) {
+	private SlackIncomingMessage chart(List<String> symbols) {
+		SlackIncomingMessage slackIncomingMessage = new ChartMessage();
+		if (!symbols.isEmpty()) {
 			// only build the URL for the first symbol given
-			slackIncomingMessage.setText(MessageFormat.format("<http://chart.finance.yahoo.com/t?s={0}&lang=en-US&region=US&width=300&height=180&cb={1,number,#}>", tokens.get(0), System.currentTimeMillis()));
+			slackIncomingMessage.setText(MessageFormat.format("<http://chart.finance.yahoo.com/t?s={0}&lang=en-US&region=US&width=300&height=180&cb={1,number,#}>", symbols.get(0), System.currentTimeMillis()));
 		}
 		return slackIncomingMessage;
 	}

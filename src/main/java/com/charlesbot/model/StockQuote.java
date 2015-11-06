@@ -38,9 +38,9 @@ public class StockQuote {
 	@JsonProperty("eps")
 	private String eps;
 	@JsonProperty("hi52")
-	private String highFiftyTwoWeek;
+	private String fiftyTwoWeekHigh;
 	@JsonProperty("lo52")
-	private String lowFiftyTwoWeek;
+	private String fiftyTwoWeekLow;
 	@JsonProperty("shares")
 	private String shares;
 	@JsonProperty("beta")
@@ -62,7 +62,7 @@ public class StockQuote {
 	public String getChange() {
 		return change;
 	}
-
+	
 	public String getChangeInPercent() {
 		return changeInPercent;
 	}
@@ -147,20 +147,20 @@ public class StockQuote {
 		this.eps = eps;
 	}
 
-	public String getHighFiftyTwoWeek() {
-		return highFiftyTwoWeek;
+	public String getFiftyTwoWeekHigh() {
+		return fiftyTwoWeekHigh;
 	}
 
-	public void setHighFiftyTwoWeek(String highFiftyTwoWeek) {
-		this.highFiftyTwoWeek = highFiftyTwoWeek;
+	public void setFiftyTwoWeekHigh(String fiftyTwoWeekHigh) {
+		this.fiftyTwoWeekHigh = fiftyTwoWeekHigh;
 	}
 
-	public String getLowFiftyTwoWeek() {
-		return lowFiftyTwoWeek;
+	public String getFiftyTwoWeekLow() {
+		return fiftyTwoWeekLow;
 	}
 
-	public void setLowFiftyTwoWeek(String lowFiftyTwoWeek) {
-		this.lowFiftyTwoWeek = lowFiftyTwoWeek;
+	public void setFiftyTwoWeekLow(String fiftyTwoWeekLow) {
+		this.fiftyTwoWeekLow = fiftyTwoWeekLow;
 	}
 
 	public String getShares() {

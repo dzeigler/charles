@@ -16,7 +16,9 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import com.charlesbot.google.GoogleStockQuoteConverter;
-import com.charlesbot.slack.StockQuotesToSlackIncomingMessage;
+import com.charlesbot.slack.StockQuotesToQuoteMessage;
+import com.charlesbot.slack.StockQuotesToQuoteMessage2;
+import com.charlesbot.slack.StockQuotesToStatsMessage;
 import com.charlesbot.yahoo.YahooStockQuoteConverter;
 
 @Configuration
@@ -40,7 +42,9 @@ public class Application extends WebMvcConfigurerAdapter {
 	public ConversionServiceFactoryBean conversionService() {
 		ConversionServiceFactoryBean conversionServiceFactoryBean = new ConversionServiceFactoryBean();
 		Set<Converter<?,?>> converters = new HashSet<>();
-		converters.add(new StockQuotesToSlackIncomingMessage());
+		converters.add(new StockQuotesToQuoteMessage());
+		converters.add(new StockQuotesToQuoteMessage2());
+		converters.add(new StockQuotesToStatsMessage());
 		conversionServiceFactoryBean.setConverters(converters);
 		return conversionServiceFactoryBean;
 	}
