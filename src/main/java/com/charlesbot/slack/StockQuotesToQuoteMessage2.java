@@ -63,17 +63,17 @@ public class StockQuotesToQuoteMessage2 implements Converter<StockQuotes, QuoteM
 		} else if (totalChangeInPercent <= -3) {
 			color = "#990000";
 		} else if (totalChangeInPercent <= -1) {
-			color = "#660000";
+			color = "#750000";
 		} else if (totalChangeInPercent < 0) {
-			color = "#550000";
+			color = "#660000";
 		} else if (totalChangeInPercent == 0) {
 			color = "#000000";
 		} else if (totalChangeInPercent <= 1) {
-			color = "#005500";
+			color = "#006600";
 		} else if (totalChangeInPercent <= 3) {
-			color = "#006600";
+			color = "#007500";
 		} else if (totalChangeInPercent <= 6) {
-			color = "#006600";
+			color = "#009900";
 		} else if (totalChangeInPercent < 10) {
 			color = "#00cc00";
 		} else {
