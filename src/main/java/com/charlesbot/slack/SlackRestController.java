@@ -59,7 +59,7 @@ public class SlackRestController {
 			case "!q":
 				slackIncomingMessage = getStockQuotes(symbols);
 				break;
-			case "!q2":
+			case "!testq":
 				slackIncomingMessage = getStockQuotes2(symbols);
 				break;
 			case "!chart":
