@@ -21,7 +21,7 @@ public class StockQuotesToQuoteMessage implements Converter<StockQuotes, QuoteMe
 		for (StockQuote quote : stockQuotes.get()) {
 			sb.append(MessageFormat.format("{0} ({4}): {1} {2} {3}%", quote.getSymbol(), quote.getPrice(), quote.getChange(), quote.getChangeInPercent(), quote.getName()));
 			if (!StringUtils.isEmpty(quote.getExtendedHoursPrice())) {
-				sb.append(MessageFormat.format(" extended hours: {5} {6} {7}%", quote.getExtendedHoursPrice(), quote.getExtendedHoursChange(), quote.getExtendedHoursChangeInPercent()));
+				sb.append(MessageFormat.format(" extended hours: {0} {1} {2}%", quote.getExtendedHoursPrice(), quote.getExtendedHoursChange(), quote.getExtendedHoursChangeInPercent()));
 			}
 				
 			if (stockQuotes.get().size() > 1) {
