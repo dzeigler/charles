@@ -1,9 +1,13 @@
 package com.charlesbot.slack;
 
-import java.text.MessageFormat;
+import java.io.StringWriter;
 
 import org.springframework.core.convert.converter.Converter;
 
+import com.brsanthu.dataexporter.DataExporter;
+import com.brsanthu.dataexporter.model.AlignType;
+import com.brsanthu.dataexporter.model.StringColumn;
+import com.brsanthu.dataexporter.output.texttable.TextTableExporter;
 import com.charlesbot.model.StockQuote;
 import com.charlesbot.model.StockQuotes;
 
@@ -15,17 +19,32 @@ public class StockQuotesToStatsMessage implements Converter<StockQuotes, StatsMe
 		
 		StringBuilder sb = new StringBuilder();
 		if (stockQuotes.get().size() > 1) {
-			sb.append(">>>");
+			sb.append("```");
 		}
+		
+		StringWriter stringWriter = new StringWriter();
+		DataExporter exporter = new TextTableExporter(stringWriter);
+		exporter.addColumns(
+				new StringColumn("Symbol",10, AlignType.MIDDLE_LEFT),
+				new StringColumn("Name",20, AlignType.MIDDLE_LEFT),
+				new StringColumn("Mkt Cap",8, AlignType.MIDDLE_RIGHT),
+				new StringColumn("P/E",8, AlignType.MIDDLE_RIGHT),
+				new StringColumn("EPS",8, AlignType.MIDDLE_RIGHT),
+				new StringColumn("Day Range",16, AlignType.MIDDLE_RIGHT),
+				new StringColumn("52wk Range",16, AlignType.MIDDLE_RIGHT),
+				new StringColumn("Dividend",8, AlignType.MIDDLE_RIGHT),
+				new StringColumn("Yield",8, AlignType.MIDDLE_RIGHT),
+				new StringColumn("Beta",8, AlignType.MIDDLE_RIGHT)
+				);
+		
 		for (StockQuote quote : stockQuotes.get()) {
-			sb.append(MessageFormat.format("{0} ({1}): {2}, p/e {3}, eps {4}, day range {5}/{6}, 52 week range {7}/{8}, div {9}, yield {10}, shares {11}, beta {12}"
-					, quote.getSymbol(), quote.getName(), quote.getMarketCap(), quote.getPe(), quote.getEps(), quote.getDayLow(), quote.getDayHigh(),
-					quote.getFiftyTwoWeekLow(), quote.getFiftyTwoWeekHigh(), quote.getDividend(), quote.getYield(), quote.getShares(), quote.getBeta()));
+			exporter.addRow(quote.getSymbol(), quote.getName(), quote.getMarketCap(), quote.getPe(), quote.getEps(), quote.getDayLow()+" - " +quote.getDayHigh(),
+					quote.getFiftyTwoWeekLow()+ " - " + quote.getFiftyTwoWeekHigh(), quote.getDividend(), quote.getYield(), quote.getBeta());
 			
-			if (stockQuotes.get().size() > 1) {
-				sb.append("\n");
-			}
 		}
+		exporter.finishExporting();
+		sb.append(stringWriter.toString());
+		sb.append("```");
 		message.setText(sb.toString());
 		
 		return message;
