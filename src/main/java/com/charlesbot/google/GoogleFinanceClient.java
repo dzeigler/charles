@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 import org.springframework.web.client.AsyncRestTemplate;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.charlesbot.model.StockQuotes;
@@ -35,9 +36,14 @@ public class GoogleFinanceClient {
 		Optional<StockQuotes> stockQuotes = null;
 		Map<String, String> variables = new HashMap<String, String>();
 		variables.put("symbols", symbolsString);
-		ResponseEntity<StockQuotes> quotes = restTemplate.getForEntity(QUOTE_URL, StockQuotes.class, variables);
-		log.debug("Completed Request {}", stockQuotes);
-		return Optional.ofNullable(quotes.getBody());
+		try {
+			ResponseEntity<StockQuotes> quotes = restTemplate.getForEntity(QUOTE_URL, StockQuotes.class, variables);
+			log.debug("Completed Request {}", stockQuotes);
+			return Optional.ofNullable(quotes.getBody());
+		} catch (RestClientException e) {
+			log.error("Error occurred while processing request", e);
+		}
+		return Optional.empty();
 	}
 
 	public void getAsyncStockQuotes(List<String> symbols, ListenableFutureCallback<ResponseEntity<StockQuotes>> callback) {
