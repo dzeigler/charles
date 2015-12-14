@@ -23,7 +23,7 @@ public class StockQuotesToStatsMessage implements Converter<StockQuotes, StatsMe
 		StringWriter stringWriter = new StringWriter();
 		DataExporter exporter = new TextTableExporter(stringWriter);
 		exporter.addColumns(
-				new StringColumn("Symbol",10, AlignType.TOP_LEFT),
+				new StringColumn("Symbol",8, AlignType.TOP_LEFT),
 				new StringColumn("Name",20, AlignType.TOP_LEFT),
 				new StringColumn("Mkt Cap",8, AlignType.TOP_RIGHT),
 				new StringColumn("P/E",8, AlignType.TOP_RIGHT),
