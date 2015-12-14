@@ -30,8 +30,8 @@ public class StockQuotesToStatsMessage implements Converter<StockQuotes, StatsMe
 				new StringColumn("EPS",8, AlignType.TOP_RIGHT),
 				new StringColumn("Day Low",8, AlignType.TOP_RIGHT),
 				new StringColumn("Day High",8, AlignType.TOP_RIGHT),
-				new StringColumn("52wk Low",16, AlignType.TOP_RIGHT),
-				new StringColumn("52wk High",16, AlignType.TOP_RIGHT),
+				new StringColumn("52wk Low",8, AlignType.TOP_RIGHT),
+				new StringColumn("52wk High",8, AlignType.TOP_RIGHT),
 				new StringColumn("Dividend",8, AlignType.TOP_RIGHT),
 				new StringColumn("Yield",8, AlignType.TOP_RIGHT),
 				new StringColumn("Beta",8, AlignType.TOP_RIGHT)
