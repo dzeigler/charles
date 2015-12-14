@@ -72,10 +72,16 @@ public class StockQuote {
 	}
 
 	public String getDayHigh() {
+		if (StringUtils.isEmpty(dayHigh)) {
+			return "-";
+		}
 		return dayHigh;
 	}
 
 	public String getDayLow() {
+		if (StringUtils.isEmpty(dayLow)) {
+			return "-";
+		}
 		return dayLow;
 	}
 
@@ -124,6 +130,9 @@ public class StockQuote {
 	}
 
 	public String getMarketCap() {
+		if (StringUtils.isEmpty(marketCap)) {
+			return "-";
+		}
 		return marketCap;
 	}
 
@@ -132,6 +141,9 @@ public class StockQuote {
 	}
 
 	public String getPe() {
+		if (StringUtils.isEmpty(pe)) {
+			return "-";
+		}
 		return pe;
 	}
 
@@ -140,6 +152,9 @@ public class StockQuote {
 	}
 
 	public String getEps() {
+		if (StringUtils.isEmpty(eps)) {
+			return "-";
+		}
 		return eps;
 	}
 
@@ -148,6 +163,9 @@ public class StockQuote {
 	}
 
 	public String getFiftyTwoWeekHigh() {
+		if (StringUtils.isEmpty(fiftyTwoWeekHigh)) {
+			return "-";
+		}
 		return fiftyTwoWeekHigh;
 	}
 
@@ -156,6 +174,9 @@ public class StockQuote {
 	}
 
 	public String getFiftyTwoWeekLow() {
+		if (StringUtils.isEmpty(fiftyTwoWeekLow)) {
+			return "-";
+		}
 		return fiftyTwoWeekLow;
 	}
 

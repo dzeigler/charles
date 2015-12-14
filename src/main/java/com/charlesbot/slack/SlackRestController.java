@@ -84,6 +84,9 @@ public class SlackRestController {
 		SlackIncomingMessage message = new QuoteMessage();
 		if (stockQuotes.isPresent()) {
 			message = conversionService.convert(stockQuotes.get(), QuoteMessage.class);
+		} else {
+			message = new QuoteMessage();
+			message.setText("An error occurred. Check your ticker symbol(s)");
 		}
 		return message;
 	}
@@ -117,6 +120,9 @@ public class SlackRestController {
 		SlackIncomingMessage message = new QuoteMessage();
 		if (stockQuotes.isPresent()) {
 			message = conversionService.convert(stockQuotes.get(), StatsMessage.class);
+		} else {
+			message = new QuoteMessage();
+			message.setText("An error occurred. Check your ticker symbol(s)");
 		}
 		return message;
 	}
