@@ -18,28 +18,28 @@ public class StockQuotesToStatsMessage implements Converter<StockQuotes, StatsMe
 		StatsMessage message = new StatsMessage();
 		
 		StringBuilder sb = new StringBuilder();
-		if (stockQuotes.get().size() > 1) {
-			sb.append("```");
-		}
+		sb.append("```");
 		
 		StringWriter stringWriter = new StringWriter();
 		DataExporter exporter = new TextTableExporter(stringWriter);
 		exporter.addColumns(
-				new StringColumn("Symbol",10, AlignType.MIDDLE_LEFT),
-				new StringColumn("Name",20, AlignType.MIDDLE_LEFT),
-				new StringColumn("Mkt Cap",8, AlignType.MIDDLE_RIGHT),
-				new StringColumn("P/E",8, AlignType.MIDDLE_RIGHT),
-				new StringColumn("EPS",8, AlignType.MIDDLE_RIGHT),
-				new StringColumn("Day Range",16, AlignType.MIDDLE_RIGHT),
-				new StringColumn("52wk Range",16, AlignType.MIDDLE_RIGHT),
-				new StringColumn("Dividend",8, AlignType.MIDDLE_RIGHT),
-				new StringColumn("Yield",8, AlignType.MIDDLE_RIGHT),
-				new StringColumn("Beta",8, AlignType.MIDDLE_RIGHT)
+				new StringColumn("Symbol",10, AlignType.TOP_LEFT),
+				new StringColumn("Name",20, AlignType.TOP_LEFT),
+				new StringColumn("Mkt Cap",8, AlignType.TOP_RIGHT),
+				new StringColumn("P/E",8, AlignType.TOP_RIGHT),
+				new StringColumn("EPS",8, AlignType.TOP_RIGHT),
+				new StringColumn("Day Low",8, AlignType.TOP_RIGHT),
+				new StringColumn("Day High",8, AlignType.TOP_RIGHT),
+				new StringColumn("52wk Low",16, AlignType.TOP_RIGHT),
+				new StringColumn("52wk High",16, AlignType.TOP_RIGHT),
+				new StringColumn("Dividend",8, AlignType.TOP_RIGHT),
+				new StringColumn("Yield",8, AlignType.TOP_RIGHT),
+				new StringColumn("Beta",8, AlignType.TOP_RIGHT)
 				);
 		
 		for (StockQuote quote : stockQuotes.get()) {
-			exporter.addRow(quote.getSymbol(), quote.getName(), quote.getMarketCap(), quote.getPe(), quote.getEps(), quote.getDayLow()+" - " +quote.getDayHigh(),
-					quote.getFiftyTwoWeekLow()+ " - " + quote.getFiftyTwoWeekHigh(), quote.getDividend(), quote.getYield(), quote.getBeta());
+			exporter.addRow(quote.getSymbol(), quote.getName(), quote.getMarketCap(), quote.getPe(), quote.getEps(), quote.getDayLow(), quote.getDayHigh(),
+					quote.getFiftyTwoWeekLow(), quote.getFiftyTwoWeekHigh(), quote.getDividend(), quote.getYield(), quote.getBeta());
 			
 		}
 		exporter.finishExporting();
