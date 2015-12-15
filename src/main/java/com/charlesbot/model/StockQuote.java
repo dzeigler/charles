@@ -93,6 +93,13 @@ public class StockQuote {
 		return price;
 	}
 
+	public String getCurrentPrice() {
+		if (!StringUtils.isEmpty(extendedHoursPrice)) {
+			return extendedHoursPrice;
+		}
+		return price;
+	}
+	
 	public String getSymbol() {
 		return symbol;
 	}

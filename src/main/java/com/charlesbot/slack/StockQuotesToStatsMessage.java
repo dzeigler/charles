@@ -25,6 +25,7 @@ public class StockQuotesToStatsMessage implements Converter<StockQuotes, StatsMe
 		exporter.addColumns(
 				new StringColumn("Symbol",8, AlignType.TOP_LEFT),
 				new StringColumn("Name",20, AlignType.TOP_LEFT),
+				new StringColumn("Price",10, AlignType.TOP_RIGHT),
 				new StringColumn("Mkt Cap",8, AlignType.TOP_RIGHT),
 				new StringColumn("P/E",8, AlignType.TOP_RIGHT),
 				new StringColumn("EPS",10, AlignType.TOP_RIGHT),
@@ -35,7 +36,7 @@ public class StockQuotesToStatsMessage implements Converter<StockQuotes, StatsMe
 				);
 		
 		for (StockQuote quote : stockQuotes.get()) {
-			exporter.addRow(quote.getSymbol(), quote.getName(), quote.getMarketCap(), quote.getPe(), quote.getEps(), quote.getDayLow(), quote.getDayHigh(),
+			exporter.addRow(quote.getSymbol(), quote.getName(), quote.getCurrentPrice(), quote.getMarketCap(), quote.getPe(), quote.getEps(), quote.getDayLow(), quote.getDayHigh(),
 					quote.getFiftyTwoWeekLow(), quote.getFiftyTwoWeekHigh());
 			
 		}
