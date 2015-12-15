@@ -31,15 +31,12 @@ public class StockQuotesToStatsMessage implements Converter<StockQuotes, StatsMe
 				new StringColumn("Day Low",10, AlignType.TOP_RIGHT),
 				new StringColumn("Day High",10, AlignType.TOP_RIGHT),
 				new StringColumn("52wk Low",10, AlignType.TOP_RIGHT),
-				new StringColumn("52wk High",10, AlignType.TOP_RIGHT),
-				new StringColumn("Dividend",8, AlignType.TOP_RIGHT),
-				new StringColumn("Yield",8, AlignType.TOP_RIGHT),
-				new StringColumn("Beta",8, AlignType.TOP_RIGHT)
+				new StringColumn("52wk High",10, AlignType.TOP_RIGHT)
 				);
 		
 		for (StockQuote quote : stockQuotes.get()) {
 			exporter.addRow(quote.getSymbol(), quote.getName(), quote.getMarketCap(), quote.getPe(), quote.getEps(), quote.getDayLow(), quote.getDayHigh(),
-					quote.getFiftyTwoWeekLow(), quote.getFiftyTwoWeekHigh(), quote.getDividend(), quote.getYield(), quote.getBeta());
+					quote.getFiftyTwoWeekLow(), quote.getFiftyTwoWeekHigh());
 			
 		}
 		exporter.finishExporting();
