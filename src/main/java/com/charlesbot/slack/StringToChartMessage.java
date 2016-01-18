@@ -98,7 +98,7 @@ public class StringToChartMessage implements Converter<String, ChartMessage> {
 		HelpFormatter formatter = new HelpFormatter();
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
-		formatter.printHelp(pw, 80, "!chart <SYMBOL>", "SYMBOL is the Yahoo Finance ticker for the stock or index", options, 0, 3, "footer", true);
+		formatter.printHelp(pw, 80, "!chart <SYMBOL>", "SYMBOL is the Yahoo Finance ticker for the stock or index", options, 0, 3, "", true);
 		String string = sw.toString();
 		return string;
 	}
