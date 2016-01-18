@@ -34,4 +34,5 @@ public class YahooFinanceClient {
 		log.debug("Completed Request {}", stockQuotes);
 		return Optional.ofNullable(quotes);
 	}
+	
 }

@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.1.9.RELEASE</version>
+		<version>1.3.1.RELEASE</version>
 	</parent>
 
 	<!-- Add typical dependencies for a web application -->
@@ -55,6 +55,11 @@
 			<groupId>com.brsanthu</groupId>
 			<artifactId>data-exporter</artifactId>
 			<version>1.0.4</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-cli</groupId>
+			<artifactId>commons-cli</artifactId>
+			<version>1.3.1</version>
 		</dependency>
 	</dependencies>
 

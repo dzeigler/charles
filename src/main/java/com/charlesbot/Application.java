@@ -22,14 +22,13 @@ import com.charlesbot.google.GoogleStockQuoteConverter;
 import com.charlesbot.slack.StockQuotesToQuoteMessage;
 import com.charlesbot.slack.StockQuotesToQuoteMessage2;
 import com.charlesbot.slack.StockQuotesToStatsMessage;
+import com.charlesbot.slack.StringToChartMessage;
 import com.charlesbot.yahoo.YahooStockQuoteConverter;
 
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan
 public class Application extends WebMvcConfigurerAdapter {
-
-	private HttpMessageConverters customConverters = null;
 
 	@Bean
 	public HttpMessageConverters customConverters() {
@@ -50,7 +49,7 @@ public class Application extends WebMvcConfigurerAdapter {
 		AsyncRestTemplate asyncRestTemplate = new AsyncRestTemplate(factory, restTemplate());
 		return asyncRestTemplate;
 	}
-
+	
 	@Bean
 	public ConversionServiceFactoryBean conversionService() {
 		ConversionServiceFactoryBean conversionServiceFactoryBean = new ConversionServiceFactoryBean();
@@ -58,6 +57,7 @@ public class Application extends WebMvcConfigurerAdapter {
 		converters.add(new StockQuotesToQuoteMessage());
 		converters.add(new StockQuotesToQuoteMessage2());
 		converters.add(new StockQuotesToStatsMessage());
+		converters.add(new StringToChartMessage());
 		conversionServiceFactoryBean.setConverters(converters);
 		return conversionServiceFactoryBean;
 	}

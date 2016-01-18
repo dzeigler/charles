@@ -1,7 +1,6 @@
 package com.charlesbot.slack;
 
 import java.io.UnsupportedEncodingException;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -24,15 +23,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.charlesbot.google.GoogleFinanceClient;
 import com.charlesbot.model.StockQuotes;
-import com.charlesbot.yahoo.YahooFinanceClient;
 import com.google.common.base.Splitter;
 
 @RestController
 public class SlackRestController {
 
 	private static final Logger log = LoggerFactory.getLogger(SlackRestController.class);
-	@Inject
-	private YahooFinanceClient yahooFinanceClient;
+	
 	@Inject
 	private GoogleFinanceClient googleFinanceClient;
 	@Inject
@@ -67,9 +64,6 @@ public class SlackRestController {
 			case "!testq":
 				getStockQuotes2(symbols, channel);
 				break;
-			case "!chart":
-				slackIncomingMessage = chart(symbols);
-				break;
 			case "!stats":
 				slackIncomingMessage = getStockStats(symbols);
 				break;
@@ -78,6 +72,16 @@ public class SlackRestController {
 		return slackIncomingMessage;
 	}
 
+	@RequestMapping(value = "/chart", method = { RequestMethod.POST }, consumes = { "text/plain", "application/*" }, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	SlackIncomingMessage chart(@RequestBody MultiValueMap<String, String> slackOutgoingMessage)	throws UnsupportedEncodingException {
+		log.debug("Chart request with outgoing slack message={}", slackOutgoingMessage);
+		
+		String text = slackOutgoingMessage.get("text").get(0);
+		ChartMessage chartMessage = conversionService.convert(text, ChartMessage.class);
+		return chartMessage;
+	}
+	
 	private SlackIncomingMessage getStockQuotes(List<String> symbols) {
 		Optional<StockQuotes> stockQuotes = googleFinanceClient.getStockQuotes(symbols);
 		log.debug("Returned stock quote {}", stockQuotes);
@@ -86,7 +90,7 @@ public class SlackRestController {
 			message = conversionService.convert(stockQuotes.get(), QuoteMessage.class);
 		} else {
 			message = new QuoteMessage();
-			message.setText("An error occurred. Check your ticker symbol input.");
+			message.setText("An error occurred. Make sure the ticker symbol is valid for Google Finance.");
 		}
 		return message;
 	}
@@ -122,7 +126,7 @@ public class SlackRestController {
 			message = conversionService.convert(stockQuotes.get(), StatsMessage.class);
 		} else {
 			message = new QuoteMessage();
-			message.setText("An error occurred. Check your ticker symbol input.");
+			message.setText("An error occurred. Make sure the ticker symbol is valid for Google Finance");
 		}
 		return message;
 	}
@@ -135,14 +139,5 @@ public class SlackRestController {
 			tokens.remove(0);
 		}
 		return tokens;
-	}
-
-	private SlackIncomingMessage chart(List<String> symbols) {
-		SlackIncomingMessage slackIncomingMessage = new ChartMessage();
-		if (!symbols.isEmpty()) {
-			// only build the URL for the first symbol given
-			slackIncomingMessage.setText(MessageFormat.format("<http://chart.finance.yahoo.com/t?s={0}&lang=en-US&region=US&width=300&height=180&cb={1,number,#}>", symbols.get(0), System.currentTimeMillis()));
-		}
-		return slackIncomingMessage;
 	}
 }
