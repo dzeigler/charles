@@ -69,7 +69,7 @@ public class StringToChartMessage implements Converter<String, ChartMessage> {
 		try {
 			CommandLine command = parser.parse(options, text.split("\\s+"));
 			List<String> argList = command.getArgList();
-			if (argList.size() <= 1 || command.hasOption('?')) {
+			if (argList.size() != 2 || command.hasOption('?')) {
 				String helpMessage = generateHelpMessage();
 				chartMessage.setText("```"+helpMessage+"```");
 			} else {
