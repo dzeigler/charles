@@ -43,7 +43,7 @@ public class StringToChartMessage implements Converter<String, ChartMessage> {
 					.longOpt("time")
 					.hasArg(true)
 					.argName("TIME_SPAN")
-					.desc("sets the time span for the chart in days (d), week (w), months (m), years (y), or maximum years (my). Default is 1y. TIME_SPAN = digits(d|w|m|y) | my")
+					.desc("sets the time span for the chart in days (d), months (m), years (y), or maximum years (my). Default is 1y. TIME_SPAN = digits(d|m|y) | my")
 					.type(String.class)
 					.valueSeparator()
 					.build()
