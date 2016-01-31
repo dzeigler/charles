@@ -3,7 +3,9 @@ package com.charlesbot.slack;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.List;
+import java.util.StringJoiner;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -13,6 +15,8 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.springframework.core.convert.converter.Converter;
+
+import com.google.common.base.Joiner;
 
 public class StringToChartMessage implements Converter<String, ChartMessage> {
 
@@ -43,7 +47,7 @@ public class StringToChartMessage implements Converter<String, ChartMessage> {
 					.longOpt("time")
 					.hasArg(true)
 					.argName("TIME_SPAN")
-					.desc("sets the time span for the chart in days (d), months (m), years (y), or maximum years (my). Default is 1y. TIME_SPAN = digits(d|m|y) | my")
+					.desc("sets the time span for the chart in days (1d, 5d), months (1m, 3m, 6m), or years (1y, 2y, 5y, or my (maximum years)). Default is 1y. TIME_SPAN = (1d|5d|1m|3m|6m|1y|2y|5y|my)")
 					.type(String.class)
 					.valueSeparator()
 					.build()
@@ -54,8 +58,9 @@ public class StringToChartMessage implements Converter<String, ChartMessage> {
 					.required(false)
 					.longOpt("compare")
 					.hasArgs()
+					.numberOfArgs(Option.UNLIMITED_VALUES)
 					.argName("SYMBOLS")
-					.desc("compares the base symbol of this chart with this comma delimited list of symbols of different stocks or indices. SYMBOLS = SYMBOL[,SYMBOL]...")
+					.desc("compares the base symbol of this chart with this comma or space delimited list of up to nine additional symbols. SYMBOLS = SYMBOL[(, )+SYMBOL]]...")
 					.type(String.class)
 					.valueSeparator()
 					.build()
@@ -79,7 +84,10 @@ public class StringToChartMessage implements Converter<String, ChartMessage> {
 					timeSpan = command.getOptionValue('t', DEFAULT_TIME_SPAN);
 				}
 				if (command.hasOption('c')) {
-					compare = command.getOptionValue('c');
+					String[] compareValues = command.getOptionValues('c');
+					Arrays.asList(compareValues)
+						.replaceAll(x -> x.replaceAll("[\\s,;]", ""));
+					compare = Joiner.on(',').skipNulls().join(compareValues);
 				}
 				String symbol = command.getArgList().get(1);
 				
