@@ -98,11 +98,10 @@ public class StringToPortfolioQuoteMessage implements Converter<String, Portfoli
 		try {
 			CommandLine command = parser.parse(options, text.split("\\s+"));
 			List<String> argList = command.getArgList();
-			if (argList.size() < 2 || command.hasOption('?')) {
+			if (argList.size() < 1 || command.hasOption('?')) {
 				String helpMessage = generateHelpMessage();
 				message.setText("```"+helpMessage+"```");
 			} else {
-				command.getArgList().remove(0);
 				Map<String, Position> positions = getPositions(command.getArgList());
 				
 				// get stock quotes for each key

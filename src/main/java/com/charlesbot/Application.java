@@ -3,6 +3,8 @@ package com.charlesbot;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.HttpMessageConverters;
@@ -25,6 +27,8 @@ import com.charlesbot.slack.StockQuotesToQuoteMessage2;
 import com.charlesbot.slack.StockQuotesToStatsMessage;
 import com.charlesbot.slack.StringToChartMessage;
 import com.charlesbot.slack.StringToPortfolioQuoteMessage;
+import com.charlesbot.slack.StringsToQuoteMessage;
+import com.charlesbot.slack.StringsToStatsMessage;
 import com.charlesbot.yahoo.YahooStockQuoteConverter;
 
 @Configuration
@@ -32,6 +36,8 @@ import com.charlesbot.yahoo.YahooStockQuoteConverter;
 @ComponentScan
 public class Application extends WebMvcConfigurerAdapter {
 
+	private static final Logger logger = LoggerFactory.getLogger(Application.class);
+	
 	@Bean
 	public HttpMessageConverters customConverters() {
 		HttpMessageConverter<?> yahooStockQuoteConverter = new YahooStockQuoteConverter();
@@ -61,6 +67,8 @@ public class Application extends WebMvcConfigurerAdapter {
 	public ConversionServiceFactoryBean conversionService(GoogleFinanceClient googleFinanceClient) {
 		ConversionServiceFactoryBean conversionServiceFactoryBean = new ConversionServiceFactoryBean();
 		Set<Converter<?, ?>> converters = new HashSet<>();
+		converters.add(new StringsToQuoteMessage(googleFinanceClient));
+		converters.add(new StringsToStatsMessage(googleFinanceClient));
 		converters.add(new StockQuotesToQuoteMessage());
 		converters.add(new StockQuotesToQuoteMessage2());
 		converters.add(new StockQuotesToStatsMessage());
