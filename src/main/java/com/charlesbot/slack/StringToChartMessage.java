@@ -5,7 +5,8 @@ import java.io.StringWriter;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
-import java.util.StringJoiner;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -14,9 +15,8 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.convert.converter.Converter;
-
-import com.google.common.base.Joiner;
 
 public class StringToChartMessage implements Converter<String, ChartMessage> {
 
@@ -84,10 +84,12 @@ public class StringToChartMessage implements Converter<String, ChartMessage> {
 					timeSpan = command.getOptionValue('t', DEFAULT_TIME_SPAN);
 				}
 				if (command.hasOption('c')) {
-					String[] compareValues = command.getOptionValues('c');
-					Arrays.asList(compareValues)
-						.replaceAll(x -> x.replaceAll("[\\s,;]", ""));
-					compare = Joiner.on(',').skipNulls().join(compareValues);
+					List<String> compareValues = Arrays.asList(command.getOptionValues('c'));
+					compare = compareValues.stream()
+							.map(x -> x.split("[,\\s]"))
+							.flatMap(Arrays::stream)
+							.filter(StringUtils::isNotBlank)	
+							.collect(Collectors.joining(","));
 				}
 				String symbol = command.getArgList().get(1);
 				
