@@ -259,6 +259,25 @@ public class StockQuote {
 	public void setYield(String yield) {
 		this.yield = yield;
 	}
+	
+	public Double getTotalChangeInPercent() {
+		double changeInPercent = 0d;
+		try { 
+			changeInPercent = new Double(getChangeInPercent());
+		} catch (Exception nfe) {
+			// ignore
+		}
+		
+		double extendedHoursChangeInPercent = 0d;
+		try { 
+			extendedHoursChangeInPercent = new Double(getExtendedHoursChangeInPercent());
+		} catch (Exception nfe) {
+			// ignore
+		}
+		
+		double totalChangeInPercent = changeInPercent + extendedHoursChangeInPercent;
+		return totalChangeInPercent;
+	}
 
 	@Override
 	public String toString() {
