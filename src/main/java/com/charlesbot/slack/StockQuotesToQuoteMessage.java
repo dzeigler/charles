@@ -8,9 +8,30 @@ import org.springframework.util.StringUtils;
 import com.charlesbot.model.StockQuote;
 import com.charlesbot.model.StockQuotePercentageComparator;
 import com.charlesbot.model.StockQuotes;
+import com.google.common.collect.Range;
+import com.google.common.collect.RangeMap;
+import com.google.common.collect.TreeRangeMap;
 
 public class StockQuotesToQuoteMessage implements Converter<StockQuotes, QuoteMessage> {
 
+	RangeMap<Double, String> percentRanges;
+	
+	public StockQuotesToQuoteMessage() {
+		// initialize the percent ranges
+		percentRanges = TreeRangeMap.create();
+		percentRanges.put(Range.atLeast(10d), "green5");       // [10, +∞)
+		percentRanges.put(Range.closedOpen(6d,10d), "green4"); // [6, 10)
+		percentRanges.put(Range.closedOpen(3d,6d), "green3");  // [3, 6)
+		percentRanges.put(Range.closedOpen(1d,3d), "green2");  // [1, 3)
+		percentRanges.put(Range.open(0d,1d), "green1");        // (0, 1)
+		percentRanges.put(Range.closed(0d,0d), "black");       // [0, 0]
+		percentRanges.put(Range.open(-1d,0d), "red1");         // (-1, 0)
+		percentRanges.put(Range.openClosed(-3d,-1d), "red2");  // (-3, -1]
+		percentRanges.put(Range.openClosed(-6d,-3d), "red3");  // (-6, -3]
+		percentRanges.put(Range.openClosed(-10d,-6d), "red4"); // (-10, -6]
+		percentRanges.put(Range.atMost(-10d), "red5");         // (-∞, -10]
+	}
+	
 	@Override
 	public QuoteMessage convert(StockQuotes stockQuotes) {
 		QuoteMessage message = new QuoteMessage();
@@ -24,8 +45,8 @@ public class StockQuotesToQuoteMessage implements Converter<StockQuotes, QuoteMe
 		stockQuotes.get().sort(new StockQuotePercentageComparator());
 		
 		for (StockQuote quote : stockQuotes.get()) {
-			String colorEmoji = determineColor(quote);
-			sb.append(MessageFormat.format(":{5}: {0} ({4}): {1} {2} {3}%", quote.getSymbol(), quote.getPrice(), quote.getChange(), quote.getChangeInPercent(), quote.getName(), colorEmoji));
+			String colorEmoji = determineRangeString(quote);
+			sb.append(MessageFormat.format(":_charles_{5}: {0} ({4}): {1} {2} {3}%", quote.getSymbol(), quote.getPrice(), quote.getChange(), quote.getChangeInPercent(), quote.getName(), colorEmoji));
 			if (!StringUtils.isEmpty(quote.getExtendedHoursPrice())) {
 				sb.append(MessageFormat.format(" extended hours: {0} {1} {2}%", quote.getExtendedHoursPrice(), quote.getExtendedHoursChange(), quote.getExtendedHoursChangeInPercent()));
 			}
@@ -39,37 +60,13 @@ public class StockQuotesToQuoteMessage implements Converter<StockQuotes, QuoteMe
 		return message;
 	}
 	
-	private String determineColor(StockQuote quote) {
+	String determineRangeString(StockQuote quote) {
 		
 		double totalChangeInPercent = quote.getTotalChangeInPercent();
 		
-		String color = "charles_eq0";
-		if (totalChangeInPercent <= -10) {
-			color = "charles_lte-10";
-		} else if (totalChangeInPercent <= -6) {
-			color = "charles_lte-6";
-		} else if (totalChangeInPercent <= -3) {
-			color = "charles_lte-3";
-		} else if (totalChangeInPercent <= -1) {
-			color = "charles_lte-1";
-		} else if (totalChangeInPercent < 0) {
-			color = "charles_lt0";
-		} else if (totalChangeInPercent == 0) {
-			color = "charles_eq0";
-		} else if (totalChangeInPercent <= 1) {
-			color = "charles_lte1";
-		} else if (totalChangeInPercent <= 3) {
-			color = "charles_lte3";
-		} else if (totalChangeInPercent <= 6) {
-			color = "charles_lte6";
-		} else if (totalChangeInPercent < 10) {
-			color = "charles_lt10";
-		} else {
-			color = "charles_gte10";
-		}
+		String rangeString = percentRanges.get(totalChangeInPercent);
 		
-		
-		return color;
+		return rangeString;
 	}
 
 }
