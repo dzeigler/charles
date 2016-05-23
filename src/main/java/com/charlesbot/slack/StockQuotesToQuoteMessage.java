@@ -65,7 +65,7 @@ public class StockQuotesToQuoteMessage implements Converter<StockQuotes, QuoteMe
 		} else if (totalChangeInPercent < 10) {
 			color = "charles_lt10";
 		} else {
-			color = "charkes_gte10";
+			color = "charles_gte10";
 		}
 		
 		
