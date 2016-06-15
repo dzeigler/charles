@@ -18,11 +18,13 @@ import org.springframework.web.client.AsyncRestTemplate;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import com.charlesbot.google.GoogleFinanceClient;
 import com.charlesbot.google.GoogleStockQuoteConverter;
 import com.charlesbot.slack.StockQuotesToQuoteMessage;
 import com.charlesbot.slack.StockQuotesToQuoteMessage2;
 import com.charlesbot.slack.StockQuotesToStatsMessage;
 import com.charlesbot.slack.StringToChartMessage;
+import com.charlesbot.slack.StringToPortfolioQuoteMessage;
 import com.charlesbot.yahoo.YahooStockQuoteConverter;
 
 @Configuration
@@ -51,13 +53,19 @@ public class Application extends WebMvcConfigurerAdapter {
 	}
 	
 	@Bean
-	public ConversionServiceFactoryBean conversionService() {
+	public GoogleFinanceClient googleFinanceClient(RestTemplate restTemplate, AsyncRestTemplate asyncRestTemplate) {
+		return new GoogleFinanceClient(restTemplate, asyncRestTemplate);
+	}
+
+	@Bean
+	public ConversionServiceFactoryBean conversionService(GoogleFinanceClient googleFinanceClient) {
 		ConversionServiceFactoryBean conversionServiceFactoryBean = new ConversionServiceFactoryBean();
 		Set<Converter<?, ?>> converters = new HashSet<>();
 		converters.add(new StockQuotesToQuoteMessage());
 		converters.add(new StockQuotesToQuoteMessage2());
 		converters.add(new StockQuotesToStatsMessage());
 		converters.add(new StringToChartMessage());
+		converters.add(new StringToPortfolioQuoteMessage(googleFinanceClient));
 		conversionServiceFactoryBean.setConverters(converters);
 		return conversionServiceFactoryBean;
 	}

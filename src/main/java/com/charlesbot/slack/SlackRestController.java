@@ -74,12 +74,22 @@ public class SlackRestController {
 
 	@RequestMapping(value = "/chart", method = { RequestMethod.POST }, consumes = { "text/plain", "application/*" }, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	SlackIncomingMessage chart(@RequestBody MultiValueMap<String, String> slackOutgoingMessage)	throws UnsupportedEncodingException {
+	SlackIncomingMessage chart(@RequestBody MultiValueMap<String, String> slackOutgoingMessage) throws UnsupportedEncodingException {
 		log.debug("Chart request with outgoing slack message={}", slackOutgoingMessage);
 		
 		String text = slackOutgoingMessage.get("text").get(0);
 		ChartMessage chartMessage = conversionService.convert(text, ChartMessage.class);
 		return chartMessage;
+	}
+	
+	@RequestMapping(value = "/pfquote", method = { RequestMethod.POST }, consumes = { "text/plain", "application/*" }, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	SlackIncomingMessage portfolioQuote(@RequestBody MultiValueMap<String, String> slackOutgoingMessage) throws UnsupportedEncodingException {
+		log.debug("Portfolio quote request with outgoing slack message={}", slackOutgoingMessage);
+		
+		String text = slackOutgoingMessage.get("text").get(0);
+		PortfolioQuoteMessage message = conversionService.convert(text, PortfolioQuoteMessage.class);
+		return message;
 	}
 	
 	private SlackIncomingMessage getStockQuotes(List<String> symbols) {

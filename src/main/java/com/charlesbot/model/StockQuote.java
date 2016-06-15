@@ -1,5 +1,7 @@
 package com.charlesbot.model;
 
+import java.math.BigDecimal;
+
 import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -63,6 +65,15 @@ public class StockQuote {
 		return change;
 	}
 	
+	public BigDecimal getChangeAsBigDecimal() {
+		try {
+			return new BigDecimal(change);
+		} catch (NumberFormatException nfe) {
+			
+		}
+		return null;
+	}
+	
 	public String getChangeInPercent() {
 		return changeInPercent;
 	}
@@ -91,6 +102,15 @@ public class StockQuote {
 
 	public String getPrice() {
 		return price;
+	}
+	
+	public BigDecimal getPriceAsBigDecimal() {
+		try {
+			return new BigDecimal(price);
+		} catch (NumberFormatException nfe) {
+			
+		}
+		return null;
 	}
 
 	public String getCurrentPrice() {

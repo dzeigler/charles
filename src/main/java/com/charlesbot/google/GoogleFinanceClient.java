@@ -20,15 +20,17 @@ import org.springframework.web.client.RestTemplate;
 import com.charlesbot.model.StockQuotes;
 import com.google.common.base.Joiner;
 
-@Named
 public class GoogleFinanceClient {
 
 	private static final Logger log = LoggerFactory.getLogger(GoogleFinanceClient.class);
 	private static final String QUOTE_URL = "http://www.google.com/finance/info?infotype=infoquoteall&q={symbols}";
-	@Inject
 	private RestTemplate restTemplate;
-	@Inject
 	private AsyncRestTemplate asyncRestTemplate;
+
+	public GoogleFinanceClient(RestTemplate restTemplate, AsyncRestTemplate asyncRestTemplate) {
+		this.restTemplate = restTemplate;
+		this.asyncRestTemplate = asyncRestTemplate;
+	}
 
 	public Optional<StockQuotes> getStockQuotes(List<String> symbols) {
 		log.debug("Building Request from {}", symbols);
