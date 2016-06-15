@@ -124,7 +124,6 @@ public class StringToPortfolioQuoteMessage implements Converter<String, Portfoli
 				StringWriter stringWriter = new StringWriter();
 				DataExporter exporter = new TextTableExporter(stringWriter);
 				exporter.addColumns(
-						new StringColumn(" ",1, AlignType.TOP_LEFT),
 						new StringColumn("Symbol",8, AlignType.TOP_LEFT),
 						new StringColumn("Name",20, AlignType.TOP_LEFT),
 						new StringColumn("Price",10, AlignType.TOP_RIGHT),
@@ -143,11 +142,10 @@ public class StringToPortfolioQuoteMessage implements Converter<String, Portfoli
 					BigDecimal costBasis = position.quantity.multiply(position.price);
 					BigDecimal marketValue = position.quantity.multiply(position.getQuote().getPriceAsBigDecimal());
 					BigDecimal gain = marketValue.subtract(costBasis);
-					BigDecimal gainPercent = gain.divide(costBasis, 4, RoundingMode.HALF_UP).multiply(new BigDecimal(100));
+					BigDecimal gainPercent = gain.divide(costBasis, 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100));
 					BigDecimal dayGain = position.quantity.multiply(position.getQuote().getChangeAsBigDecimal());
 					
 					exporter.addRow(
-							determineRangeString(position.getQuote()),
 							position.symbol, 
 							position.getQuote().getName(), 
 							position.getQuote().getPrice(),
