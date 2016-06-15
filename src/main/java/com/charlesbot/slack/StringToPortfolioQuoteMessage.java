@@ -150,12 +150,12 @@ public class StringToPortfolioQuoteMessage implements Converter<String, Portfoli
 							position.getQuote().getName(), 
 							position.getQuote().getPrice(),
 							position.getQuote().getChange(),
-							position.getQuote().getChangeInPercent(),
+							position.getQuote().getChangeInPercent()+"%",
 							position.quantity,
 							costBasis,
 							marketValue,
 							gain,
-							gainPercent,
+							gainPercent+"%",
 							dayGain
 					);
 					
