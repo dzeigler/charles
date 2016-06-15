@@ -143,7 +143,7 @@ public class StringToPortfolioQuoteMessage implements Converter<String, Portfoli
 					BigDecimal costBasis = position.quantity.multiply(position.price);
 					BigDecimal marketValue = position.quantity.multiply(position.getQuote().getPriceAsBigDecimal());
 					BigDecimal gain = marketValue.subtract(costBasis);
-					BigDecimal gainPercent = gain.divide(costBasis, 2, RoundingMode.HALF_UP);
+					BigDecimal gainPercent = gain.divide(costBasis, 4, RoundingMode.HALF_UP).multiply(new BigDecimal(100));
 					BigDecimal dayGain = position.quantity.multiply(position.getQuote().getChangeAsBigDecimal());
 					
 					exporter.addRow(
