@@ -23,6 +23,7 @@ import com.charlesbot.slack.StatsMessage;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.ullink.slack.simpleslackapi.SlackChannel;
+import com.ullink.slack.simpleslackapi.SlackPersona;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.ullink.slack.simpleslackapi.listeners.SlackMessagePostedListener;
@@ -37,7 +38,7 @@ public class CharlesCommandListener implements SlackMessagePostedListener {
 	
 	
 	CharlesCommandListener() {
-		keywords = Lists.newArrayList("!q", "!stats", "!chart", "!pf", "@charles");
+		keywords = Lists.newArrayList("!q", "!stats", "!chart", "!pf");
 	}
 	
 	public CharlesCommandListener(ConversionService conversionService, WatchListRepository repo) {
@@ -49,8 +50,11 @@ public class CharlesCommandListener implements SlackMessagePostedListener {
 	@Override
 	public void onEvent(SlackMessagePosted event, SlackSession session) {
 		String messageContent = event.getMessageContent();
-		
-		if (isCharlesCommand(messageContent) && !event.getSender().isBot()) {
+		SlackPersona sessionPersona = session.sessionPersona();
+		String userId = sessionPersona.getId();
+		String userIdMention = "<@"+userId+">";
+		String userNameMention = "@"+sessionPersona.getUserName();
+		if (isCharlesCommand(messageContent, userIdMention) && !event.getSender().getId().equals(userId)) {
 			SlackChannel channel = event.getChannel();
 			List<String> tokens = new ArrayList<>(Splitter.on(" ").omitEmptyStrings().splitToList(messageContent));
 			String reply = null;
@@ -61,7 +65,7 @@ public class CharlesCommandListener implements SlackMessagePostedListener {
 					reply = conversionService.convert(tokens.subList(1, tokens.size()), StatsMessage.class).getText();
 				} else if (tokens.get(0).equals("!chart")) {
 					reply = conversionService.convert(messageContent, ChartMessage.class).getText();
-				} else if (tokens.get(0).equals("@charles") && tokens.get(1).equals("add")) {
+				} else if (tokens.get(0).equals(userIdMention) && tokens.get(1).equals("add")) {
 					WatchList watchList = repo.findByUserIdAndName(event.getSender().getId(), tokens.get(2));
 					if (watchList == null) {
 						watchList = new WatchList();
@@ -107,7 +111,7 @@ public class CharlesCommandListener implements SlackMessagePostedListener {
 						reply = "Added " + t.symbol + " to list " + watchList.name;
 					}
 					
-				} else if (tokens.get(0).equals("@charles") && (tokens.get(1).equals("rm") || tokens.get(1).equals("del"))) {
+				} else if (tokens.get(0).equals(userIdMention) && (tokens.get(1).equals("rm") || tokens.get(1).equals("del"))) {
 					WatchList watchList = repo.findByUserIdAndName(event.getSender().getId(), tokens.get(2));
 					if (watchList == null) {
 						reply = "I can't find a list named " + tokens.get(2) + " for you.";
@@ -142,7 +146,7 @@ public class CharlesCommandListener implements SlackMessagePostedListener {
 							}
 						}
 					}
-				} else if (tokens.get(0).equals("@charles") && tokens.get(1).equals("ls")) {
+				} else if (tokens.get(0).equals(userIdMention) && tokens.get(1).equals("ls")) {
 					if (tokens.size() == 2) {
 						List<WatchList> watchLists = repo.findByUserId(event.getSender().getId());
 						reply = watchLists.stream()
@@ -160,7 +164,7 @@ public class CharlesCommandListener implements SlackMessagePostedListener {
 						        .collect(Collectors.joining("\n")); 
 						}
 					}
-				} else if (tokens.get(0).equals("@charles") && tokens.get(1).equals("q")) {
+				} else if (tokens.get(0).equals(userIdMention) && tokens.get(1).equals("q")) {
 					WatchList watchList = repo.findByUserIdAndName(event.getSender().getId(), tokens.get(2));
 					if (watchList == null) {
 						reply = "I can't find a list named " + tokens.get(2) + " for you.";
@@ -179,7 +183,7 @@ public class CharlesCommandListener implements SlackMessagePostedListener {
 						}
 						 
 					}
-				} else if (tokens.get(0).equals("@charles") && tokens.get(1).equals("stats")) {
+				} else if (tokens.get(0).equals(userIdMention) && tokens.get(1).equals("stats")) {
 					WatchList watchList = repo.findByUserIdAndName(event.getSender().getId(), tokens.get(2));
 					if (watchList == null) {
 						reply = "I can't find a list named " + tokens.get(2) + " for you.";
@@ -198,11 +202,11 @@ public class CharlesCommandListener implements SlackMessagePostedListener {
 						 
 					}
 				} else {
-					reply = "@charles add listName symbol[,quantity,price,date]\n";
-					reply += "@charles rm listName [-f|symbol]\n";
-					reply += "@charles ls [listName]\n";
-					reply += "@charles q listName\n";
-					reply += "@charles stats listName\n";
+					reply = userNameMention + " add listName symbol[,quantity,price,date]\n";
+					reply += userNameMention + " rm listName [-f|symbol]\n";
+					reply += userNameMention + " ls [listName]\n";
+					reply += userNameMention + " q listName\n";
+					reply += userNameMention + " stats listName\n";
 				}
 				
 			}
@@ -214,12 +218,16 @@ public class CharlesCommandListener implements SlackMessagePostedListener {
 
 	}
 	
-	private boolean isCharlesCommand(String command) {
+	private boolean isCharlesCommand(String command, String userIdMention) {
 		
 		for (String word : keywords) {
 			if (command.startsWith(word)) {
 				return true;
 			}
+		}
+		
+		if (command.startsWith(userIdMention)) {
+			return true;
 		}
 		return false;
 	}
