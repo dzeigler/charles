@@ -73,42 +73,48 @@ public class CharlesCommandListener implements SlackMessagePostedListener {
 						watchList.transactions = new ArrayList<>();
 						watchList.userId = event.getSender().getId();
 					}
-					Transaction t = new Transaction();
-					ArrayList<String> transactionTokens = new ArrayList<>(Splitter.on(",").omitEmptyStrings().splitToList(tokens.get(3)));
-					t.symbol = transactionTokens.get(0);
-					boolean foundError = false;
-					if (transactionTokens.size() == 4) {
-						String quantityString = transactionTokens.get(1);
-						try {
-							BigDecimal quantity = new BigDecimal(quantityString);
-							t.quantity = quantity;
-						} catch (NumberFormatException e) {
-							session.sendMessage(channel, quantityString + " isn't a number so I can't used it as a quantity");
-							foundError = true;
+					List<String> args = tokens.subList(3, tokens.size());
+					for (String arg : args) {
+						Transaction t = new Transaction();
+						ArrayList<String> transactionTokens = new ArrayList<>(Splitter.on(",").omitEmptyStrings().splitToList(arg));
+						t.symbol = transactionTokens.get(0);
+						boolean foundError = false;
+						if (transactionTokens.size() == 4) {
+							String quantityString = transactionTokens.get(1);
+							try {
+								BigDecimal quantity = new BigDecimal(quantityString);
+								t.quantity = quantity;
+							} catch (NumberFormatException e) {
+								session.sendMessage(channel, quantityString + " isn't a number so I can't used it as a quantity for " + t.symbol);
+								foundError = true;
+							}
+							
+							String priceString = transactionTokens.get(2);
+							try {
+								BigDecimal price = new BigDecimal(priceString);
+								t.price = price;
+							} catch (NumberFormatException e) {
+								session.sendMessage(channel, priceString + " isn't a number so I can't use it as a price for " + t.symbol);
+								foundError = true;
+							}
+							
+							String dateString = transactionTokens.get(3);
+							try {
+								LocalDate date = LocalDate.parse(dateString, formatter);
+								t.date = date;
+							} catch (DateTimeParseException e) {
+								session.sendMessage(channel, "The date should be in the format yyyy-MM-dd for " + t.symbol);
+								foundError = true;
+							}
 						}
-						
-						String priceString = transactionTokens.get(2);
-						try {
-							BigDecimal price = new BigDecimal(priceString);
-							t.price = price;
-						} catch (NumberFormatException e) {
-							session.sendMessage(channel, priceString + " isn't a number so I can't use it as a price");
-							foundError = true;
+						if (foundError == false) {
+							watchList.transactions.add(t);
+							repo.save(watchList);
+							if (reply == null) {
+								reply = "";
+							}
+							reply += "Added " + t.symbol + " to list " + watchList.name + "\n";
 						}
-						
-						String dateString = transactionTokens.get(3);
-						try {
-							LocalDate date = LocalDate.parse(dateString, formatter);
-							t.date = date;
-						} catch (DateTimeParseException e) {
-							session.sendMessage(channel, "The date should be in the format yyyy-MM-dd");
-							foundError = true;
-						}
-					}
-					if (foundError == false) {
-						watchList.transactions.add(t);
-						repo.save(watchList);
-						reply = "Added " + t.symbol + " to list " + watchList.name;
 					}
 					
 				} else if (tokens.get(0).equals(userIdMention) && (tokens.get(1).equals("rm") || tokens.get(1).equals("del"))) {
@@ -202,7 +208,7 @@ public class CharlesCommandListener implements SlackMessagePostedListener {
 						 
 					}
 				} else {
-					reply = userNameMention + " add listName symbol[,quantity,price,date]\n";
+					reply = userNameMention + " add listName symbol[,quantity,price,date]...\n";
 					reply += userNameMention + " rm listName [-f|symbol]\n";
 					reply += userNameMention + " ls [listName]\n";
 					reply += userNameMention + " q listName\n";
