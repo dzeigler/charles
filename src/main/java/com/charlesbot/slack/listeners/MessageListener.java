@@ -1,26 +1,15 @@
 package com.charlesbot.slack.listeners;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.ConversionService;
 
-import com.charlesbot.model.Transaction;
-import com.charlesbot.model.WatchList;
+import com.charlesbot.cli.Command;
+import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.model.WatchListRepository;
-import com.charlesbot.slack.ChartMessage;
-import com.charlesbot.slack.PortfolioQuoteMessage;
-import com.charlesbot.slack.QuoteMessage;
-import com.charlesbot.slack.StatsMessage;
-import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.ullink.slack.simpleslackapi.SlackChannel;
 import com.ullink.slack.simpleslackapi.SlackPersona;
@@ -28,37 +17,56 @@ import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.ullink.slack.simpleslackapi.listeners.SlackMessagePostedListener;
 
-public class CharlesCommandListener implements SlackMessagePostedListener {
+public class MessageListener implements SlackMessagePostedListener {
 
-	private static final Logger logger = LoggerFactory.getLogger(CharlesCommandListener.class);
+	private static final Logger logger = LoggerFactory.getLogger(MessageListener.class);
 	private List<String> keywords;
 	private ConversionService conversionService;
 	private WatchListRepository repo;
-	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	private CommandLineProcessor commandLineProcessor;
 	
-	
-	CharlesCommandListener() {
+	MessageListener() {
 		keywords = Lists.newArrayList("!q", "!stats", "!chart", "!pf");
 	}
 	
-	public CharlesCommandListener(ConversionService conversionService, WatchListRepository repo) {
+	public MessageListener(ConversionService conversionService, WatchListRepository repo, CommandLineProcessor commandLineProcessor) {
 		this();
 		this.conversionService = conversionService;
-		this.repo = repo;
+		this.commandLineProcessor = commandLineProcessor;
 	}
 	
 	@Override
 	public void onEvent(SlackMessagePosted event, SlackSession session) {
-		String messageContent = event.getMessageContent();
-		SlackPersona sessionPersona = session.sessionPersona();
-		String userId = sessionPersona.getId();
-		String userIdMention = "<@"+userId+">";
-		String userNameMention = "@"+sessionPersona.getUserName();
-		if (isCharlesCommand(messageContent, userIdMention) && !event.getSender().getId().equals(userId)) {
-			SlackChannel channel = event.getChannel();
-			List<String> tokens = new ArrayList<>(Splitter.on(" ").omitEmptyStrings().splitToList(messageContent));
+		try {
+			String messageContent = event.getMessageContent();
+			SlackPersona sessionPersona = session.sessionPersona();
+			String userId = sessionPersona.getId();
+			String userIdMention = "<@"+userId+">";
+			String userNameMention = "@"+sessionPersona.getUserName();
+			if (isCharlesCommand(messageContent, userIdMention) && !event.getSender().getId().equals(userId)) {
+				SlackChannel channel = event.getChannel();
+				
+				String sanitizedCommandString = event.getMessageContent().replace(userIdMention, userNameMention);
+				
+				Command command = commandLineProcessor.process(sanitizedCommandString, event.getSender().getId(), sessionPersona.getUserName());
+				String reply = conversionService.convert(command, String.class);
+				
+				if (StringUtils.isNotBlank(reply)) {
+					session.sendMessage(channel, reply);
+				}
+			}
+		} catch (Exception e) {
+			logger.error("Exception while processing the string {}", e, event.getMessageContent());
+			throw e;
+		}
+	}
+	/*
+	private void bleh() {
+			
+			List<String> tokens = new ArrayList<>(Splitter.onPattern("\\s+").omitEmptyStrings().splitToList(messageContent));
 			String reply = null;
 			if (tokens.size() > 1) {
+				CommandLineProcessor.
 				if (tokens.get(0).equals("!q")) {
 					reply = conversionService.convert(tokens.subList(1, tokens.size()), QuoteMessage.class).getText();
 				} else if (tokens.get(0).equals("!stats")) {
@@ -223,6 +231,8 @@ public class CharlesCommandListener implements SlackMessagePostedListener {
 		}		
 
 	}
+
+	*/
 	
 	private boolean isCharlesCommand(String command, String userIdMention) {
 		

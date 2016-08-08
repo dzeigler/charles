@@ -1,7 +1,5 @@
 package com.charlesbot.slack;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -14,8 +12,6 @@ public abstract class SlackIncomingMessage {
 	private String text;
 	@JsonInclude(Include.NON_NULL)
 	private String channel;
-	@JsonInclude(Include.NON_NULL)
-	private List<Attachment> attachments;
 
 	public String getText() {
 		return text;
@@ -33,12 +29,5 @@ public abstract class SlackIncomingMessage {
 		this.channel = channel;
 	}
 
-	public List<Attachment> getAttachments() {
-		return attachments;
-	}
-
-	public void setAttachments(List<Attachment> attachments) {
-		this.attachments = attachments;
-	}
 
 }

@@ -14,21 +14,27 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ConversionServiceFactoryBean;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.format.support.FormattingConversionService;
+import org.springframework.format.support.FormattingConversionServiceFactoryBean;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.client.AsyncRestTemplate;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.google.GoogleFinanceClient;
 import com.charlesbot.google.GoogleStockQuoteConverter;
-import com.charlesbot.slack.StockQuotesToQuoteMessage;
-import com.charlesbot.slack.StockQuotesToQuoteMessage2;
-import com.charlesbot.slack.StockQuotesToStatsMessage;
-import com.charlesbot.slack.StringToChartMessage;
+import com.charlesbot.model.WatchListRepository;
+import com.charlesbot.slack.AddToListCommandLineOptionsToString;
+import com.charlesbot.slack.ChartCommandLineOptionsToString;
+import com.charlesbot.slack.HelpCommandLineOptionsToString;
+import com.charlesbot.slack.ListCommandLineOptionsToString;
+import com.charlesbot.slack.ListQuoteCommandLineOptionsToString;
+import com.charlesbot.slack.QuoteCommandLineOptionsToString;
+import com.charlesbot.slack.RemoveFromListCommandLineOptionsToString;
+import com.charlesbot.slack.StatsCommandLineOptionsToString;
 import com.charlesbot.slack.StringToPortfolioQuoteMessage;
-import com.charlesbot.slack.StringsToQuoteMessage;
-import com.charlesbot.slack.StringsToStatsMessage;
 import com.charlesbot.yahoo.YahooStockQuoteConverter;
 
 @Configuration
@@ -37,7 +43,7 @@ import com.charlesbot.yahoo.YahooStockQuoteConverter;
 public class Application extends WebMvcConfigurerAdapter {
 
 	private static final Logger logger = LoggerFactory.getLogger(Application.class);
-	
+
 	@Bean
 	public HttpMessageConverters customConverters() {
 		HttpMessageConverter<?> yahooStockQuoteConverter = new YahooStockQuoteConverter();
@@ -57,25 +63,46 @@ public class Application extends WebMvcConfigurerAdapter {
 		AsyncRestTemplate asyncRestTemplate = new AsyncRestTemplate(factory, restTemplate());
 		return asyncRestTemplate;
 	}
+
+	@Bean
+	public ConversionServiceFactoryBean conversionService(GoogleFinanceClient googleFinanceClient, WatchListRepository watchListRepository, AddToListCommandLineOptionsToString addToListCommandLineOptionsToString, RemoveFromListCommandLineOptionsToString removeFromListCommandLineOptionsToString
+			, ListCommandLineOptionsToString listCommandLineOptionsToString
+			, ChartCommandLineOptionsToString chartCommandLineOptionsToString
+			, StatsCommandLineOptionsToString statsCommandLineOptionsToString
+			, QuoteCommandLineOptionsToString quoteCommandLineOptionsToString
+			, StringToPortfolioQuoteMessage stringToPortfolioQuoteMessage
+			, ListQuoteCommandLineOptionsToString listQuoteCommandLineOptionsToString
+			, HelpCommandLineOptionsToString helpCommandLineOptionsToString) {
+		ConversionServiceFactoryBean conversionServiceFactoryBean = new ConversionServiceFactoryBean();
+		Set<Converter<?, ?>> converters = new HashSet<>();
+		converters.add(quoteCommandLineOptionsToString);
+		converters.add(statsCommandLineOptionsToString);
+		converters.add(chartCommandLineOptionsToString);
+		converters.add(addToListCommandLineOptionsToString);
+		converters.add(removeFromListCommandLineOptionsToString);
+		converters.add(listCommandLineOptionsToString);
+		converters.add(listQuoteCommandLineOptionsToString);
+		converters.add(helpCommandLineOptionsToString);
+		converters.add(stringToPortfolioQuoteMessage);
+		conversionServiceFactoryBean.setConverters(converters);
+		return conversionServiceFactoryBean;
+	}
 	
+	@Bean
+    public FormattingConversionService conversionService() {
+        FormattingConversionService conversionService = new FormattingConversionServiceFactoryBean().getObject();
+        addFormatters(conversionService);
+        return conversionService;
+    }
+
 	@Bean
 	public GoogleFinanceClient googleFinanceClient(RestTemplate restTemplate, AsyncRestTemplate asyncRestTemplate) {
 		return new GoogleFinanceClient(restTemplate, asyncRestTemplate);
 	}
 
 	@Bean
-	public ConversionServiceFactoryBean conversionService(GoogleFinanceClient googleFinanceClient) {
-		ConversionServiceFactoryBean conversionServiceFactoryBean = new ConversionServiceFactoryBean();
-		Set<Converter<?, ?>> converters = new HashSet<>();
-		converters.add(new StringsToQuoteMessage(googleFinanceClient));
-		converters.add(new StringsToStatsMessage(googleFinanceClient));
-		converters.add(new StockQuotesToQuoteMessage());
-		converters.add(new StockQuotesToQuoteMessage2());
-		converters.add(new StockQuotesToStatsMessage());
-		converters.add(new StringToChartMessage());
-		converters.add(new StringToPortfolioQuoteMessage(googleFinanceClient));
-		conversionServiceFactoryBean.setConverters(converters);
-		return conversionServiceFactoryBean;
+	public CommandLineProcessor commandLineProcessor() {
+		return new CommandLineProcessor();
 	}
 
 	public static void main(String[] args) {

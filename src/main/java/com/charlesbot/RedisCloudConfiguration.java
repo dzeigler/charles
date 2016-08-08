@@ -6,7 +6,6 @@ import java.net.URISyntaxException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -15,7 +14,7 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 import redis.clients.jedis.JedisPoolConfig;
 
 @Configuration
-@EnableRedisRepositories
+@EnableRedisRepositories("com.charlesbot.model")
 public class RedisCloudConfiguration {
 
 	@Value("${REDISCLOUD_URL}")
@@ -38,7 +37,7 @@ public class RedisCloudConfiguration {
 		redis.setUsePool(true);
 		
 		redis.afterPropertiesSet();
-		RedisConnection connection = redis.getConnection();
+		redis.getConnection();
 
 		return redis;
 	}

@@ -11,8 +11,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.inject.Inject;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -28,15 +26,10 @@ import com.brsanthu.dataexporter.output.texttable.TextTableExporter;
 import com.charlesbot.google.GoogleFinanceClient;
 import com.charlesbot.model.StockQuote;
 import com.charlesbot.model.StockQuotes;
-import com.google.common.collect.Range;
-import com.google.common.collect.RangeMap;
-import com.google.common.collect.TreeRangeMap;
 
 public class StringToPortfolioQuoteMessage implements Converter<String, PortfolioQuoteMessage> {
 
 	private GoogleFinanceClient googleFinanceClient;
-	
-	RangeMap<Double, String> percentRanges;
 	
 	public class Position {
 		final String symbol;
@@ -71,19 +64,6 @@ public class StringToPortfolioQuoteMessage implements Converter<String, Portfoli
 		// configure options
 		configureCommandLineOptions();
 		
-		// initialize the percent ranges
-		percentRanges = TreeRangeMap.create();
-		percentRanges.put(Range.atLeast(10d), "🢁");       // [10, +∞)
-		percentRanges.put(Range.closedOpen(6d,10d), "🡱"); // [6, 10)
-		percentRanges.put(Range.closedOpen(3d,6d), "🡡");  // [3, 6)
-		percentRanges.put(Range.closedOpen(1d,3d), "🡑");  // [1, 3)
-		percentRanges.put(Range.open(0d,1d), "🠑");        // (0, 1)
-		percentRanges.put(Range.closed(0d,0d), "-");       // [0, 0]
-		percentRanges.put(Range.open(-1d,0d), "🠓");         // (-1, 0)
-		percentRanges.put(Range.openClosed(-3d,-1d), "🡓");  // (-3, -1]
-		percentRanges.put(Range.openClosed(-6d,-3d), "🡣");  // (-6, -3]
-		percentRanges.put(Range.openClosed(-10d,-6d), "🡳"); // (-10, -6]
-		percentRanges.put(Range.atMost(-10d), "🢃");         // (-∞, -10]
 	}
 
 	private void configureCommandLineOptions() {
@@ -204,12 +184,4 @@ public class StringToPortfolioQuoteMessage implements Converter<String, Portfoli
 		return string;
 	}
 
-	String determineRangeString(StockQuote quote) {
-		
-		double totalChangeInPercent = quote.getTotalChangeInPercent();
-		
-		String rangeString = percentRanges.get(totalChangeInPercent);
-		
-		return rangeString;
-	}
 }

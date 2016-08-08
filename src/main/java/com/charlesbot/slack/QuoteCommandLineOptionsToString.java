@@ -1,11 +1,14 @@
 package com.charlesbot.slack;
 
 import java.text.MessageFormat;
-import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import com.charlesbot.cli.CommandLineProcessor;
+import com.charlesbot.cli.QuoteCommandLineOptions;
 import com.charlesbot.google.GoogleFinanceClient;
 import com.charlesbot.model.StockQuote;
 import com.charlesbot.model.StockQuotePercentageComparator;
@@ -14,12 +17,14 @@ import com.google.common.collect.Range;
 import com.google.common.collect.RangeMap;
 import com.google.common.collect.TreeRangeMap;
 
-public class StringsToQuoteMessage implements Converter<List<String>, QuoteMessage> {
+@Component
+public class QuoteCommandLineOptionsToString implements Converter<QuoteCommandLineOptions, String> {
 
 	RangeMap<Double, String> percentRanges;
+	@Autowired
 	private GoogleFinanceClient googleFinanceClient;
 	
-	public StringsToQuoteMessage() {
+	public QuoteCommandLineOptionsToString() {
 		// initialize the percent ranges
 		percentRanges = TreeRangeMap.create();
 		percentRanges.put(Range.atLeast(10d), "green5");       // [10, +∞)
@@ -35,40 +40,40 @@ public class StringsToQuoteMessage implements Converter<List<String>, QuoteMessa
 		percentRanges.put(Range.atMost(-10d), "red5");         // (-∞, -10]
 	}
 	
-	public StringsToQuoteMessage(GoogleFinanceClient googleFinanceClient) {
-		this();
+	public QuoteCommandLineOptionsToString(GoogleFinanceClient googleFinanceClient) {
 		this.googleFinanceClient = googleFinanceClient;
-
 	}
 	
 	@Override
-	public QuoteMessage convert(List<String> symbols) {
-		StockQuotes stockQuotes = googleFinanceClient.getStockQuotes(symbols).get();
-		
-		QuoteMessage message = new QuoteMessage();
-		
-		StringBuilder sb = new StringBuilder();
-		if (stockQuotes.get().size() > 1) {
-			sb.append(">>>");
-		}
-		
-		// sort the quotes by the percentage change
-		stockQuotes.get().sort(new StockQuotePercentageComparator());
-		
-		for (StockQuote quote : stockQuotes.get()) {
-			String colorEmoji = determineRangeString(quote);
-			sb.append(MessageFormat.format(":_charles_{5}: {0} ({4}): {1} {2} {3}%", quote.getSymbol(), quote.getPrice(), quote.getChange(), quote.getChangeInPercent(), quote.getName(), colorEmoji));
-			if (!StringUtils.isEmpty(quote.getExtendedHoursPrice())) {
-				sb.append(MessageFormat.format(" extended hours: {0} {1} {2}%", quote.getExtendedHoursPrice(), quote.getExtendedHoursChange(), quote.getExtendedHoursChangeInPercent()));
-			}
-				
+	public String convert(QuoteCommandLineOptions options) {
+		StringBuilder output = new StringBuilder();
+		if (options.isHelp()) {
+			String helpMessage = CommandLineProcessor.generateHelpMessage(options);
+			output.append("```"+helpMessage+"```");
+		} else {
+			StockQuotes stockQuotes = googleFinanceClient.getStockQuotes(options.tickerSymbols).get();
+			
+			
 			if (stockQuotes.get().size() > 1) {
-				sb.append("\n");
+				output.append(">>>");
 			}
-		}
-		message.setText(sb.toString());
-		
-		return message;
+			
+			// sort the quotes by the percentage change
+			stockQuotes.get().sort(new StockQuotePercentageComparator());
+			
+			for (StockQuote quote : stockQuotes.get()) {
+				String colorEmoji = determineRangeString(quote);
+				output.append(MessageFormat.format(":_charles_{5}: {0} ({4}): {1} {2} {3}%", quote.getSymbol(), quote.getPrice(), quote.getChange(), quote.getChangeInPercent(), quote.getName(), colorEmoji));
+				if (!StringUtils.isEmpty(quote.getExtendedHoursPrice())) {
+					output.append(MessageFormat.format(" extended hours: {0} {1} {2}%", quote.getExtendedHoursPrice(), quote.getExtendedHoursChange(), quote.getExtendedHoursChangeInPercent()));
+				}
+					
+				if (stockQuotes.get().size() > 1) {
+					output.append("\n");
+				}
+			}
+		}		
+		return output.toString();
 	}
 	
 	String determineRangeString(StockQuote quote) {

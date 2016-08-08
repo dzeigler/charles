@@ -11,7 +11,7 @@ import com.brsanthu.dataexporter.output.texttable.TextTableExporter;
 import com.charlesbot.model.StockQuote;
 import com.charlesbot.model.StockQuotes;
 
-public class StockQuotesToStatsMessage implements Converter<StockQuotes, StatsMessage> {
+public class StatsCommandLineOptionsToStringold implements Converter<StockQuotes, StatsMessage> {
 
 	@Override
 	public StatsMessage convert(StockQuotes stockQuotes) {
