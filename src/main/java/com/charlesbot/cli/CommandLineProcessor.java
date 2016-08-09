@@ -71,8 +71,8 @@ public class CommandLineProcessor {
 					Arrays.asList(tokens).subList(1, tokens.length).toArray(arguments);
 				}
 				try {
-					CommandLine commandLine = parser.parse(command.getOptions(), arguments);	
 					command.setBotUsername(botUserName);
+					CommandLine commandLine = parser.parse(command.getOptions(), arguments);	
 					command.populateOptions(commandLine, senderUserId);
 					
 				} catch (Exception e) {
