@@ -1,12 +1,13 @@
 package com.charlesbot.slack;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import com.charlesbot.cli.AddToListCommandLineOptions;
 import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.cli.RemoveFromListCommandLineOptions;
 import com.charlesbot.model.Transaction;
@@ -49,25 +50,27 @@ public class RemoveFromListCommandLineOptionsToString implements Converter<Remov
 					watchListRepository.delete(watchList);
 					output.append(watchList.name + " has been deleted");
 				} else {
-					Transaction transactionToRemove = null;
-					for (Transaction t : watchList.transactions) {
-						if (options.tickerSymbols.contains(t.getSymbol())) {
-							transactionToRemove = t;
-							break;
-						}
-					}
-					if (transactionToRemove != null) {
-						watchList.transactions.remove(transactionToRemove);
+					List<String> upperCaseSymbols = options.tickerSymbols.stream()
+						.map(String::toUpperCase)
+						.collect(Collectors.toList())
+						;
+				
+					Optional<Transaction> transactionToRemove = watchList.transactions.stream()
+						.filter(t -> upperCaseSymbols.contains(t.getSymbol().toUpperCase()))
+						.findFirst();
+					
+					if (transactionToRemove.isPresent()) {
+						watchList.transactions.remove(transactionToRemove.get());
 						if (watchList.transactions.isEmpty()) {
 							watchListRepository.delete(watchList);
-							output.append("Removing " + transactionToRemove.getSymbol() + " and deleting the empty list " + watchList.name);
+							output.append("Removing " + transactionToRemove.get().getSymbol() + " and deleting the empty list " + watchList.name);
 						} else {
 							watchListRepository.save(watchList);
-							output.append("Removing " + transactionToRemove.getSymbol() + " from list " + watchList.name);
+							output.append("Removing " + transactionToRemove.get().getSymbol() + " from list " + watchList.name);
 						}
 						
 					} else {
-						output.append("I can't do that."); 
+						output.append("I couldn't find the symbol " + options.tickerSymbols + " in " + watchList.name + "."); 
 					}
 				}
 			}
