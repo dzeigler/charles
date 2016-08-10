@@ -52,7 +52,7 @@ public class ListQuoteCommandLineOptionsToString implements Converter<ListQuoteC
 			} else {
 				List<String> symbols = watchList.transactions.stream()
 			        .filter(tx -> tx != null && tx.getSymbol() != null)
-			        .map(tx -> tx.getSymbol())
+			        .map(tx -> tx.getSymbol().toUpperCase())
 			        .distinct()
 			        .collect(Collectors.toList());
 				if (symbols.isEmpty()) {
