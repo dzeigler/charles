@@ -1,6 +1,6 @@
 package com.charlesbot.cli;
 
-import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.apache.commons.cli.CommandLine;
@@ -53,7 +53,7 @@ public class QuoteCommandLineOptions extends Command {
 		if (argList.isEmpty() || commandLine.hasOption('?')) {
 			forceHelp();
 		} else {
-			tickerSymbols.addAll(argList);
+			tickerSymbols.addAll(new LinkedHashSet<>(argList));
 		}
 	}
 
