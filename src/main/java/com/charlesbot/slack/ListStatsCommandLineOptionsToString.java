@@ -63,7 +63,7 @@ public class ListStatsCommandLineOptionsToString implements Converter<ListStatsC
 			WatchList watchList = watchListRepository.findByUserIdAndName(options.userId, options.watchListName);
 		
 			List<String> symbols = watchList.transactions.stream()
-				.map(t -> t.getSymbol())
+				.map(t -> t.getSymbol().toUpperCase())
 				.distinct()
 				.collect(Collectors.toList())
 				;
@@ -74,13 +74,13 @@ public class ListStatsCommandLineOptionsToString implements Converter<ListStatsC
 			// build a map of each ticker symbol to its quote
 			Map<String, StockQuote> stockQuotesMap = new HashMap<>();
 			for (StockQuote q : stockQuotes.get().get()) {
-				stockQuotesMap.put(q.getSymbol(), q);
+				stockQuotesMap.put(q.getSymbol().toUpperCase(), q);
 			}
 			
 			// build a map with all of the transactions
 			ListMultimap<String, Transaction> transactionsMap = ArrayListMultimap.create();
 			for (Transaction t : watchList.transactions) {
-				transactionsMap.put(t.getSymbol(), t);
+				transactionsMap.put(t.getSymbol().toUpperCase(), t);
 			}
 			
 			// create positions from the transactions
