@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
@@ -31,6 +33,8 @@ import com.google.common.collect.ListMultimap;
 @Component
 public class ListStatsCommandLineOptionsToString implements Converter<ListStatsCommandLineOptions, String> {
 
+	private static final Logger logger = LoggerFactory.getLogger(ListStatsCommandLineOptionsToString.class);
+	
 	@Autowired
 	private WatchListRepository watchListRepository;
 	
@@ -90,10 +94,28 @@ public class ListStatsCommandLineOptionsToString implements Converter<ListStatsC
 				BigDecimal quantity = BigDecimal.ZERO;
 				BigDecimal totalPrice = BigDecimal.ZERO;
 				for (Transaction t : transactionsMap.get(s)) {
-					quantity = quantity.add(t.quantity);
-					totalPrice = totalPrice.add(t.price.multiply(t.quantity));
+					if (t != null) {
+						if (t.quantity != null) {
+							quantity = quantity.add(t.quantity);
+							if (t.price != null) {
+								totalPrice = totalPrice.add(t.price.multiply(t.quantity));
+							} else {
+								logger.warn("No price available on transaction {}", t);
+							}
+						} else {
+							logger.warn("No quantity available on transaction {}", t);
+						}
+					} else {
+						logger.warn("No transaction found for symbol {}", s);
+					}
 				}
-				position.price = totalPrice.divide(quantity, 2, RoundingMode.HALF_UP);
+				
+				if (!quantity.equals(BigDecimal.ZERO)) {
+					position.price = totalPrice.divide(quantity, 2, RoundingMode.HALF_UP);
+				} else {
+					position.price = BigDecimal.ZERO;
+					logger.warn("Setting position price to zero to avoid dividing by zero {}", position);
+				}
 				position.quantity = quantity;
 				position.setQuote(stockQuotesMap.get(position.symbol));
 				positions.put(position.symbol, position);
