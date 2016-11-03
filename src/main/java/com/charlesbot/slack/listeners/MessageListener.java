@@ -56,7 +56,7 @@ public class MessageListener implements SlackMessagePostedListener {
 				}
 			}
 		} catch (Exception e) {
-			logger.error("Exception while processing the string {}", e, event.getMessageContent());
+			logger.error("Exception while processing the string {}", event.getMessageContent(), e);
 			throw e;
 		}
 	}
