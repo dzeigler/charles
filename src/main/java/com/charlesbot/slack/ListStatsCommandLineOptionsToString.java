@@ -142,26 +142,27 @@ public class ListStatsCommandLineOptionsToString implements Converter<ListStatsC
 					);
 			
 			for (Position position : positions.values()) {
+				if (!BigDecimal.ZERO.equals(position.price) && !BigDecimal.ZERO.equals(position.quantity)) {
+					BigDecimal costBasis = position.quantity.multiply(position.price);
+					BigDecimal marketValue = position.quantity.multiply(position.getQuote().getPriceAsBigDecimal());
+					BigDecimal gain = marketValue.subtract(costBasis);
+					BigDecimal gainPercent = gain.divide(costBasis, 6, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).setScale(2, RoundingMode.HALF_UP);
+					BigDecimal dayGain = position.quantity.multiply(position.getQuote().getChangeAsBigDecimal());
 				
-				BigDecimal costBasis = position.quantity.multiply(position.price);
-				BigDecimal marketValue = position.quantity.multiply(position.getQuote().getPriceAsBigDecimal());
-				BigDecimal gain = marketValue.subtract(costBasis);
-				BigDecimal gainPercent = gain.divide(costBasis, 6, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).setScale(2, RoundingMode.HALF_UP);
-				BigDecimal dayGain = position.quantity.multiply(position.getQuote().getChangeAsBigDecimal());
-				
-				exporter.addRow(
-						position.symbol, 
-						position.getQuote().getName(), 
-						position.getQuote().getPrice(),
-						position.getQuote().getChange(),
-						position.getQuote().getChangeInPercent()+"%",
-						position.quantity,
-						costBasis,
-						marketValue,
-						gain,
-						gainPercent+"%",
-						dayGain
-				);
+					exporter.addRow(
+							position.symbol, 
+							position.getQuote().getName(), 
+							position.getQuote().getPrice(),
+							position.getQuote().getChange(),
+							position.getQuote().getChangeInPercent()+"%",
+							position.quantity,
+							costBasis,
+							marketValue,
+							gain,
+							gainPercent+"%",
+							dayGain
+					);
+				}
 				
 			}
 			exporter.finishExporting();
