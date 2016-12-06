@@ -95,12 +95,10 @@ public class ChartCommandLineOptions extends Command {
 		} else { 
 			this.tickerSymbol = commandLine.getArgList().get(0);
 		}
-		if (commandLine.hasOption('t')) {
-			timeSpan = commandLine.getOptionValue('t', DEFAULT_TIME_SPAN);
-			if (!SUPPORTED_TIME_SPANS.contains(timeSpan)) {
-				addWarning("The time span provided is not supported by Yahoo! Using the default of " + DEFAULT_TIME_SPAN + ".");
-				timeSpan = DEFAULT_TIME_SPAN;
-			}
+		timeSpan = commandLine.getOptionValue('t', DEFAULT_TIME_SPAN);
+		if (!SUPPORTED_TIME_SPANS.contains(timeSpan)) {
+			addWarning("The time span provided is not supported by Yahoo! Using the default of " + DEFAULT_TIME_SPAN + ".");
+			timeSpan = DEFAULT_TIME_SPAN;
 		}
 		if (commandLine.hasOption('c')) {
 			List<String> compareValues = Arrays.asList(commandLine.getOptionValues('c'));
