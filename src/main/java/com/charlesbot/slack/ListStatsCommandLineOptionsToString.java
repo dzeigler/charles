@@ -82,9 +82,16 @@ public class ListStatsCommandLineOptionsToString implements Converter<ListStatsC
 			}
 			
 			// build a map with all of the transactions
+			// - if the symbol name includes the exchange mnemonic (e.g. nyse:shop) then strip the exchange from the symbol)
 			ListMultimap<String, Transaction> transactionsMap = ArrayListMultimap.create();
 			for (Transaction t : watchList.transactions) {
-				transactionsMap.put(t.getSymbol().toUpperCase(), t);
+				String symbol = t.getSymbol();
+				if (symbol != null && symbol.contains(":")) {
+					String[] symbolStrings = symbol.split(":");
+					symbol = symbolStrings[1];
+					
+				}
+				transactionsMap.put(symbol.toUpperCase(), t);
 			}
 			
 			// create positions from the transactions
