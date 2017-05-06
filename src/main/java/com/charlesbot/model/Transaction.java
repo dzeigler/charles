@@ -17,7 +17,6 @@ public class Transaction {
 
 	public String toString(String delimiter) {
 		return Joiner.on(delimiter).skipNulls().join(getSymbol(), quantity, price, date);
-
 	}
 
 	public String getSymbol() {
@@ -27,4 +26,10 @@ public class Transaction {
 	public void setSymbol(String symbol) {
 		this.symbol = symbol;
 	}
+
+	@Override
+	public String toString() {
+		return "Transaction [symbol=" + symbol + ", quantity=" + quantity + ", price=" + price + ", date=" + date + "]";
+	}
+	
 }

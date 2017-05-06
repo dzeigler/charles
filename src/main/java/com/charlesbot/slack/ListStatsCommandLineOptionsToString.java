@@ -200,6 +200,12 @@ public class ListStatsCommandLineOptionsToString implements Converter<ListStatsC
 		public void setQuote(StockQuote quote) {
 			this.quote = quote;
 		}
+
+		@Override
+		public String toString() {
+			return "Position [symbol=" + symbol + "]";
+		}
+		
 	}
 	
 }

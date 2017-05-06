@@ -1,6 +1,7 @@
 package com.charlesbot.cli;
 
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
 public class ListStatsCommandLineOptions extends Command {
@@ -18,7 +19,18 @@ public class ListStatsCommandLineOptions extends Command {
 		// create the Options
 		options = new Options();
 		options.addOption("?", "help", false, "prints this message");
-
+		// user
+		options.addOption( 
+				Option.builder("u")
+					.required(false)
+					.longOpt("user")
+					.hasArg(true)
+					.argName("USER_MENTION")
+					.desc("mention the user that owns LIST_NAME (e.g. -u @username)")
+					.type(String.class)
+					.valueSeparator()
+					.build()
+			);
 	}
 	
 	public String watchListName;
@@ -50,17 +62,25 @@ public class ListStatsCommandLineOptions extends Command {
 	}
 
 	@Override
-	public void populateOptions(CommandLine commandLine, String userId) {
-		if (commandLine.getArgList().isEmpty()) {
+	public void populateOptions(CommandLine commandLine, String senderUserId) {
+		if (commandLine.hasOption("?")) {
+			forceHelp();
+		} else if (commandLine.getArgList().isEmpty()) {
 			forceHelp();
 		} else if (commandLine.getArgList().size() != 2) {
 			forceHelp();
 		}
 
-		this.userId = userId;
 		if (commandLine.getArgList().size() == 2) {
 			watchListName = commandLine.getArgList().get(1);
 		}
+		String userMention = commandLine.getOptionValue('u');
+		if (userMention != null) {
+			this.userId = userMention.replaceAll("[<@>]", "");
+		} else {
+			this.userId = senderUserId;
+		}
+		
 	}
 	
 	public static boolean matcher(String t) {
@@ -69,7 +89,6 @@ public class ListStatsCommandLineOptions extends Command {
 
 	@Override
 	public boolean isStandalone() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
