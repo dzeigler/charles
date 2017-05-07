@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 import com.charlesbot.cli.CommandLineProcessor;
@@ -13,22 +12,23 @@ import com.charlesbot.cli.RemoveFromListCommandLineOptions;
 import com.charlesbot.model.Transaction;
 import com.charlesbot.model.WatchList;
 import com.charlesbot.model.WatchListRepository;
+import com.google.common.collect.Lists;
 
 @Component
-public class RemoveFromListCommandLineOptionsToString implements Converter<RemoveFromListCommandLineOptions, String> {
+public class RemoveFromListCommandLineOptionsToStrings implements CommandConverter<RemoveFromListCommandLineOptions> {
 
 	@Autowired
 	private WatchListRepository watchListRepository;
 
-	public RemoveFromListCommandLineOptionsToString() {
+	public RemoveFromListCommandLineOptionsToStrings() {
 	}
 
-	public RemoveFromListCommandLineOptionsToString(WatchListRepository watchListRepository) {
+	public RemoveFromListCommandLineOptionsToStrings(WatchListRepository watchListRepository) {
 		this.watchListRepository = watchListRepository;
 	}
 
 	@Override
-	public String convert(RemoveFromListCommandLineOptions options) {
+	public List<String> convert(RemoveFromListCommandLineOptions options) {
 		StringBuilder output = new StringBuilder();
 		if (options.isHelp()) {
 			output.append("```");
@@ -75,7 +75,7 @@ public class RemoveFromListCommandLineOptionsToString implements Converter<Remov
 				}
 			}
 		}
-		return output.toString();
+		return Lists.newArrayList(output.toString());
 	}
 
 }

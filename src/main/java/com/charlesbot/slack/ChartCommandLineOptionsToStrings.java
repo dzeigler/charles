@@ -1,20 +1,21 @@
 package com.charlesbot.slack;
 
 import java.text.MessageFormat;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.core.convert.converter.Converter;
+import org.assertj.core.util.Lists;
 import org.springframework.stereotype.Component;
 
 import com.charlesbot.cli.ChartCommandLineOptions;
 import com.charlesbot.cli.CommandLineProcessor;
 
 @Component
-public class ChartCommandLineOptionsToString implements Converter<ChartCommandLineOptions, String> {
+public class ChartCommandLineOptionsToStrings implements CommandConverter<ChartCommandLineOptions> {
 
 	@Override
-	public String convert(ChartCommandLineOptions options) {
+	public List<String> convert(ChartCommandLineOptions options) {
 		String output = null;
 		if (options.isHelp()) {
 			String helpMessage = CommandLineProcessor.generateHelpMessage(options);
@@ -30,7 +31,7 @@ public class ChartCommandLineOptionsToString implements Converter<ChartCommandLi
 			String url = MessageFormat.format("<http://chart.finance.yahoo.com/z?s={0}&t={1}&c={2}&q=l&z=l&p=s&a=v&cb={3,number,#}>", symbol, timeSpan, compare, System.currentTimeMillis());
 			output = url;
 		}
-		return output;
+		return Lists.newArrayList(output);
 	}
 
 }

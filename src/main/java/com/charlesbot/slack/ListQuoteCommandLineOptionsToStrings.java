@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 import com.charlesbot.cli.CommandLineProcessor;
@@ -12,25 +11,26 @@ import com.charlesbot.cli.ListQuoteCommandLineOptions;
 import com.charlesbot.cli.QuoteCommandLineOptions;
 import com.charlesbot.model.WatchList;
 import com.charlesbot.model.WatchListRepository;
+import com.google.common.collect.Lists;
 
 @Component
-public class ListQuoteCommandLineOptionsToString implements Converter<ListQuoteCommandLineOptions, String> {
+public class ListQuoteCommandLineOptionsToStrings implements CommandConverter<ListQuoteCommandLineOptions> {
 
 	@Autowired
 	private WatchListRepository watchListRepository;
 	
 	@Autowired
-	private QuoteCommandLineOptionsToString quoteCommandLineOptionsToString;
+	private QuoteCommandLineOptionsToStrings quoteCommandLineOptionsToString;
 
-	public ListQuoteCommandLineOptionsToString() {
+	public ListQuoteCommandLineOptionsToStrings() {
 	}
 
-	public ListQuoteCommandLineOptionsToString(WatchListRepository watchListRepository) {
+	public ListQuoteCommandLineOptionsToStrings(WatchListRepository watchListRepository) {
 		this.watchListRepository = watchListRepository;
 	}
 
 	@Override
-	public String convert(ListQuoteCommandLineOptions options) {
+	public List<String> convert(ListQuoteCommandLineOptions options) {
 		StringBuilder output = new StringBuilder();
 		if (options.isHelp()) {
 			output.append("```");
@@ -61,12 +61,14 @@ public class ListQuoteCommandLineOptionsToString implements Converter<ListQuoteC
 					// need to execute the quotes
 					QuoteCommandLineOptions qCmd = new QuoteCommandLineOptions();
 					qCmd.tickerSymbols = symbols;
-					String reply = quoteCommandLineOptionsToString.convert(qCmd);
-					output.append(reply);
+					List<String> replies = quoteCommandLineOptionsToString.convert(qCmd);
+					for (String reply : replies) {
+						output.append(reply);
+					}
 				}
 			}
 		}
-		return output.toString();
+		return Lists.newArrayList(output.toString());
 	}
 
 }

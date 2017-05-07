@@ -5,22 +5,22 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 import com.charlesbot.cli.Command;
 import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.cli.HelpCommandLineOptions;
 import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 
 @Component
-public class HelpCommandLineOptionsToString implements Converter<HelpCommandLineOptions, String> {
+public class HelpCommandLineOptionsToStrings implements CommandConverter<HelpCommandLineOptions> {
 
-	public HelpCommandLineOptionsToString() {
+	public HelpCommandLineOptionsToStrings() {
 	}
 
 	@Override
-	public String convert(HelpCommandLineOptions options) {
+	public List<String> convert(HelpCommandLineOptions options) {
 		StringBuilder output = new StringBuilder();
 		output.append("```");
 		
@@ -39,7 +39,7 @@ public class HelpCommandLineOptionsToString implements Converter<HelpCommandLine
 		Collections.sort(messages);
 		output.append(Joiner.on('\n').join(messages));
 		output.append("```");
-		return output.toString();
+		return Lists.newArrayList(output.toString());
 	}
 
 }

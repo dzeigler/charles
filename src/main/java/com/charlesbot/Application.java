@@ -26,14 +26,14 @@ import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.google.GoogleFinanceClient;
 import com.charlesbot.google.GoogleStockQuoteConverter;
 import com.charlesbot.model.WatchListRepository;
-import com.charlesbot.slack.AddToListCommandLineOptionsToString;
-import com.charlesbot.slack.ChartCommandLineOptionsToString;
-import com.charlesbot.slack.HelpCommandLineOptionsToString;
-import com.charlesbot.slack.ListCommandLineOptionsToString;
-import com.charlesbot.slack.ListQuoteCommandLineOptionsToString;
-import com.charlesbot.slack.QuoteCommandLineOptionsToString;
-import com.charlesbot.slack.RemoveFromListCommandLineOptionsToString;
-import com.charlesbot.slack.StatsCommandLineOptionsToString;
+import com.charlesbot.slack.AddToListCommandLineOptionsToStrings;
+import com.charlesbot.slack.ChartCommandLineOptionsToStrings;
+import com.charlesbot.slack.HelpCommandLineOptionsToStrings;
+import com.charlesbot.slack.ListCommandLineOptionsToStrings;
+import com.charlesbot.slack.ListQuoteCommandLineOptionsToStrings;
+import com.charlesbot.slack.QuoteCommandLineOptionsToStrings;
+import com.charlesbot.slack.RemoveFromListCommandLineOptionsToStrings;
+import com.charlesbot.slack.StatsCommandLineOptionsToStrings;
 import com.charlesbot.slack.StringToPortfolioQuoteMessage;
 import com.charlesbot.yahoo.YahooStockQuoteConverter;
 
@@ -65,14 +65,14 @@ public class Application extends WebMvcConfigurerAdapter {
 	}
 
 	@Bean
-	public ConversionServiceFactoryBean conversionService(GoogleFinanceClient googleFinanceClient, WatchListRepository watchListRepository, AddToListCommandLineOptionsToString addToListCommandLineOptionsToString, RemoveFromListCommandLineOptionsToString removeFromListCommandLineOptionsToString
-			, ListCommandLineOptionsToString listCommandLineOptionsToString
-			, ChartCommandLineOptionsToString chartCommandLineOptionsToString
-			, StatsCommandLineOptionsToString statsCommandLineOptionsToString
-			, QuoteCommandLineOptionsToString quoteCommandLineOptionsToString
+	public ConversionServiceFactoryBean conversionService(GoogleFinanceClient googleFinanceClient, WatchListRepository watchListRepository, AddToListCommandLineOptionsToStrings addToListCommandLineOptionsToString, RemoveFromListCommandLineOptionsToStrings removeFromListCommandLineOptionsToString
+			, ListCommandLineOptionsToStrings listCommandLineOptionsToString
+			, ChartCommandLineOptionsToStrings chartCommandLineOptionsToString
+			, StatsCommandLineOptionsToStrings statsCommandLineOptionsToString
+			, QuoteCommandLineOptionsToStrings quoteCommandLineOptionsToString
 			, StringToPortfolioQuoteMessage stringToPortfolioQuoteMessage
-			, ListQuoteCommandLineOptionsToString listQuoteCommandLineOptionsToString
-			, HelpCommandLineOptionsToString helpCommandLineOptionsToString) {
+			, ListQuoteCommandLineOptionsToStrings listQuoteCommandLineOptionsToString
+			, HelpCommandLineOptionsToStrings helpCommandLineOptionsToString) {
 		ConversionServiceFactoryBean conversionServiceFactoryBean = new ConversionServiceFactoryBean();
 		Set<Converter<?, ?>> converters = new HashSet<>();
 		converters.add(quoteCommandLineOptionsToString);
@@ -106,6 +106,7 @@ public class Application extends WebMvcConfigurerAdapter {
 	}
 
 	public static void main(String[] args) {
+		logger.debug("Starting application");
 		SpringApplication.run(Application.class, args);
 	}
 }

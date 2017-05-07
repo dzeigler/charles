@@ -1,9 +1,9 @@
 package com.charlesbot.slack;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 import com.charlesbot.cli.AddToListCommandLineOptions;
@@ -11,23 +11,23 @@ import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.model.Transaction;
 import com.charlesbot.model.WatchList;
 import com.charlesbot.model.WatchListRepository;
-import com.google.common.collect.RangeMap;
+import com.google.common.collect.Lists;
 
 @Component
-public class AddToListCommandLineOptionsToString implements Converter<AddToListCommandLineOptions, String> {
+public class AddToListCommandLineOptionsToStrings implements CommandConverter<AddToListCommandLineOptions> {
 
 	@Autowired
 	private WatchListRepository watchListRepository;
 
-	public AddToListCommandLineOptionsToString() {
+	public AddToListCommandLineOptionsToStrings() {
 	}
 
-	public AddToListCommandLineOptionsToString(WatchListRepository watchListRepository) {
+	public AddToListCommandLineOptionsToStrings(WatchListRepository watchListRepository) {
 		this.watchListRepository = watchListRepository;
 	}
 
 	@Override
-	public String convert(AddToListCommandLineOptions options) {
+	public List<String> convert(AddToListCommandLineOptions options) {
 		StringBuilder output = new StringBuilder();
 		if (options.isHelp()) {
 			output.append("```");
@@ -50,7 +50,7 @@ public class AddToListCommandLineOptionsToString implements Converter<AddToListC
 				output.append("Added " + t.getSymbol() + " to list " + watchList.name + "\n");
 			}
 		}
-		return output.toString();
+		return Lists.newArrayList(output.toString());
 	}
 
 }

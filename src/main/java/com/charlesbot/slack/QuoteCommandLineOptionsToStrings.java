@@ -1,9 +1,9 @@
 package com.charlesbot.slack;
 
 import java.text.MessageFormat;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -13,18 +13,19 @@ import com.charlesbot.google.GoogleFinanceClient;
 import com.charlesbot.model.StockQuote;
 import com.charlesbot.model.StockQuotePercentageComparator;
 import com.charlesbot.model.StockQuotes;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Range;
 import com.google.common.collect.RangeMap;
 import com.google.common.collect.TreeRangeMap;
 
 @Component
-public class QuoteCommandLineOptionsToString implements Converter<QuoteCommandLineOptions, String> {
+public class QuoteCommandLineOptionsToStrings implements CommandConverter<QuoteCommandLineOptions> {
 
 	RangeMap<Double, String> percentRanges;
 	@Autowired
 	private GoogleFinanceClient googleFinanceClient;
 	
-	public QuoteCommandLineOptionsToString() {
+	public QuoteCommandLineOptionsToStrings() {
 		// initialize the percent ranges
 		percentRanges = TreeRangeMap.create();
 		percentRanges.put(Range.atLeast(10d), "green5");       // [10, +∞)
@@ -40,12 +41,13 @@ public class QuoteCommandLineOptionsToString implements Converter<QuoteCommandLi
 		percentRanges.put(Range.atMost(-10d), "red5");         // (-∞, -10]
 	}
 	
-	public QuoteCommandLineOptionsToString(GoogleFinanceClient googleFinanceClient) {
+	public QuoteCommandLineOptionsToStrings(GoogleFinanceClient googleFinanceClient) {
+		this();
 		this.googleFinanceClient = googleFinanceClient;
 	}
 	
 	@Override
-	public String convert(QuoteCommandLineOptions options) {
+	public List<String> convert(QuoteCommandLineOptions options) {
 		StringBuilder output = new StringBuilder();
 		if (options.isHelp()) {
 			String helpMessage = CommandLineProcessor.generateHelpMessage(options);
@@ -73,7 +75,7 @@ public class QuoteCommandLineOptionsToString implements Converter<QuoteCommandLi
 				}
 			}
 		}		
-		return output.toString();
+		return Lists.newArrayList(output.toString());
 	}
 	
 	String determineRangeString(StockQuote quote) {

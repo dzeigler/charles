@@ -22,7 +22,6 @@ public class MessageListener implements SlackMessagePostedListener {
 	private static final Logger logger = LoggerFactory.getLogger(MessageListener.class);
 	private List<String> keywords;
 	private ConversionService conversionService;
-	private WatchListRepository repo;
 	private CommandLineProcessor commandLineProcessor;
 	
 	MessageListener() {
@@ -49,10 +48,13 @@ public class MessageListener implements SlackMessagePostedListener {
 				String sanitizedCommandString = event.getMessageContent().replace(userIdMention, userNameMention);
 				
 				Command command = commandLineProcessor.process(sanitizedCommandString, event.getSender().getId(), sessionPersona.getUserName());
-				String reply = conversionService.convert(command, String.class);
+				@SuppressWarnings("unchecked")
+				List<String> replies = conversionService.convert(command, List.class);
 				
-				if (StringUtils.isNotBlank(reply)) {
-					session.sendMessage(channel, reply);
+				for (String reply : replies) {
+					if (StringUtils.isNotBlank(reply)) {
+						session.sendMessage(channel, reply);
+					}
 				}
 			}
 		} catch (Exception e) {

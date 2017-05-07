@@ -4,29 +4,29 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.cli.ListCommandLineOptions;
 import com.charlesbot.model.WatchList;
 import com.charlesbot.model.WatchListRepository;
+import com.google.common.collect.Lists;
 
 @Component
-public class ListCommandLineOptionsToString implements Converter<ListCommandLineOptions, String> {
+public class ListCommandLineOptionsToStrings implements CommandConverter<ListCommandLineOptions> {
 
 	@Autowired
 	private WatchListRepository watchListRepository;
 
-	public ListCommandLineOptionsToString() {
+	public ListCommandLineOptionsToStrings() {
 	}
 
-	public ListCommandLineOptionsToString(WatchListRepository watchListRepository) {
+	public ListCommandLineOptionsToStrings(WatchListRepository watchListRepository) {
 		this.watchListRepository = watchListRepository;
 	}
 
 	@Override
-	public String convert(ListCommandLineOptions options) {
+	public List<String> convert(ListCommandLineOptions options) {
 		StringBuilder output = new StringBuilder();
 		if (options.isHelp()) {
 			output.append("```");
@@ -60,7 +60,7 @@ public class ListCommandLineOptionsToString implements Converter<ListCommandLine
 				}
 			}
 		}
-		return output.toString();
+		return Lists.newArrayList(output.toString());
 	}
 
 }

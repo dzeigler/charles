@@ -20,9 +20,9 @@ import org.mockito.stubbing.Answer;
 import com.charlesbot.google.GoogleFinanceClient;
 import com.charlesbot.model.StockQuote;
 import com.charlesbot.model.StockQuotes;
-import com.charlesbot.slack.QuoteCommandLineOptionsToString;
+import com.charlesbot.slack.QuoteCommandLineOptionsToStrings;
 
-public class QuoteCommandLineOptionsToStringTest {
+public class QuoteCommandLineOptionsToStringsTest {
 
 	@Mock
 	private GoogleFinanceClient client;
@@ -32,6 +32,7 @@ public class QuoteCommandLineOptionsToStringTest {
 
 	public void mockReturnWhatsPassedIn() {
 		when(client.getStockQuotes(Mockito.anyListOf(String.class))).thenAnswer(new Answer<Optional<StockQuotes>>() {
+			@SuppressWarnings("unchecked")
 			@Override
 			public Optional<StockQuotes> answer(InvocationOnMock invocation) throws Throwable {
 				Object[] args = invocation.getArguments();
@@ -49,25 +50,25 @@ public class QuoteCommandLineOptionsToStringTest {
 	
 	@Test
 	public void quoteWithoutTickerSymbol() {
-		QuoteCommandLineOptionsToString converter = new QuoteCommandLineOptionsToString(client);
+		QuoteCommandLineOptionsToStrings converter = new QuoteCommandLineOptionsToStrings(client);
 
 		mockReturnWhatsPassedIn();
 		QuoteCommandLineOptions options = new QuoteCommandLineOptions();
 		options.forceHelp();
 
-		String output = converter.convert(options);
+		List<String> output = converter.convert(options);
 
 		assertThat(output, is(notNullValue()));
 	}
 
 	@Test
 	public void quoteWithTickerSymbol() {
-		QuoteCommandLineOptionsToString converter = new QuoteCommandLineOptionsToString(client);
+		QuoteCommandLineOptionsToStrings converter = new QuoteCommandLineOptionsToStrings(client);
 		mockReturnWhatsPassedIn();
 		QuoteCommandLineOptions options = new QuoteCommandLineOptions();
 		options.tickerSymbols.add("tsla");
 
-		String output = converter.convert(options);
+		List<String> output = converter.convert(options);
 
 		assertThat(output, is(notNullValue()));
 	}
