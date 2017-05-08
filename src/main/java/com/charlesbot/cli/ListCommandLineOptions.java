@@ -78,6 +78,9 @@ public class ListCommandLineOptions extends Command {
 		
 		String userMention = commandLine.getOptionValue('u');
 		if (userMention != null) {
+			if (!userMention.contains("@")) {
+				forceHelp();
+			}
 			this.userId = userMention.replaceAll("[<@>]", "");
 		} else {
 			this.userId = senderUserId;

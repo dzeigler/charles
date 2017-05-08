@@ -39,7 +39,7 @@ public class ListQuoteCommandLineOptionsToStrings implements CommandConverter<Li
 			WatchList watchList = watchListRepository.findByUserIdAndName(options.userId, options.watchListName);
 		
 			if (watchList == null) {
-				output.append("No list named " + options.watchListName + " for you.");
+				output.append("No list named " + options.watchListName + " for that user.");
 			} else {
 				List<String> symbols = watchList.transactions.stream()
 			        .filter(tx -> tx != null && tx.getSymbol() != null)
