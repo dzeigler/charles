@@ -8,12 +8,14 @@ public class ListStatsRow {
 
 	private final static String DEFAULT_VALUE = "N/A";
 	
-	private String symbol = DEFAULT_VALUE;
-	private String name = DEFAULT_VALUE;
-	private String price = DEFAULT_VALUE;
-	private String change = DEFAULT_VALUE;
-	private String changeInPercent = DEFAULT_VALUE;
-	private String quantity = DEFAULT_VALUE;
+	private String defaultValue;
+	
+	private String symbol;
+	private String name;
+	private String price;
+	private String change;
+	private String changeInPercent;
+	private String quantity;
 	private BigDecimal costBasis;
 	private BigDecimal marketValue;
 	private BigDecimal gain;
@@ -21,8 +23,22 @@ public class ListStatsRow {
 	private BigDecimal dayGain;
 	private BigDecimal listPercent;
 
+	
+
+	public ListStatsRow() {
+		this(DEFAULT_VALUE);
+	}
+	
+	private String getDefaultValue() {
+		return defaultValue;
+	}
+
+	public ListStatsRow(String defaultValue)  {
+		this.defaultValue = defaultValue;
+	}
+	
 	public String getSymbol() {
-		return symbol;
+		return (symbol == null ? getDefaultValue() : symbol);
 	}
 
 	public void setSymbol(String symbol) {
@@ -30,7 +46,7 @@ public class ListStatsRow {
 	}
 
 	public String getName() {
-		return name;
+		return name == null ? getDefaultValue() : name;
 	}
 
 	public void setName(String name) {
@@ -38,7 +54,7 @@ public class ListStatsRow {
 	}
 
 	public String getPrice() {
-		return price;
+		return price == null ? getDefaultValue() : price;
 	}
 
 	public void setPrice(String price) {
@@ -46,7 +62,7 @@ public class ListStatsRow {
 	}
 
 	public String getChange() {
-		return change;
+		return change == null ? getDefaultValue() : change;
 	}
 
 	public void setChange(String change) {
@@ -54,7 +70,7 @@ public class ListStatsRow {
 	}
 
 	public String getChangeInPercent() {
-		return changeInPercent;
+		return changeInPercent == null ? getDefaultValue() : changeInPercent;
 	}
 
 	public void setChangeInPercent(String changeInPercent) {
@@ -62,7 +78,7 @@ public class ListStatsRow {
 	}
 
 	public String getQuantity() {
-		return quantity;
+		return quantity == null ? getDefaultValue() : quantity;
 	}
 
 	public void setQuantity(BigDecimal quantity) {
@@ -74,7 +90,7 @@ public class ListStatsRow {
 	}
 
 	public String getFormattedCostBasis() {
-		return (costBasis == null ? DEFAULT_VALUE : costBasis.toString());
+		return (costBasis == null ? defaultValue : costBasis.toString());
 	}
 	
 	public void setCostBasis(BigDecimal costBasis) {
@@ -86,7 +102,7 @@ public class ListStatsRow {
 	}
 	
 	public String getFormattedMarketValue() {
-		return (marketValue == null ? DEFAULT_VALUE : marketValue.toString());
+		return (marketValue == null ? defaultValue : marketValue.toString());
 	}
 
 	public void setMarketValue(BigDecimal marketValue) {
@@ -98,7 +114,7 @@ public class ListStatsRow {
 	}
 	
 	public String getFormattedGain() {
-		return (gain == null ? DEFAULT_VALUE : gain.toString());
+		return (gain == null ? defaultValue : gain.toString());
 	}
 
 	public void setGain(BigDecimal gain) {
@@ -110,7 +126,13 @@ public class ListStatsRow {
 	}
 	
 	public String getFormattedGainPercent() {
-		return (gainPercent == null ? DEFAULT_VALUE : gainPercent.toString() + "%");
+		
+		if (gainPercent == null) {
+			return defaultValue;
+		} 
+		DecimalFormat decimalFormat = new DecimalFormat("###0.#%");
+		decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
+		return decimalFormat.format(gainPercent);
 	}
 
 	public void setGainPercent(BigDecimal gainPercent) {
@@ -122,7 +144,7 @@ public class ListStatsRow {
 	}
 	
 	public String getFormattedDayGain() {
-		return (dayGain == null ? DEFAULT_VALUE : dayGain.toString());
+		return (dayGain == null ? defaultValue : dayGain.toString());
 	}
 
 	public void setDayGain(BigDecimal dayGain) {
@@ -136,7 +158,7 @@ public class ListStatsRow {
 	public String getFormattedListPercent() {
 		
 		if (listPercent == null) {
-			return DEFAULT_VALUE;
+			return defaultValue;
 		} 
 		DecimalFormat decimalFormat = new DecimalFormat("#0.#%");
 		decimalFormat.setRoundingMode(RoundingMode.HALF_UP);

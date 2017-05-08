@@ -10,7 +10,7 @@ public class ListStatsCommandLineOptions extends Command {
 	public static final String COMMAND_SYNTAX = COMMAND + " <LIST_NAME>";
 	public static final String COMMAND_HEADER = 
 			"LIST_NAME is the name of the portfolio to get stats for";
-	public static final String COMMAND_DESCRIPTION = "Returns performance stats for the positions in the given list";
+	public static final String COMMAND_DESCRIPTION = "Returns performance stats for the positions in the given list. Only support USD.";
 	public static final String COMMAND_PATTERN = "^@\\w+:?\\s*stats.*";
 
 	static Options options;
@@ -21,20 +21,32 @@ public class ListStatsCommandLineOptions extends Command {
 		options.addOption("?", "help", false, "prints this message");
 		// user
 		options.addOption( 
-				Option.builder("u")
-					.required(false)
-					.longOpt("user")
-					.hasArg(true)
-					.argName("USER_MENTION")
-					.desc("mention the user that owns LIST_NAME (e.g. -u @username)")
-					.type(String.class)
-					.valueSeparator()
-					.build()
-			);
+			Option.builder("u")
+				.required(false)
+				.longOpt("user")
+				.hasArg(true)
+				.argName("USER_MENTION")
+				.desc("mention the user that owns LIST_NAME (e.g. -u @username)")
+				.type(String.class)
+				.valueSeparator()
+				.build()
+		);
+		// user
+		options.addOption( 
+			Option.builder("s")
+				.required(false)
+				.longOpt("short")
+				.hasArg(false)
+				.desc("shows only the header and totals row")
+				.type(String.class)
+				.valueSeparator()
+				.build()
+		);
 	}
 	
 	public String watchListName;
 	public String userId;
+	public boolean shortened;
 	
 	@Override
 	public String getName() {
@@ -82,6 +94,10 @@ public class ListStatsCommandLineOptions extends Command {
 			this.userId = userMention.replaceAll("[<@>]", "");
 		} else {
 			this.userId = senderUserId;
+		}
+		
+		if (commandLine.hasOption("s")) {
+			shortened = true;
 		}
 		
 	}

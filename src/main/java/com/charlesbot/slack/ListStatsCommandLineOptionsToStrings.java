@@ -76,20 +76,20 @@ public class ListStatsCommandLineOptionsToStrings implements CommandConverter<Li
 				new StringColumn("quantity", "Shares", 8, AlignType.TOP_RIGHT),
 				new StringColumn("formattedCostBasis", "Cost basis", 10, AlignType.TOP_RIGHT),
 				new StringColumn("formattedMarketValue", "Mkt value", 10, AlignType.TOP_RIGHT),
-				new StringColumn("formattedGain", "Gain", 8, AlignType.TOP_RIGHT),
+				new StringColumn("formattedGain", "Gain", 9, AlignType.TOP_RIGHT),
 				new StringColumn("formattedGainPercent", "Gain %", 8, AlignType.TOP_RIGHT),
 				new StringColumn("formattedListPercent", "List%", 5, AlignType.TOP_RIGHT),
 				new StringColumn("formattedDayGain", "Day Gain", 10, AlignType.TOP_RIGHT) };
 
 		Iterable<Position> positions = getPositionsList(options.userId, options.watchListName);
-		List<ListStatsRow> rows = buildRows(positions);
+		List<ListStatsRow> rows = buildRows(positions, options.shortened);
 
 		List<String> outputs = new TableUtils().addColumns(columns).addBeanRows(rows).buildTableOutput();
 
 		return outputs;
 	}
 
-	private List<ListStatsRow> buildRows(Iterable<Position> positions) {
+	private List<ListStatsRow> buildRows(Iterable<Position> positions, boolean totalsOnly) {
 		List<ListStatsRow> rows = new ArrayList<>();
 		BigDecimal marketValueTotal = BigDecimal.ZERO;
 		for (Position position : positions) {
@@ -101,8 +101,7 @@ public class ListStatsCommandLineOptionsToStrings implements CommandConverter<Li
 				BigDecimal marketValue = position.quantity.multiply(position.getQuote().getPriceAsBigDecimal());
 				marketValueTotal = marketValueTotal.add(marketValue);
 				BigDecimal gain = marketValue.subtract(costBasis);
-				BigDecimal gainPercent = gain.divide(costBasis, 6, RoundingMode.HALF_UP).multiply(new BigDecimal(100))
-						.setScale(2, RoundingMode.HALF_UP);
+				BigDecimal gainPercent = gain.divide(costBasis, 6, RoundingMode.HALF_UP);
 				BigDecimal dayGain = position.quantity.multiply(position.getQuote().getChangeAsBigDecimal());
 				
 				row.setCostBasis(costBasis);
@@ -127,16 +126,35 @@ public class ListStatsCommandLineOptionsToStrings implements CommandConverter<Li
 
 		}
 
+		// handle totals and list %
+		ListStatsRow totalRow = new ListStatsRow(" ");
+		totalRow.setSymbol("Total:");
+		totalRow.setCostBasis(BigDecimal.ZERO);
+		totalRow.setDayGain(BigDecimal.ZERO);
+		totalRow.setGain(BigDecimal.ZERO);
+		totalRow.setMarketValue(BigDecimal.ZERO);
 		for (ListStatsRow row : rows) {
 			if (row.getMarketValue() != null) {
 				row.setListPercent(row.getMarketValue().divide(marketValueTotal, 4, RoundingMode.HALF_UP));
+				totalRow.setCostBasis(totalRow.getCostBasis().add(row.getCostBasis()));
+				totalRow.setGain(totalRow.getGain().add(row.getGain()));
+				totalRow.setDayGain(totalRow.getDayGain().add(row.getDayGain()));
+				totalRow.setMarketValue(totalRow.getMarketValue().add(row.getMarketValue()));
 			}
 		}
+		if (totalRow.getCostBasis() != null && totalRow.getMarketValue() != null && !BigDecimal.ZERO.equals(totalRow.getMarketValue())) {
+			totalRow.setGainPercent(totalRow.getCostBasis().divide(totalRow.getMarketValue(), 7, RoundingMode.HALF_UP));
+		}
 		
-		rows = rows.stream().sorted(
-				Comparator.comparing(ListStatsRow::getGainPercent, nullsFirst(reverseOrder())).thenComparing(ListStatsRow::getSymbol))
-				.collect(Collectors.toList());
-
+		if (totalsOnly == true) {
+			rows = new ArrayList<>();
+		} else {
+			rows = rows.stream().sorted(
+					Comparator.comparing(ListStatsRow::getGainPercent, nullsFirst(reverseOrder())).thenComparing(ListStatsRow::getSymbol))
+					.collect(Collectors.toList());
+		}
+		rows.add(totalRow);
+		
 		return rows;
 	}
 
