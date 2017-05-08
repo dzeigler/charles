@@ -142,8 +142,8 @@ public class ListStatsCommandLineOptionsToStrings implements CommandConverter<Li
 				totalRow.setMarketValue(totalRow.getMarketValue().add(row.getMarketValue()));
 			}
 		}
-		if (totalRow.getGain() != null && totalRow.getMarketValue() != null && !BigDecimal.ZERO.equals(totalRow.getMarketValue())) {
-			totalRow.setGainPercent(totalRow.getGain().divide(totalRow.getMarketValue(), 7, RoundingMode.HALF_UP));
+		if (totalRow.getGain() != null && totalRow.getCostBasis() != null && !BigDecimal.ZERO.equals(totalRow.getCostBasis())) {
+			totalRow.setGainPercent(totalRow.getGain().divide(totalRow.getCostBasis(), 7, RoundingMode.HALF_UP));
 		}
 		
 		if (totalsOnly == true) {
