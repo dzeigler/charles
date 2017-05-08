@@ -5,19 +5,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
-import org.springframework.stereotype.Component;
-
 import com.charlesbot.cli.Command;
 import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.cli.HelpCommandLineOptions;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 
-@Component
 public class HelpCommandLineOptionsToStrings implements CommandConverter<HelpCommandLineOptions> {
-
-	public HelpCommandLineOptionsToStrings() {
-	}
 
 	@Override
 	public List<String> convert(HelpCommandLineOptions options) {

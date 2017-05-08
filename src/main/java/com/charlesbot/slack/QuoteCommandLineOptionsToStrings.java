@@ -2,9 +2,8 @@ package com.charlesbot.slack;
 
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.charlesbot.cli.CommandLineProcessor;
@@ -18,11 +17,9 @@ import com.google.common.collect.Range;
 import com.google.common.collect.RangeMap;
 import com.google.common.collect.TreeRangeMap;
 
-@Component
 public class QuoteCommandLineOptionsToStrings implements CommandConverter<QuoteCommandLineOptions> {
 
 	RangeMap<Double, String> percentRanges;
-	@Autowired
 	private GoogleFinanceClient googleFinanceClient;
 	
 	public QuoteCommandLineOptionsToStrings() {
@@ -53,28 +50,33 @@ public class QuoteCommandLineOptionsToStrings implements CommandConverter<QuoteC
 			String helpMessage = CommandLineProcessor.generateHelpMessage(options);
 			output.append("```"+helpMessage+"```");
 		} else {
-			StockQuotes stockQuotes = googleFinanceClient.getStockQuotes(options.tickerSymbols).get();
+			Optional<StockQuotes> stockQuotesResult = googleFinanceClient.getStockQuotes(options.tickerSymbols);
+			if (stockQuotesResult.isPresent()) {
+				StockQuotes stockQuotes = stockQuotesResult.get();
 			
-			
-			if (stockQuotes.get().size() > 1) {
-				output.append(">>>");
-			}
-			
-			// sort the quotes by the percentage change
-			stockQuotes.get().sort(new StockQuotePercentageComparator());
-			
-			for (StockQuote quote : stockQuotes.get()) {
-				String colorEmoji = determineRangeString(quote);
-				output.append(MessageFormat.format(":_charles_{5}: {0} ({4}): {1} {2} {3}%", quote.getSymbol(), quote.getPrice(), quote.getChange(), quote.getChangeInPercent(), quote.getName(), colorEmoji));
-				if (!StringUtils.isEmpty(quote.getExtendedHoursPrice())) {
-					output.append(MessageFormat.format(" extended hours: {0} {1} {2}%", quote.getExtendedHoursPrice(), quote.getExtendedHoursChange(), quote.getExtendedHoursChangeInPercent()));
-				}
-					
 				if (stockQuotes.get().size() > 1) {
-					output.append("\n");
+					output.append(">>>");
 				}
+				
+				// sort the quotes by the percentage change
+				stockQuotes.get().sort(new StockQuotePercentageComparator());
+				
+				for (StockQuote quote : stockQuotes.get()) {
+					String colorEmoji = determineRangeString(quote);
+					output.append(MessageFormat.format(":_charles_{5}: {0} ({4}): {1} {2} {3}%", quote.getSymbol(), quote.getPrice(), quote.getChange(), quote.getChangeInPercent(), quote.getName(), colorEmoji));
+					if (!StringUtils.isEmpty(quote.getExtendedHoursPrice())) {
+						output.append(MessageFormat.format(" extended hours: {0} {1} {2}%", quote.getExtendedHoursPrice(), quote.getExtendedHoursChange(), quote.getExtendedHoursChangeInPercent()));
+					}
+						
+					if (stockQuotes.get().size() > 1) {
+						output.append("\n");
+					}
+				}
+			} else {
+				output.append("Google finance can't find a quote for the symbol you provided.");
 			}
-		}		
+		}
+		
 		return Lists.newArrayList(output.toString());
 	}
 	

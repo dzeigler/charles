@@ -1,6 +1,8 @@
 package com.charlesbot.slack;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 
 public class ListStatsRow {
 
@@ -17,6 +19,7 @@ public class ListStatsRow {
 	private BigDecimal gain;
 	private BigDecimal gainPercent;
 	private BigDecimal dayGain;
+	private BigDecimal listPercent;
 
 	public String getSymbol() {
 		return symbol;
@@ -124,6 +127,25 @@ public class ListStatsRow {
 
 	public void setDayGain(BigDecimal dayGain) {
 		this.dayGain = dayGain;
+	}
+
+	public BigDecimal getListPercent() {
+		return listPercent;
+	}
+
+	public String getFormattedListPercent() {
+		
+		if (listPercent == null) {
+			return DEFAULT_VALUE;
+		} 
+		DecimalFormat decimalFormat = new DecimalFormat("#0.#%");
+		decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
+		return decimalFormat.format(listPercent);
+
+	}
+
+	public void setListPercent(BigDecimal listPercent) {
+		this.listPercent = listPercent;
 	}
 
 }

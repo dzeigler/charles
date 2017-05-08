@@ -84,7 +84,7 @@ public class ListQuoteCommandLineOptions extends Command {
 	}
 	
 	public static boolean matcher(String t) {
-		return t.matches(COMMAND_PATTERN);
+		return t.toLowerCase().matches(COMMAND_PATTERN.toLowerCase());
 	}
 
 	@Override

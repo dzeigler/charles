@@ -3,9 +3,6 @@ package com.charlesbot.slack;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.brsanthu.dataexporter.model.AlignType;
 import com.brsanthu.dataexporter.model.Row;
 import com.brsanthu.dataexporter.model.StringColumn;
@@ -15,13 +12,12 @@ import com.charlesbot.google.GoogleFinanceClient;
 import com.charlesbot.model.StockQuote;
 import com.charlesbot.model.StockQuotes;
 
-@Component
 public class StatsCommandLineOptionsToStrings implements CommandConverter<StatsCommandLineOptions> {
 
-	@Autowired
 	private GoogleFinanceClient googleFinanceClient;
 	
-	public StatsCommandLineOptionsToStrings() {
+	public StatsCommandLineOptionsToStrings(GoogleFinanceClient googleFinanceClient) {
+		this.googleFinanceClient = googleFinanceClient;
 	}
 	
 	@Override

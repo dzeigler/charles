@@ -66,7 +66,7 @@ public class MessageListener implements SlackMessagePostedListener {
 	private boolean isCharlesCommand(String command, String userIdMention) {
 		
 		for (String word : keywords) {
-			if (command.startsWith(word)) {
+			if (command.toLowerCase().startsWith(word.toLowerCase())) {
 				return true;
 			}
 		}

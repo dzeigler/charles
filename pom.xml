@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.4.4.RELEASE</version>
+		<version>1.5.3.RELEASE</version>
 	</parent>
 
 	<!-- Add typical dependencies for a web application -->
@@ -51,7 +51,7 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>18.0</version>
+			<version>21.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.newrelic.agent.java</groupId>
@@ -72,7 +72,7 @@
 		<dependency>
 			<groupId>com.github.Ullink</groupId>
 			<artifactId>simple-slack-api</artifactId>
-			<version>0.5.1</version>
+			<version>0.6.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.kstyrc</groupId>

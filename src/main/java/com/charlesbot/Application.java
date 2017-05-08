@@ -6,12 +6,12 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.HttpMessageConverters;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ConversionServiceFactoryBean;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.format.support.FormattingConversionService;
@@ -31,19 +31,24 @@ import com.charlesbot.slack.ChartCommandLineOptionsToStrings;
 import com.charlesbot.slack.HelpCommandLineOptionsToStrings;
 import com.charlesbot.slack.ListCommandLineOptionsToStrings;
 import com.charlesbot.slack.ListQuoteCommandLineOptionsToStrings;
+import com.charlesbot.slack.ListStatsCommandLineOptionsToStrings;
 import com.charlesbot.slack.QuoteCommandLineOptionsToStrings;
 import com.charlesbot.slack.RemoveFromListCommandLineOptionsToStrings;
 import com.charlesbot.slack.StatsCommandLineOptionsToStrings;
 import com.charlesbot.slack.StringToPortfolioQuoteMessage;
 import com.charlesbot.yahoo.YahooStockQuoteConverter;
 
+@SpringBootApplication
 @Configuration
-@EnableAutoConfiguration
-@ComponentScan
 public class Application extends WebMvcConfigurerAdapter {
 
 	private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
+	@Bean
+	public static PropertySourcesPlaceholderConfigurer ppc() {
+		return new PropertySourcesPlaceholderConfigurer();
+	}
+	
 	@Bean
 	public HttpMessageConverters customConverters() {
 		HttpMessageConverter<?> yahooStockQuoteConverter = new YahooStockQuoteConverter();
@@ -65,31 +70,27 @@ public class Application extends WebMvcConfigurerAdapter {
 	}
 
 	@Bean
-	public ConversionServiceFactoryBean conversionService(GoogleFinanceClient googleFinanceClient, WatchListRepository watchListRepository, AddToListCommandLineOptionsToStrings addToListCommandLineOptionsToString, RemoveFromListCommandLineOptionsToStrings removeFromListCommandLineOptionsToString
-			, ListCommandLineOptionsToStrings listCommandLineOptionsToString
-			, ChartCommandLineOptionsToStrings chartCommandLineOptionsToString
-			, StatsCommandLineOptionsToStrings statsCommandLineOptionsToString
-			, QuoteCommandLineOptionsToStrings quoteCommandLineOptionsToString
-			, StringToPortfolioQuoteMessage stringToPortfolioQuoteMessage
-			, ListQuoteCommandLineOptionsToStrings listQuoteCommandLineOptionsToString
-			, HelpCommandLineOptionsToStrings helpCommandLineOptionsToString) {
+	public ConversionServiceFactoryBean conversionService(GoogleFinanceClient googleFinanceClient, WatchListRepository watchListRepository) {
 		ConversionServiceFactoryBean conversionServiceFactoryBean = new ConversionServiceFactoryBean();
 		Set<Converter<?, ?>> converters = new HashSet<>();
-		converters.add(quoteCommandLineOptionsToString);
-		converters.add(statsCommandLineOptionsToString);
-		converters.add(chartCommandLineOptionsToString);
-		converters.add(addToListCommandLineOptionsToString);
-		converters.add(removeFromListCommandLineOptionsToString);
-		converters.add(listCommandLineOptionsToString);
-		converters.add(listQuoteCommandLineOptionsToString);
-		converters.add(helpCommandLineOptionsToString);
-		converters.add(stringToPortfolioQuoteMessage);
+		
+		QuoteCommandLineOptionsToStrings quoteCommandLineOptionsToStrings = new QuoteCommandLineOptionsToStrings(googleFinanceClient);
+		converters.add(quoteCommandLineOptionsToStrings);
+		converters.add(new StatsCommandLineOptionsToStrings(googleFinanceClient));
+		converters.add(new ChartCommandLineOptionsToStrings());
+		converters.add(new AddToListCommandLineOptionsToStrings(watchListRepository));
+		converters.add(new RemoveFromListCommandLineOptionsToStrings(watchListRepository));
+		converters.add(new ListCommandLineOptionsToStrings(watchListRepository));
+		converters.add(new ListQuoteCommandLineOptionsToStrings(watchListRepository, quoteCommandLineOptionsToStrings));
+		converters.add(new HelpCommandLineOptionsToStrings());
+		converters.add(new StringToPortfolioQuoteMessage(googleFinanceClient));
+		converters.add(new ListStatsCommandLineOptionsToStrings(watchListRepository, googleFinanceClient));
 		conversionServiceFactoryBean.setConverters(converters);
 		return conversionServiceFactoryBean;
 	}
 	
 	@Bean
-    public FormattingConversionService conversionService() {
+    public FormattingConversionService formattingConversionService() {
         FormattingConversionService conversionService = new FormattingConversionServiceFactoryBean().getObject();
         addFormatters(conversionService);
         return conversionService;
@@ -106,7 +107,6 @@ public class Application extends WebMvcConfigurerAdapter {
 	}
 
 	public static void main(String[] args) {
-		logger.debug("Starting application");
 		SpringApplication.run(Application.class, args);
 	}
 }

@@ -59,7 +59,7 @@ public class QuoteCommandLineOptions extends Command {
 	}
 
 	public static boolean matcher(String t) {
-		return t.startsWith(COMMAND);
+		return t.toLowerCase().startsWith(COMMAND.toLowerCase());
 	}
 
 	@Override

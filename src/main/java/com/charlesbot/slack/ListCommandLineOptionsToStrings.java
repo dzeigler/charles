@@ -3,19 +3,14 @@ package com.charlesbot.slack;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.cli.ListCommandLineOptions;
 import com.charlesbot.model.WatchList;
 import com.charlesbot.model.WatchListRepository;
 import com.google.common.collect.Lists;
 
-@Component
 public class ListCommandLineOptionsToStrings implements CommandConverter<ListCommandLineOptions> {
 
-	@Autowired
 	private WatchListRepository watchListRepository;
 
 	public ListCommandLineOptionsToStrings() {

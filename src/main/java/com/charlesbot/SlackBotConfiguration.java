@@ -22,13 +22,10 @@ public class SlackBotConfiguration {
 
 	private static final Logger logger = LoggerFactory.getLogger(SlackBotConfiguration.class);
 	
-	@Value("${SLACK_AUTH_TOKEN}")
-	private String slackAuthToken;
-	
 	private SlackSession slackSession;
 	
 	@Bean
-	public SlackSession slackSession(MessageListener messageListener) throws IOException {
+	public SlackSession slackSession(MessageListener messageListener, @Value("${SLACK_AUTH_TOKEN}") final String slackAuthToken) throws IOException {
 		if (slackSession == null) {
 			slackSession = SlackSessionFactory.createWebSocketSlackSession(slackAuthToken);
 			slackSession.connect();

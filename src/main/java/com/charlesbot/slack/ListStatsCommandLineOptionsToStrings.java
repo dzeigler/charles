@@ -1,5 +1,8 @@
 package com.charlesbot.slack;
 
+import static java.util.Comparator.nullsFirst;
+import static java.util.Comparator.reverseOrder;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -12,8 +15,6 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.brsanthu.dataexporter.model.AlignType;
 import com.brsanthu.dataexporter.model.StringColumn;
@@ -28,26 +29,16 @@ import com.charlesbot.model.WatchListRepository;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
-import static java.util.Comparator.naturalOrder;
-import static java.util.Comparator.nullsFirst;
-import static java.util.Comparator.reverseOrder;
-
-@Component
 public class ListStatsCommandLineOptionsToStrings implements CommandConverter<ListStatsCommandLineOptions> {
 
 	private static final Logger logger = LoggerFactory.getLogger(ListStatsCommandLineOptionsToStrings.class);
 
-	@Autowired
 	private WatchListRepository watchListRepository;
-
-	@Autowired
 	private GoogleFinanceClient googleFinanceClient;
 
-	public ListStatsCommandLineOptionsToStrings() {
-	}
-
-	public ListStatsCommandLineOptionsToStrings(WatchListRepository watchListRepository) {
+	public ListStatsCommandLineOptionsToStrings(WatchListRepository watchListRepository, GoogleFinanceClient googleFinanceClient) {
 		this.watchListRepository = watchListRepository;
+		this.googleFinanceClient = googleFinanceClient;
 	}
 
 	@Override
@@ -87,6 +78,7 @@ public class ListStatsCommandLineOptionsToStrings implements CommandConverter<Li
 				new StringColumn("formattedMarketValue", "Mkt value", 10, AlignType.TOP_RIGHT),
 				new StringColumn("formattedGain", "Gain", 8, AlignType.TOP_RIGHT),
 				new StringColumn("formattedGainPercent", "Gain %", 8, AlignType.TOP_RIGHT),
+				new StringColumn("formattedListPercent", "List%", 5, AlignType.TOP_RIGHT),
 				new StringColumn("formattedDayGain", "Day Gain", 10, AlignType.TOP_RIGHT) };
 
 		Iterable<Position> positions = getPositionsList(options.userId, options.watchListName);
@@ -99,6 +91,7 @@ public class ListStatsCommandLineOptionsToStrings implements CommandConverter<Li
 
 	private List<ListStatsRow> buildRows(Iterable<Position> positions) {
 		List<ListStatsRow> rows = new ArrayList<>();
+		BigDecimal marketValueTotal = BigDecimal.ZERO;
 		for (Position position : positions) {
 			ListStatsRow row = new ListStatsRow();
 			row.setSymbol(position.symbol);
@@ -106,11 +99,12 @@ public class ListStatsCommandLineOptionsToStrings implements CommandConverter<Li
 			if (!BigDecimal.ZERO.equals(position.price) && !BigDecimal.ZERO.equals(position.quantity)) {
 				BigDecimal costBasis = position.quantity.multiply(position.price);
 				BigDecimal marketValue = position.quantity.multiply(position.getQuote().getPriceAsBigDecimal());
+				marketValueTotal = marketValueTotal.add(marketValue);
 				BigDecimal gain = marketValue.subtract(costBasis);
 				BigDecimal gainPercent = gain.divide(costBasis, 6, RoundingMode.HALF_UP).multiply(new BigDecimal(100))
 						.setScale(2, RoundingMode.HALF_UP);
 				BigDecimal dayGain = position.quantity.multiply(position.getQuote().getChangeAsBigDecimal());
-
+				
 				row.setCostBasis(costBasis);
 				row.setMarketValue(marketValue);
 				row.setGain(gain);
@@ -133,6 +127,12 @@ public class ListStatsCommandLineOptionsToStrings implements CommandConverter<Li
 
 		}
 
+		for (ListStatsRow row : rows) {
+			if (row.getMarketValue() != null) {
+				row.setListPercent(row.getMarketValue().divide(marketValueTotal, 4, RoundingMode.HALF_UP));
+			}
+		}
+		
 		rows = rows.stream().sorted(
 				Comparator.comparing(ListStatsRow::getGainPercent, nullsFirst(reverseOrder())).thenComparing(ListStatsRow::getSymbol))
 				.collect(Collectors.toList());

@@ -3,9 +3,6 @@ package com.charlesbot.slack;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.charlesbot.cli.AddToListCommandLineOptions;
 import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.model.Transaction;
@@ -13,10 +10,8 @@ import com.charlesbot.model.WatchList;
 import com.charlesbot.model.WatchListRepository;
 import com.google.common.collect.Lists;
 
-@Component
 public class AddToListCommandLineOptionsToStrings implements CommandConverter<AddToListCommandLineOptions> {
 
-	@Autowired
 	private WatchListRepository watchListRepository;
 
 	public AddToListCommandLineOptionsToStrings() {

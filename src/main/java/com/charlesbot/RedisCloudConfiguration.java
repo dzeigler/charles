@@ -17,11 +17,8 @@ import redis.clients.jedis.JedisPoolConfig;
 @EnableRedisRepositories("com.charlesbot.model")
 public class RedisCloudConfiguration {
 
-	@Value("${REDISCLOUD_URL}")
-	private String redisUrl;
-
 	@Bean
-	public RedisConnectionFactory redisConnectionFactory() throws URISyntaxException {
+	public RedisConnectionFactory redisConnectionFactory(@Value("${REDISCLOUD_URL}") final String redisUrl) throws URISyntaxException {
 
 		// configure connection pooling
 		JedisPoolConfig poolConfig = new JedisPoolConfig();
@@ -43,9 +40,9 @@ public class RedisCloudConfiguration {
 	}
 
 	@Bean
-	public RedisTemplate<?, ?> redisTemplate() throws URISyntaxException {
+	public RedisTemplate<?, ?> redisTemplate(@Value("${REDISCLOUD_URL}") String redisUrl) throws URISyntaxException {
 		RedisTemplate<byte[], byte[]> template = new RedisTemplate<byte[], byte[]>();
-		template.setConnectionFactory(redisConnectionFactory());
+		template.setConnectionFactory(redisConnectionFactory(redisUrl));
 		template.setEnableTransactionSupport(true);
 		return template;
 	}
