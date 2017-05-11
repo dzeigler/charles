@@ -108,10 +108,10 @@ public class StockQuote {
 	
 	public BigDecimal getPriceAsBigDecimal() {
 		try {
-			if (price != null) {
+			if (getCurrentPrice() != null) {
 				DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
 				decimalFormat.setParseBigDecimal(true);
-				return (BigDecimal) decimalFormat.parse(price);
+				return (BigDecimal) decimalFormat.parse(getCurrentPrice());
 			}
 		} catch (ParseException e) {
 			// ignore exception
