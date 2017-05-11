@@ -40,7 +40,7 @@ public class ListCommandLineOptionsToStrings implements CommandConverter<ListCom
 				List<WatchList> watchLists = watchListRepository.findByUserId(options.userId);
 				String reply = watchLists.stream()
 			        .map(wl -> wl.name)
-			        .collect(Collectors.joining("\t"));
+			        .collect(Collectors.joining(" "));
 				output.append(reply);
 			} else {
 				WatchList watchList = watchListRepository.findByUserIdAndName(options.userId, options.watchListName);
