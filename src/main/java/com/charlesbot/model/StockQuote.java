@@ -1,6 +1,7 @@
 package com.charlesbot.model;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 import org.springframework.util.StringUtils;
 
@@ -105,10 +106,10 @@ public class StockQuote {
 	}
 	
 	public BigDecimal getPriceAsBigDecimal() {
-		try {
-			return new BigDecimal(price);
-		} catch (NumberFormatException nfe) {
-			
+		if (price != null) {
+			DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+			decimalFormat.setParseBigDecimal(true);
+			return (BigDecimal) decimalFormat.parse(price);
 		}
 		return null;
 	}
