@@ -24,7 +24,7 @@ public class ChartCommandLineOptions extends Command {
 	
 	static Options options;
 	
-	static Map<String, String> SUPPORTED_TIME_SPANS = Collections.unmodifiableMap(Stream.of(
+	public static Map<String, String> SUPPORTED_TIME_SPANS = Collections.unmodifiableMap(Stream.of(
                 new SimpleEntry<>("1d", "1"),
                 new SimpleEntry<>("2d", "2"),
                 new SimpleEntry<>("5d", "3"),

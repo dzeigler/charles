@@ -21,7 +21,7 @@ public class ChartCommandLineOptionsToStrings implements CommandConverter<ChartC
 			String helpMessage = CommandLineProcessor.generateHelpMessage(options);
 			output = "```"+helpMessage+"```";
 		} else {
-			String timeSpan = ChartCommandLineOptions.timeSpans().get(options.timeSpan);
+			String timeSpan = ChartCommandLineOptions.SUPPORTED_TIME_SPANS.get(options.timeSpan);
 			String compare = options.symbolsToCompare
 					.stream()
 					.filter(StringUtils::isNotBlank)	
