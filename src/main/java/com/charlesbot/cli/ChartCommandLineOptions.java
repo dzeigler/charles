@@ -1,33 +1,52 @@
 package com.charlesbot.cli;
 
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.lang3.StringUtils;
 
-import com.newrelic.agent.deps.com.google.common.collect.Lists;
-
 public class ChartCommandLineOptions extends Command {
 
 	public static final String COMMAND = "!chart";
 	public static final String COMMAND_SYNTAX = COMMAND + " <SYMBOL>";
-	public static final String COMMAND_HEADER = "SYMBOL is the Yahoo Finance ticker for the stock or index";
+	public static final String COMMAND_HEADER = "SYMBOL is the BigCharts ticker for the stock or index";
 	public static final String COMMAND_DESCRIPTION = "Returns the url for a chart of a stock's price history over time";
 	private static final String DEFAULT_TIME_SPAN = "1y";
-	private static final List<String> SUPPORTED_TIME_SPANS;
 	
 	static Options options;
 	
+	static Map<String, String> SUPPORTED_TIME_SPANS = Collections.unmodifiableMap(Stream.of(
+                new SimpleEntry<>("1d", "1"),
+                new SimpleEntry<>("2d", "2"),
+                new SimpleEntry<>("5d", "3"),
+        		new SimpleEntry<>("10d", "18"),
+        		new SimpleEntry<>("1m", "4"),
+        		new SimpleEntry<>("2m", "5"),
+        		new SimpleEntry<>("3m", "6"),
+        		new SimpleEntry<>("6m", "7"),
+        		new SimpleEntry<>("ytd", "19"),
+        		new SimpleEntry<>("1y", "8"),
+        		new SimpleEntry<>("2y", "9"),
+        		new SimpleEntry<>("3y", "10"),
+        		new SimpleEntry<>("4y", "11"),
+        		new SimpleEntry<>("5y", "12"),
+        		new SimpleEntry<>("10y", "13"),
+        		new SimpleEntry<>("my", "20")
+        		)
+                .collect(Collectors.toMap((e) -> e.getKey(), (e) -> e.getValue())));
+    
+
+	
 	static {
-		// populate supported time spans
-		SUPPORTED_TIME_SPANS = Lists.newArrayList("1d","5d","1m","3m","6m","1y","2y","5y","my");
-		
-		
 		// create the Options
 		options = new Options();
 		options.addOption("?", "help", false, "prints this message");
@@ -37,7 +56,7 @@ public class ChartCommandLineOptions extends Command {
 				.longOpt("time")
 				.hasArg(true)
 				.argName("TIME_SPAN")
-				.desc("sets the time span for the chart in days (1d, 5d), months (1m, 3m, 6m), or years (1y, 2y, 5y, or my (maximum years)). Default is 1y. TIME_SPAN = (1d|5d|1m|3m|6m|1y|2y|5y|my)")
+				.desc("sets the time span for the chart in days (1d, 2d, 5d, 10d), months (1m, 2m, 3m, 6m), or years (1y, 2y, 3y, 4y, 5y, 10y, or my (maximum years)) or year-to-date (ytd). Default is 1y. TIME_SPAN = (1d|2d|5d|10d|1m|2m|3m|6m|1y|2y|3y|4y|5y|10y|my|ytd)")
 				.type(String.class)
 				.valueSeparator()
 				.build()
@@ -96,7 +115,7 @@ public class ChartCommandLineOptions extends Command {
 			this.tickerSymbol = commandLine.getArgList().get(0);
 		}
 		timeSpan = commandLine.getOptionValue('t', DEFAULT_TIME_SPAN);
-		if (!SUPPORTED_TIME_SPANS.contains(timeSpan)) {
+		if (!SUPPORTED_TIME_SPANS.containsKey(timeSpan)) {
 			addWarning("The time span provided is not supported by Yahoo! Using the default of " + DEFAULT_TIME_SPAN + ".");
 			timeSpan = DEFAULT_TIME_SPAN;
 		}
