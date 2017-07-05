@@ -29,7 +29,7 @@ public class ChartCommandLineOptionsToStrings implements CommandConverter<ChartC
 			String symbol = options.tickerSymbol;
 			
 //			String url = MessageFormat.format("<http://chart.finance.yahoo.com/z?s={0}&t={1}&c={2}&q=l&z=l&p=s&a=v&cb={3,number,#}>", symbol, timeSpan, compare, System.currentTimeMillis());
-			String url = MessageFormat.format("http://bigcharts.marketwatch.com/kaavio.Webhost/charts/big.chart?symb={0}&time={1}&comp={2}&cb={3,number,#}>", symbol, timeSpan, compare, System.currentTimeMillis());
+			String url = MessageFormat.format("<http://bigcharts.marketwatch.com/kaavio.Webhost/charts/big.chart?symb={0}&time={1}&comp={2}&cb={3,number,#}>", symbol, timeSpan, compare, System.currentTimeMillis());
 			
 			output = url;
 		}
