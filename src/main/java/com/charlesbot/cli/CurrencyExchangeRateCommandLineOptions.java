@@ -10,7 +10,7 @@ public class CurrencyExchangeRateCommandLineOptions extends Command {
 	public static final String COMMAND = "!cq";
 	public static final String COMMAND_SYNTAX = COMMAND + " <QUOTE_CURRENCY>";
 	public static final String COMMAND_HEADER = "QUOTE_CURRENCY is the ISO 4217 code for the quote currency (e.g. EUR, JPY, BTC, ETH, etc.)";
-	public static final String COMMAND_DESCRIPTION = "Returned rate will define the quote currency's exchange rate for one unit of the base currency.";
+	public static final String COMMAND_DESCRIPTION = "Returns the exchange rate for converting one unit of the base currency to the quote currency.";
 	
 	static Options options;
 	
