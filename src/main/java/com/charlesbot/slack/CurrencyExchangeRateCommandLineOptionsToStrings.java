@@ -41,7 +41,7 @@ public class CurrencyExchangeRateCommandLineOptionsToStrings implements CommandC
 				output.append(MessageFormat.format("{0} {1} = {2,number,#.########} {3}", 1, options.quoteCurrency, rate, options.baseCurrency));
 						
 			} else {
-				output.append("Coinbase can't find the exchnage rate for the currency pair " + options.getFormattedCurrencyPair() + ".");
+				output.append("Coinbase can't find the exchange rate for the currency pair " + options.getFormattedCurrencyPair() + ".");
 			}
 		}
 		
