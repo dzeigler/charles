@@ -25,7 +25,7 @@ public class MessageListener implements SlackMessagePostedListener {
 	private CommandLineProcessor commandLineProcessor;
 	
 	MessageListener() {
-		keywords = Lists.newArrayList("!q", "!stats", "!chart", "!pf");
+		keywords = Lists.newArrayList("!q", "!stats", "!chart", "!pf", "!cq");
 	}
 	
 	public MessageListener(ConversionService conversionService, WatchListRepository repo, CommandLineProcessor commandLineProcessor) {

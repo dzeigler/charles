@@ -23,11 +23,14 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import com.charlesbot.cli.CommandLineProcessor;
+import com.charlesbot.coinbase.CoinBaseClient;
+import com.charlesbot.coinbase.CoinBaseCurrencyExchangeRateConverter;
 import com.charlesbot.google.GoogleFinanceClient;
 import com.charlesbot.google.GoogleStockQuoteConverter;
 import com.charlesbot.model.WatchListRepository;
 import com.charlesbot.slack.AddToListCommandLineOptionsToStrings;
 import com.charlesbot.slack.ChartCommandLineOptionsToStrings;
+import com.charlesbot.slack.CurrencyExchangeRateCommandLineOptionsToStrings;
 import com.charlesbot.slack.HelpCommandLineOptionsToStrings;
 import com.charlesbot.slack.ListCommandLineOptionsToStrings;
 import com.charlesbot.slack.ListQuoteCommandLineOptionsToStrings;
@@ -53,7 +56,8 @@ public class Application extends WebMvcConfigurerAdapter {
 	public HttpMessageConverters customConverters() {
 		HttpMessageConverter<?> yahooStockQuoteConverter = new YahooStockQuoteConverter();
 		HttpMessageConverter<?> googleStockQuoteConverter = new GoogleStockQuoteConverter();
-		return new HttpMessageConverters(yahooStockQuoteConverter, googleStockQuoteConverter);
+		HttpMessageConverter<?> coinBaseCurrencyExchangeRateConverter = new CoinBaseCurrencyExchangeRateConverter();
+		return new HttpMessageConverters(yahooStockQuoteConverter, googleStockQuoteConverter, coinBaseCurrencyExchangeRateConverter);
 	}
 
 	@Bean
@@ -70,7 +74,7 @@ public class Application extends WebMvcConfigurerAdapter {
 	}
 
 	@Bean
-	public ConversionServiceFactoryBean conversionService(GoogleFinanceClient googleFinanceClient, WatchListRepository watchListRepository) {
+	public ConversionServiceFactoryBean conversionService(GoogleFinanceClient googleFinanceClient, CoinBaseClient coinBaseClient, WatchListRepository watchListRepository) {
 		ConversionServiceFactoryBean conversionServiceFactoryBean = new ConversionServiceFactoryBean();
 		Set<Converter<?, ?>> converters = new HashSet<>();
 		
@@ -85,6 +89,7 @@ public class Application extends WebMvcConfigurerAdapter {
 		converters.add(new HelpCommandLineOptionsToStrings());
 		converters.add(new StringToPortfolioQuoteMessage(googleFinanceClient));
 		converters.add(new ListStatsCommandLineOptionsToStrings(watchListRepository, googleFinanceClient));
+		converters.add(new CurrencyExchangeRateCommandLineOptionsToStrings(coinBaseClient));
 		conversionServiceFactoryBean.setConverters(converters);
 		return conversionServiceFactoryBean;
 	}
@@ -99,6 +104,11 @@ public class Application extends WebMvcConfigurerAdapter {
 	@Bean
 	public GoogleFinanceClient googleFinanceClient(RestTemplate restTemplate, AsyncRestTemplate asyncRestTemplate) {
 		return new GoogleFinanceClient(restTemplate, asyncRestTemplate);
+	}
+	
+	@Bean
+	public CoinBaseClient coinBaseClient(RestTemplate restTemplate) {
+		return new CoinBaseClient(restTemplate);
 	}
 
 	@Bean
