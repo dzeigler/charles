@@ -64,6 +64,9 @@ public class StockQuote {
 	}
 
 	public String getChange() {
+		if (StringUtils.isEmpty(change)) {
+			return "-";
+		}
 		return change;
 	}
 	
@@ -77,6 +80,9 @@ public class StockQuote {
 	}
 	
 	public String getChangeInPercent() {
+		if (StringUtils.isEmpty(changeInPercent)) {
+			return "-";
+		}
 		return changeInPercent;
 	}
 
@@ -99,10 +105,16 @@ public class StockQuote {
 	}
 
 	public String getMovingAverage50Day() {
+		if (StringUtils.isEmpty(fiftyDayMovingAverage)) {
+			return "-";
+		}
 		return fiftyDayMovingAverage;
 	}
 
 	public String getPrice() {
+		if (StringUtils.isEmpty(price)) {
+			return "-";
+		}
 		return price;
 	}
 	
