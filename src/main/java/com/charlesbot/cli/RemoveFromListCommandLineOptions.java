@@ -10,12 +10,12 @@ import org.apache.commons.cli.Options;
 public class RemoveFromListCommandLineOptions extends Command {
 
 	public static final String COMMAND = "rm";
-	public static final String COMMAND_SYNTAX = COMMAND + "<LIST_NAME> [<SYMBOL>]";
+	public static final String COMMAND_SYNTAX = COMMAND + " <LIST_NAME> [<SYMBOL>]";
 	public static final String COMMAND_HEADER = 
 			"LIST_NAME is the name watch list being modified\n"
 			+ "SYMBOL is the Yahoo Finance ticker for the stock or index";
 	public static final String COMMAND_DESCRIPTION = "Removes the first matching symbol from the list or the entire list if no symbols are provided";
-	public static final String COMMAND_PATTERN = "^@\\w+:?\\s*(rm|del) .*";
+	public static final String COMMAND_PATTERN = "^@\\w+:?\\s*(rm|del).*";
 
 	static Options options;
 
@@ -66,7 +66,7 @@ public class RemoveFromListCommandLineOptions extends Command {
 
 	@Override
 	public void populateOptions(CommandLine commandLine, String userId) {
-		if (commandLine.getArgList().isEmpty()) {
+		if (commandLine.getArgList().isEmpty() || commandLine.hasOption('?')) {
 			forceHelp();
 		} else if (commandLine.getArgList().size() < 2) {
 			forceHelp();

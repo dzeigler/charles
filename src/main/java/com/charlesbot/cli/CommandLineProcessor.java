@@ -48,37 +48,35 @@ public class CommandLineProcessor {
 		// tokenize the command
 		String[] tokens = commandString.split("\\s+");
 		
-		if (tokens.length > 0) {
 			
-			Supplier<Command> supplier = supportedCommands.keySet()
-				.stream()
-				.filter(c -> c.test(commandString))
-				.findFirst()
-				.map(supportedCommands::get)
-				.orElse(new Supplier<Command>() {
-					@Override
-					public Command get() {
-						return null;
-					}
-				})
-				;
+		Supplier<Command> supplier = supportedCommands.keySet()
+			.stream()
+			.filter(c -> c.test(commandString))
+			.findFirst()
+			.map(supportedCommands::get)
+			.orElse(new Supplier<Command>() {
+				@Override
+				public Command get() {
+					return new HelpCommandLineOptions();
+				}
+			})
+			;
+		
+		if (supplier.get() != null) {
+			command = supplier.get();
 			
-			if (supplier.get() != null) {
-				command = supplier.get();
+			String[] arguments = new String[tokens.length-1];
+			if (tokens.length > 1) {
+				Arrays.asList(tokens).subList(1, tokens.length).toArray(arguments);
+			}
+			try {
+				command.setBotUsername(botUserName);
+				CommandLine commandLine = parser.parse(command.getOptions(), arguments);	
+				command.populateOptions(commandLine, senderUserId);
 				
-				String[] arguments = new String[tokens.length-1];
-				if (tokens.length > 1) {
-					Arrays.asList(tokens).subList(1, tokens.length).toArray(arguments);
-				}
-				try {
-					command.setBotUsername(botUserName);
-					CommandLine commandLine = parser.parse(command.getOptions(), arguments);	
-					command.populateOptions(commandLine, senderUserId);
-					
-				} catch (Exception e) {
-					log.error("An error occurred while processing [{}]", e, commandString);
-					command.forceHelp();
-				}
+			} catch (Exception e) {
+				log.error("An error occurred while processing [{}] {}", e, commandString);
+				command.forceHelp();
 			}
 		}
 		

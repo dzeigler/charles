@@ -29,7 +29,7 @@ public class RemoveFromListCommandLineOptionsToStrings implements CommandConvert
 			}
 			String helpMessage = CommandLineProcessor.generateHelpMessage(options);
 			output.append(helpMessage + "```");
-		} if (!options.getWarnings().isEmpty()) {
+		} else if (!options.getWarnings().isEmpty()) {
 			for (String warning : options.getWarnings()) { 
 				output.append(warning + "\n");
 			}
