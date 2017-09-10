@@ -8,16 +8,16 @@ import com.brsanthu.dataexporter.model.Row;
 import com.brsanthu.dataexporter.model.StringColumn;
 import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.cli.StatsCommandLineOptions;
-import com.charlesbot.google.GoogleFinanceClient;
+import com.charlesbot.yahoo.YahooFinanceClient;
 import com.charlesbot.model.StockQuote;
 import com.charlesbot.model.StockQuotes;
 
 public class StatsCommandLineOptionsToStrings implements CommandConverter<StatsCommandLineOptions> {
 
-	private GoogleFinanceClient googleFinanceClient;
+	private YahooFinanceClient YahooFinanceClient;
 	
-	public StatsCommandLineOptionsToStrings(GoogleFinanceClient googleFinanceClient) {
-		this.googleFinanceClient = googleFinanceClient;
+	public StatsCommandLineOptionsToStrings(YahooFinanceClient YahooFinanceClient) {
+		this.YahooFinanceClient = YahooFinanceClient;
 	}
 	
 	@Override
@@ -31,7 +31,7 @@ public class StatsCommandLineOptionsToStrings implements CommandConverter<StatsC
 			outputs.add(sb.toString());
 		} else {
 
-			StockQuotes stockQuotes = googleFinanceClient.getStockQuotes(options.tickerSymbols).get();
+			StockQuotes stockQuotes = YahooFinanceClient.getStockQuotes(options.tickerSymbols).get();
 			
 			StringColumn[] columns = {
 					new StringColumn("Symbol",8, AlignType.TOP_LEFT),
@@ -40,6 +40,7 @@ public class StatsCommandLineOptionsToStrings implements CommandConverter<StatsC
 					new StringColumn("Mkt Cap",8, AlignType.TOP_RIGHT),
 					new StringColumn("P/E",8, AlignType.TOP_RIGHT),
 					new StringColumn("EPS",10, AlignType.TOP_RIGHT),
+					new StringColumn("Yield",6, AlignType.TOP_RIGHT),
 					new StringColumn("Day Low",10, AlignType.TOP_RIGHT),
 					new StringColumn("Day High",10, AlignType.TOP_RIGHT),
 					new StringColumn("52wk Low",10, AlignType.TOP_RIGHT),
@@ -48,7 +49,7 @@ public class StatsCommandLineOptionsToStrings implements CommandConverter<StatsC
 			
 			List<Row> rows = new ArrayList<>();
 			for (StockQuote quote : stockQuotes.get()) {
-				Row row = new Row(quote.getSymbol(), quote.getName(), quote.getCurrentPrice(), quote.getMarketCap(), quote.getPe(), quote.getEps(), quote.getDayLow(), quote.getDayHigh(),
+				Row row = new Row(quote.getSymbol(), quote.getName(), quote.getCurrentPrice(), quote.getMarketCap(), quote.getPe(), quote.getEps(), quote.getYield(), quote.getDayLow(), quote.getDayHigh(),
 						quote.getFiftyTwoWeekLow(), quote.getFiftyTwoWeekHigh());
 				rows.add(row);
 				

@@ -23,13 +23,13 @@ import com.brsanthu.dataexporter.DataExporter;
 import com.brsanthu.dataexporter.model.AlignType;
 import com.brsanthu.dataexporter.model.StringColumn;
 import com.brsanthu.dataexporter.output.texttable.TextTableExporter;
-import com.charlesbot.google.GoogleFinanceClient;
+import com.charlesbot.yahoo.YahooFinanceClient;
 import com.charlesbot.model.StockQuote;
 import com.charlesbot.model.StockQuotes;
 
 public class StringToPortfolioQuoteMessage implements Converter<String, PortfolioQuoteMessage> {
 
-	private GoogleFinanceClient googleFinanceClient;
+	private YahooFinanceClient YahooFinanceClient;
 	
 	public class Position {
 		final String symbol;
@@ -56,8 +56,8 @@ public class StringToPortfolioQuoteMessage implements Converter<String, Portfoli
 	private CommandLineParser parser;
 	private Options options;
 
-	public StringToPortfolioQuoteMessage(GoogleFinanceClient googleFinanceClient) {
-		this.googleFinanceClient = googleFinanceClient;
+	public StringToPortfolioQuoteMessage(YahooFinanceClient YahooFinanceClient) {
+		this.YahooFinanceClient = YahooFinanceClient;
 		// create the command line parser
 		parser = new DefaultParser();
 
@@ -87,7 +87,7 @@ public class StringToPortfolioQuoteMessage implements Converter<String, Portfoli
 				// get stock quotes for each key
 				Set<String> keySet = positions.keySet();
 				ArrayList<String> list = new ArrayList<>(keySet);
-				Optional<StockQuotes> stockQuotes = googleFinanceClient.getStockQuotes(list);
+				Optional<StockQuotes> stockQuotes = YahooFinanceClient.getStockQuotes(list);
 				
 				// associate the StockQuote with each position
 				stockQuotes.ifPresent(quotes ->
@@ -179,7 +179,7 @@ public class StringToPortfolioQuoteMessage implements Converter<String, Portfoli
 		HelpFormatter formatter = new HelpFormatter();
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
-		formatter.printHelp(pw, 80, "!pf <SYMBOL>,<QUANTITY>,<PRICE>[ <SYMBOL>,<QUANTITY>,<PRICE>]+", "SYMBOL is the Google Finance ticker for the stock or index; QUANTITY is the number of shares; PRICE is the purchase price", options, 0, 3, "", true);
+		formatter.printHelp(pw, 80, "!pf <SYMBOL>,<QUANTITY>,<PRICE>[ <SYMBOL>,<QUANTITY>,<PRICE>]+", "SYMBOL is the Yahoo Finance ticker for the stock or index; QUANTITY is the number of shares; PRICE is the purchase price", options, 0, 3, "", true);
 		String string = sw.toString();
 		return string;
 	}

@@ -25,7 +25,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.coinbase.CoinBaseClient;
 import com.charlesbot.coinbase.CoinBaseCurrencyExchangeRateConverter;
-import com.charlesbot.google.GoogleFinanceClient;
 import com.charlesbot.google.GoogleStockQuoteConverter;
 import com.charlesbot.model.WatchListRepository;
 import com.charlesbot.slack.AddToListCommandLineOptionsToStrings;
@@ -39,12 +38,14 @@ import com.charlesbot.slack.QuoteCommandLineOptionsToStrings;
 import com.charlesbot.slack.RemoveFromListCommandLineOptionsToStrings;
 import com.charlesbot.slack.StatsCommandLineOptionsToStrings;
 import com.charlesbot.slack.StringToPortfolioQuoteMessage;
+import com.charlesbot.yahoo.YahooFinanceClient;
 import com.charlesbot.yahoo.YahooStockQuoteConverter;
 
 @SpringBootApplication
 @Configuration
 public class Application extends WebMvcConfigurerAdapter {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
 	@Bean
@@ -74,21 +75,21 @@ public class Application extends WebMvcConfigurerAdapter {
 	}
 
 	@Bean
-	public ConversionServiceFactoryBean conversionService(GoogleFinanceClient googleFinanceClient, CoinBaseClient coinBaseClient, WatchListRepository watchListRepository) {
+	public ConversionServiceFactoryBean conversionService(YahooFinanceClient YahooFinanceClient, CoinBaseClient coinBaseClient, WatchListRepository watchListRepository) {
 		ConversionServiceFactoryBean conversionServiceFactoryBean = new ConversionServiceFactoryBean();
 		Set<Converter<?, ?>> converters = new HashSet<>();
 		
-		QuoteCommandLineOptionsToStrings quoteCommandLineOptionsToStrings = new QuoteCommandLineOptionsToStrings(googleFinanceClient);
+		QuoteCommandLineOptionsToStrings quoteCommandLineOptionsToStrings = new QuoteCommandLineOptionsToStrings(YahooFinanceClient);
 		converters.add(quoteCommandLineOptionsToStrings);
-		converters.add(new StatsCommandLineOptionsToStrings(googleFinanceClient));
+		converters.add(new StatsCommandLineOptionsToStrings(YahooFinanceClient));
 		converters.add(new ChartCommandLineOptionsToStrings());
 		converters.add(new AddToListCommandLineOptionsToStrings(watchListRepository));
 		converters.add(new RemoveFromListCommandLineOptionsToStrings(watchListRepository));
 		converters.add(new ListCommandLineOptionsToStrings(watchListRepository));
 		converters.add(new ListQuoteCommandLineOptionsToStrings(watchListRepository, quoteCommandLineOptionsToStrings));
 		converters.add(new HelpCommandLineOptionsToStrings());
-		converters.add(new StringToPortfolioQuoteMessage(googleFinanceClient));
-		converters.add(new ListStatsCommandLineOptionsToStrings(watchListRepository, googleFinanceClient));
+		converters.add(new StringToPortfolioQuoteMessage(YahooFinanceClient));
+		converters.add(new ListStatsCommandLineOptionsToStrings(watchListRepository, YahooFinanceClient));
 		converters.add(new CurrencyExchangeRateCommandLineOptionsToStrings(coinBaseClient));
 		conversionServiceFactoryBean.setConverters(converters);
 		return conversionServiceFactoryBean;
@@ -102,8 +103,8 @@ public class Application extends WebMvcConfigurerAdapter {
     }
 
 	@Bean
-	public GoogleFinanceClient googleFinanceClient(RestTemplate restTemplate, AsyncRestTemplate asyncRestTemplate) {
-		return new GoogleFinanceClient(restTemplate, asyncRestTemplate);
+	public YahooFinanceClient yahooFinanceClient() {
+		return new YahooFinanceClient();
 	}
 	
 	@Bean

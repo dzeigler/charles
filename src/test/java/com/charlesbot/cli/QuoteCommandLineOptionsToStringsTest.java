@@ -17,7 +17,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.mockito.stubbing.Answer;
 
-import com.charlesbot.google.GoogleFinanceClient;
+import com.charlesbot.yahoo.YahooFinanceClient;
 import com.charlesbot.model.StockQuote;
 import com.charlesbot.model.StockQuotes;
 import com.charlesbot.slack.QuoteCommandLineOptionsToStrings;
@@ -25,7 +25,7 @@ import com.charlesbot.slack.QuoteCommandLineOptionsToStrings;
 public class QuoteCommandLineOptionsToStringsTest {
 
 	@Mock
-	private GoogleFinanceClient client;
+	private YahooFinanceClient client;
 
 	@Rule
 	public MockitoRule rule = MockitoJUnit.rule();

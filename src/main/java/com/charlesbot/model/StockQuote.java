@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 
-import org.springframework.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,46 +12,43 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class StockQuote {
 	// c1
-	@JsonProperty("c")
+	@JsonProperty("Change")
 	private String change;
 	// p2
-	@JsonProperty("cp")
+	@JsonProperty("ChangeinPercent")
 	private String changeInPercent;
 	// h0
-	@JsonProperty("hi")
+	@JsonProperty("DaysHigh")
 	private String dayHigh;
 	// g0
-	@JsonProperty("lo")
+	@JsonProperty("DaysLow")
 	private String dayLow;
 	// m3
+	@JsonProperty("FiftydayMovingAverage")
 	private String fiftyDayMovingAverage;
 	// l1 - last price
-	@JsonProperty("l")
+	@JsonProperty("LastTradePriceOnly")
 	private String price;
 	// s0
-	@JsonProperty("t")
+	@JsonProperty("symbol")
 	private String symbol;
 	// n0
-	@JsonProperty("name")
+	@JsonProperty("Name")
 	private String name;
 
-	@JsonProperty("mc")
+	@JsonProperty("MarketCapitalization")
 	private String marketCap;
-	@JsonProperty("pe")
+	@JsonProperty("PERatio")
 	private String pe;
-	@JsonProperty("eps")
+	@JsonProperty("EarningsShare")
 	private String eps;
-	@JsonProperty("hi52")
+	@JsonProperty("YearHigh")
 	private String fiftyTwoWeekHigh;
-	@JsonProperty("lo52")
+	@JsonProperty("YearLow")
 	private String fiftyTwoWeekLow;
-	@JsonProperty("shares")
-	private String shares;
-	@JsonProperty("beta")
-	private String beta;
-	@JsonProperty("div")
+	@JsonProperty("DividendShare")
 	private String dividend;
-	@JsonProperty("yld")
+	@JsonProperty("DividendYield")
 	private String yield;
 	@JsonProperty("el")
 	private String extendedHoursPrice;
@@ -87,6 +84,9 @@ public class StockQuote {
 	}
 
 	public void setChangeInPercent(String changeInPercent) {
+		if (StringUtils.isNotBlank(changeInPercent)) {
+			changeInPercent = changeInPercent.replace("%", "");
+		}
 		this.changeInPercent = changeInPercent;
 	}
 
@@ -163,6 +163,9 @@ public class StockQuote {
 	}
 
 	public void setSymbol(String symbol) {
+		if (StringUtils.isNotEmpty(symbol)) {
+			symbol = symbol.toUpperCase();
+		}
 		this.symbol = symbol;
 	}
 
@@ -227,25 +230,6 @@ public class StockQuote {
 
 	public void setFiftyTwoWeekLow(String fiftyTwoWeekLow) {
 		this.fiftyTwoWeekLow = fiftyTwoWeekLow;
-	}
-
-	public String getShares() {
-		return shares;
-	}
-
-	public void setShares(String shares) {
-		this.shares = shares;
-	}
-
-	public String getBeta() {
-		if (StringUtils.isEmpty(beta)) {
-			return "-";
-		}
-		return beta;
-	}
-
-	public void setBeta(String beta) {
-		this.beta = beta;
 	}
 
 	public String getExtendedHoursPrice() {

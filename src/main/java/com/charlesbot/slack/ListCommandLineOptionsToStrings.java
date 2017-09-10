@@ -3,6 +3,9 @@ package com.charlesbot.slack;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.cli.ListCommandLineOptions;
 import com.charlesbot.model.WatchList;
@@ -11,6 +14,9 @@ import com.google.common.collect.Lists;
 
 public class ListCommandLineOptionsToStrings implements CommandConverter<ListCommandLineOptions> {
 
+	@SuppressWarnings("unused")
+	private static final Logger log = LoggerFactory.getLogger(ListCommandLineOptionsToStrings.class);
+	
 	private WatchListRepository watchListRepository;
 
 	public ListCommandLineOptionsToStrings() {
@@ -55,6 +61,7 @@ public class ListCommandLineOptionsToStrings implements CommandConverter<ListCom
 				}
 			}
 		}
+		
 		return Lists.newArrayList(output.toString());
 	}
 

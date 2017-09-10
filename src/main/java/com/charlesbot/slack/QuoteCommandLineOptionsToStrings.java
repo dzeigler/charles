@@ -8,10 +8,10 @@ import org.springframework.util.StringUtils;
 
 import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.cli.QuoteCommandLineOptions;
-import com.charlesbot.google.GoogleFinanceClient;
 import com.charlesbot.model.StockQuote;
 import com.charlesbot.model.StockQuotePercentageComparator;
 import com.charlesbot.model.StockQuotes;
+import com.charlesbot.yahoo.YahooFinanceClient;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Range;
 import com.google.common.collect.RangeMap;
@@ -20,7 +20,7 @@ import com.google.common.collect.TreeRangeMap;
 public class QuoteCommandLineOptionsToStrings implements CommandConverter<QuoteCommandLineOptions> {
 
 	RangeMap<Double, String> percentRanges;
-	private GoogleFinanceClient googleFinanceClient;
+	private YahooFinanceClient YahooFinanceClient;
 	
 	public QuoteCommandLineOptionsToStrings() {
 		// initialize the percent ranges
@@ -38,9 +38,9 @@ public class QuoteCommandLineOptionsToStrings implements CommandConverter<QuoteC
 		percentRanges.put(Range.atMost(-10d), "red5");         // (-∞, -10]
 	}
 	
-	public QuoteCommandLineOptionsToStrings(GoogleFinanceClient googleFinanceClient) {
+	public QuoteCommandLineOptionsToStrings(YahooFinanceClient YahooFinanceClient) {
 		this();
-		this.googleFinanceClient = googleFinanceClient;
+		this.YahooFinanceClient = YahooFinanceClient;
 	}
 	
 	@Override
@@ -50,7 +50,7 @@ public class QuoteCommandLineOptionsToStrings implements CommandConverter<QuoteC
 			String helpMessage = CommandLineProcessor.generateHelpMessage(options);
 			output.append("```"+helpMessage+"```");
 		} else {
-			Optional<StockQuotes> stockQuotesResult = googleFinanceClient.getStockQuotes(options.tickerSymbols);
+			Optional<StockQuotes> stockQuotesResult = YahooFinanceClient.getStockQuotes(options.tickerSymbols);
 			if (stockQuotesResult.isPresent()) {
 				StockQuotes stockQuotes = stockQuotesResult.get();
 			
@@ -73,10 +73,9 @@ public class QuoteCommandLineOptionsToStrings implements CommandConverter<QuoteC
 					}
 				}
 			} else {
-				output.append("Google finance can't find a quote for the symbol you provided.");
+				output.append("Yahoo finance can't find a quote for the symbol you provided.");
 			}
 		}
-		
 		return Lists.newArrayList(output.toString());
 	}
 	
