@@ -80,10 +80,10 @@ public class AddToListCommandLineOptions extends Command {
 			Transaction transaction = new Transaction();
 			this.transactions.add(transaction);
 			transaction.setSymbol(transactionTokens.get(0));
-			if (transactionTokens.size() != 1 && transactionTokens.size() != 4) {
+			if (transactionTokens.size() != 1 && transactionTokens.size() != 3 && transactionTokens.size() != 4) {
 				addError("The format for this entry is not recognized: " + transactionString);
 				forceHelp();
-			} else if (transactionTokens.size() == 4) {
+			} else if (transactionTokens.size() == 3 || transactionTokens.size() == 4) {
 				String quantityString = transactionTokens.get(1);
 				try {
 					BigDecimal quantity = new BigDecimal(quantityString);
@@ -100,15 +100,18 @@ public class AddToListCommandLineOptions extends Command {
 					addError(priceString + " isn't a number so I can't use it as a price for " + transaction.getSymbol());
 				}
 				
-				String dateString = transactionTokens.get(3);
-				try {
-					LocalDate date = LocalDate.now();
-					if (StringUtils.isNotEmpty(dateString)) {
-						date = LocalDate.parse(dateString, Transaction.DATE_FORMATTER);
+				if (transactionTokens.size() > 3) {
+					String dateString = transactionTokens.get(3);
+				
+					try {
+						LocalDate date = LocalDate.now();
+						if (StringUtils.isNotEmpty(dateString)) {
+							date = LocalDate.parse(dateString, Transaction.DATE_FORMATTER);
+						}
+						transaction.date = date;
+					} catch (DateTimeParseException e) {
+						addError("The date should be in the format yyyy-MM-dd for " + transaction.getSymbol());
 					}
-					transaction.date = date;
-				} catch (DateTimeParseException e) {
-					addError("The date should be in the format yyyy-MM-dd for " + transaction.getSymbol());
 				}
 			}
 			
