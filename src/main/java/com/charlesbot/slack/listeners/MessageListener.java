@@ -46,6 +46,9 @@ public class MessageListener implements SlackMessagePostedListener {
 				SlackChannel channel = event.getChannel();
 				
 				String sanitizedCommandString = event.getMessageContent().replace(userIdMention, userNameMention);
+
+				// slack adds <> around some stock symbols it thinks are links, like 2498.tw
+				sanitizedCommandString = sanitizedCommandString.replaceAll("<.+\\|(.*)>", "$1");
 				
 				Command command = commandLineProcessor.process(sanitizedCommandString, event.getSender().getId(), sessionPersona.getUserName());
 				@SuppressWarnings("unchecked")
