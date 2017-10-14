@@ -1,5 +1,7 @@
 package com.charlesbot.model;
 
+import java.text.NumberFormat;
+
 public class CurrencyQuote {
 
 	private String fromCurrency;
@@ -132,7 +134,9 @@ public class CurrencyQuote {
 	public Double getTotalChangeInPercent() {
 		double changeInPercent = 0d;
 		try { 
-			changeInPercent = new Double(getChangePercent24Hour());
+			NumberFormat format = NumberFormat.getInstance();
+			Number number = format.parse(getChangePercent24Hour());
+			changeInPercent = number.doubleValue();
 		} catch (Exception nfe) {
 			// ignore
 		}

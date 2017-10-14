@@ -70,7 +70,7 @@ public class CurrencyQuoteCommandLineOptionsToStrings implements CommandConverte
 	String determineRangeString(CurrencyQuote price) {
 		
 		try {
-			double totalChangeInPercent = Double.parseDouble(price.getChangePercent24Hour());
+			double totalChangeInPercent = price.getTotalChangeInPercent();
 			
 			String rangeString = percentRanges.get(totalChangeInPercent);
 		

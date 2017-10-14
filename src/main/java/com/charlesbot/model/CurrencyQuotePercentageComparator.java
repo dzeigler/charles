@@ -8,7 +8,7 @@ public class CurrencyQuotePercentageComparator implements Comparator<CurrencyQuo
 
 	@Override
 	public int compare(CurrencyQuote o1, CurrencyQuote o2) {
-		return ObjectUtils.compare(o1.getChangePercent24Hour(), o2.getChangePercent24Hour());
+		return ObjectUtils.compare(o1.getTotalChangeInPercent(), o2.getTotalChangeInPercent());
 	}
 
 }
