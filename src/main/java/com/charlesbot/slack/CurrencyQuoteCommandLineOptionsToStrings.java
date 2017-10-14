@@ -7,43 +7,47 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.charlesbot.cli.CommandLineProcessor;
-import com.charlesbot.cli.CurrencyPriceCommandLineOptions;
+import com.charlesbot.cli.CurrencyQuoteCommandLineOptions;
 import com.charlesbot.cryptocompare.CryptoCompareClient;
-import com.charlesbot.model.CurrencyPrice;
+import com.charlesbot.model.CurrencyQuote;
+import com.charlesbot.model.CurrencyQuotePercentageComparator;
 import com.google.common.collect.Lists;
 
-public class CurrencyPriceCommandLineOptionsToStrings implements CommandConverter<CurrencyPriceCommandLineOptions> {
+public class CurrencyQuoteCommandLineOptionsToStrings implements CommandConverter<CurrencyQuoteCommandLineOptions> {
 
-	private static final Logger log = LoggerFactory.getLogger(CurrencyPriceCommandLineOptionsToStrings.class);
+	private static final Logger log = LoggerFactory.getLogger(CurrencyQuoteCommandLineOptionsToStrings.class);
 	
 	private PercentRanges percentRanges;
 	private CryptoCompareClient cryptoCompareClient;
 	
-	public CurrencyPriceCommandLineOptionsToStrings() {
+	public CurrencyQuoteCommandLineOptionsToStrings() {
 	}
 	
-	public CurrencyPriceCommandLineOptionsToStrings(CryptoCompareClient cryptoCompareClient, PercentRanges percentRanges) {
+	public CurrencyQuoteCommandLineOptionsToStrings(CryptoCompareClient cryptoCompareClient, PercentRanges percentRanges) {
 		this();
 		this.cryptoCompareClient = cryptoCompareClient;
 		this.percentRanges = percentRanges;
 	}
 	
 	@Override
-	public List<String> convert(CurrencyPriceCommandLineOptions options) {
+	public List<String> convert(CurrencyQuoteCommandLineOptions options) {
 		StringBuilder output = new StringBuilder();
 		if (options.isHelp()) {
 			String helpMessage = CommandLineProcessor.generateHelpMessage(options);
 			output.append("```"+helpMessage+"```");
 		} else {
-			List<CurrencyPrice> prices = cryptoCompareClient.getPrices(options.fromCurrency, options.toCurrency);
+			List<CurrencyQuote> prices = cryptoCompareClient.getPrices(options.fromCurrency, options.toCurrency);
+			
+			// sort the quotes by the percentage change
+			prices.sort(new CurrencyQuotePercentageComparator());
+			
 			if (prices.size() > 1) {
 				output.append(">>>");
 			}
-			for (CurrencyPrice price : prices) {
+			for (CurrencyQuote price : prices) {
 				
-				output.append(MessageFormat.format(":_charles_{0}: {1}: {2} 1 = {3} [{4} {5}%]"
+				output.append(MessageFormat.format(":_charles_{0}: {1} 1 = {2} [{3} {4}%]"
 						, determineRangeString(price)
-						, price.getFromCurrency()
 						, price.getFromSymbol()
 						, price.getPrice()
 						, price.getChange24Hour()
@@ -63,7 +67,7 @@ public class CurrencyPriceCommandLineOptionsToStrings implements CommandConverte
 		return Lists.newArrayList(output.toString());
 	}
 	
-	String determineRangeString(CurrencyPrice price) {
+	String determineRangeString(CurrencyQuote price) {
 		
 		try {
 			double totalChangeInPercent = Double.parseDouble(price.getChangePercent24Hour());

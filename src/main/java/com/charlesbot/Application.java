@@ -31,7 +31,7 @@ import com.charlesbot.model.WatchListRepository;
 import com.charlesbot.slack.AddToListCommandLineOptionsToStrings;
 import com.charlesbot.slack.ChartCommandLineOptionsToStrings;
 import com.charlesbot.slack.CurrencyExchangeRateCommandLineOptionsToStrings;
-import com.charlesbot.slack.CurrencyPriceCommandLineOptionsToStrings;
+import com.charlesbot.slack.CurrencyQuoteCommandLineOptionsToStrings;
 import com.charlesbot.slack.HelpCommandLineOptionsToStrings;
 import com.charlesbot.slack.ListCommandLineOptionsToStrings;
 import com.charlesbot.slack.ListQuoteCommandLineOptionsToStrings;
@@ -100,7 +100,7 @@ public class Application extends WebMvcConfigurerAdapter {
 		converters.add(new StringToPortfolioQuoteMessage(yahooFinanceClient));
 		converters.add(new ListStatsCommandLineOptionsToStrings(watchListRepository, yahooFinanceClient));
 		converters.add(new CurrencyExchangeRateCommandLineOptionsToStrings(coinBaseClient));
-		converters.add(new CurrencyPriceCommandLineOptionsToStrings(cryptoCompareClient, percentRanges));
+		converters.add(new CurrencyQuoteCommandLineOptionsToStrings(cryptoCompareClient, percentRanges));
 		conversionServiceFactoryBean.setConverters(converters);
 		return conversionServiceFactoryBean;
 	}

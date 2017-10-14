@@ -1,6 +1,6 @@
 package com.charlesbot.model;
 
-public class CurrencyPrice {
+public class CurrencyQuote {
 
 	private String fromCurrency;
 	private String fromSymbol;
@@ -128,10 +128,22 @@ public class CurrencyPrice {
 	public void setMarketCap(String marketCap) {
 		this.marketCap = marketCap;
 	}
+	
+	public Double getTotalChangeInPercent() {
+		double changeInPercent = 0d;
+		try { 
+			changeInPercent = new Double(getChangePercent24Hour());
+		} catch (Exception nfe) {
+			// ignore
+		}
+		
+		double totalChangeInPercent = changeInPercent;
+		return totalChangeInPercent;
+	}
 
 	@Override
 	public String toString() {
-		return "CurrencyPriceData [fromCurrency=" + fromCurrency + ", fromSymbol=" + fromSymbol + ", toCurrency="
+		return "CurrencyQuote [fromCurrency=" + fromCurrency + ", fromSymbol=" + fromSymbol + ", toCurrency="
 				+ toCurrency + ", toSymbol=" + toSymbol + ", market=" + market + ", price=" + price + ", lastUpdate="
 				+ lastUpdate + ", open24Hour=" + open24Hour + ", high24Hour=" + high24Hour + ", low24Hour=" + low24Hour
 				+ ", change24Hour=" + change24Hour + ", changePercent24Hour=" + changePercent24Hour + ", supply="

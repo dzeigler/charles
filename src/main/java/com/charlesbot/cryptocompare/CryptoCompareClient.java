@@ -13,7 +13,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.charlesbot.coinbase.CoinBaseClient;
-import com.charlesbot.model.CurrencyPrice;
+import com.charlesbot.model.CurrencyQuote;
 
 public class CryptoCompareClient {
 
@@ -25,7 +25,7 @@ public class CryptoCompareClient {
 		this.restTemplate = restTemplate;
 	}
 
-	public List<CurrencyPrice> getPrices(List<String> fromCurrencies, String toCurrency) {
+	public List<CurrencyQuote> getPrices(List<String> fromCurrencies, String toCurrency) {
 		Map<String, String> variables = new HashMap<String, String>();
 		String fromCurrenciesString = fromCurrencies.stream().collect(Collectors.joining(","));
 		variables.put("fromCurrencies", fromCurrenciesString);
@@ -36,7 +36,7 @@ public class CryptoCompareClient {
 			log.debug("Completed Request {}", exchangeRates);
 			
 			if (exchangeRates.getBody() != null && exchangeRates.getBody().display != null) {
-				List<CurrencyPrice> prices = convertToCurrencyPrice(exchangeRates.getBody());
+				List<CurrencyQuote> prices = convertToCurrencyQuote(exchangeRates.getBody());
 				return prices;
 			}
 		} catch (RestClientException e) {
@@ -45,26 +45,26 @@ public class CryptoCompareClient {
 		return new ArrayList<>();
 	}
 
-	private List<CurrencyPrice> convertToCurrencyPrice(PriceRequestResult result) {
-		List<CurrencyPrice> prices = new ArrayList<>();
+	private List<CurrencyQuote> convertToCurrencyQuote(PriceRequestResult result) {
+		List<CurrencyQuote> prices = new ArrayList<>();
 		
 		for (PriceInfo priceInfo : result.display.getPrices()) {
-			CurrencyPrice currencyPrice = new CurrencyPrice();
-			prices.add(currencyPrice);
-			currencyPrice.setFromCurrency(priceInfo.fromCode);
-				currencyPrice.setToCurrency(priceInfo.toCode);
-				currencyPrice.setChange24Hour(priceInfo.change24Hour);
-				currencyPrice.setChangePercent24Hour(priceInfo.changePercent24Hour);
-				currencyPrice.setFromSymbol(priceInfo.fromSymbol);
-				currencyPrice.setHigh24Hour(priceInfo.high24Hour);
-				currencyPrice.setLastUpdate(priceInfo.lastUpdate);
-				currencyPrice.setLow24Hour(priceInfo.low24Hour);
-				currencyPrice.setMarket(priceInfo.market);
-				currencyPrice.setMarketCap(priceInfo.marketCap);
-				currencyPrice.setOpen24Hour(priceInfo.open24Hour);
-				currencyPrice.setPrice(priceInfo.price);
-				currencyPrice.setSupply(priceInfo.supply);
-				currencyPrice.setToSymbol(priceInfo.toSymbol);
+			CurrencyQuote currencyQuote = new CurrencyQuote();
+			prices.add(currencyQuote);
+			currencyQuote.setFromCurrency(priceInfo.fromCode);
+			currencyQuote.setToCurrency(priceInfo.toCode);
+			currencyQuote.setChange24Hour(priceInfo.change24Hour);
+			currencyQuote.setChangePercent24Hour(priceInfo.changePercent24Hour);
+			currencyQuote.setFromSymbol(priceInfo.fromSymbol);
+			currencyQuote.setHigh24Hour(priceInfo.high24Hour);
+			currencyQuote.setLastUpdate(priceInfo.lastUpdate);
+			currencyQuote.setLow24Hour(priceInfo.low24Hour);
+			currencyQuote.setMarket(priceInfo.market);
+			currencyQuote.setMarketCap(priceInfo.marketCap);
+			currencyQuote.setOpen24Hour(priceInfo.open24Hour);
+			currencyQuote.setPrice(priceInfo.price);
+			currencyQuote.setSupply(priceInfo.supply);
+			currencyQuote.setToSymbol(priceInfo.toSymbol);
 		}
 		return prices;
 	}
