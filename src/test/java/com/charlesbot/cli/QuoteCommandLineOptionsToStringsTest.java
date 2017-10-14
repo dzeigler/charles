@@ -20,12 +20,15 @@ import org.mockito.stubbing.Answer;
 import com.charlesbot.yahoo.YahooFinanceClient;
 import com.charlesbot.model.StockQuote;
 import com.charlesbot.model.StockQuotes;
+import com.charlesbot.slack.PercentRanges;
 import com.charlesbot.slack.QuoteCommandLineOptionsToStrings;
 
 public class QuoteCommandLineOptionsToStringsTest {
 
 	@Mock
 	private YahooFinanceClient client;
+	
+	PercentRanges percentRanges = new PercentRanges();
 
 	@Rule
 	public MockitoRule rule = MockitoJUnit.rule();
@@ -50,7 +53,7 @@ public class QuoteCommandLineOptionsToStringsTest {
 	
 	@Test
 	public void quoteWithoutTickerSymbol() {
-		QuoteCommandLineOptionsToStrings converter = new QuoteCommandLineOptionsToStrings(client);
+		QuoteCommandLineOptionsToStrings converter = new QuoteCommandLineOptionsToStrings(client, percentRanges);
 
 		mockReturnWhatsPassedIn();
 		QuoteCommandLineOptions options = new QuoteCommandLineOptions();
@@ -63,7 +66,7 @@ public class QuoteCommandLineOptionsToStringsTest {
 
 	@Test
 	public void quoteWithTickerSymbol() {
-		QuoteCommandLineOptionsToStrings converter = new QuoteCommandLineOptionsToStrings(client);
+		QuoteCommandLineOptionsToStrings converter = new QuoteCommandLineOptionsToStrings(client, percentRanges);
 		mockReturnWhatsPassedIn();
 		QuoteCommandLineOptions options = new QuoteCommandLineOptions();
 		options.tickerSymbols.add("tsla");

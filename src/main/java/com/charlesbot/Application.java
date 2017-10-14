@@ -25,15 +25,18 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.coinbase.CoinBaseClient;
 import com.charlesbot.coinbase.CoinBaseCurrencyExchangeRateConverter;
+import com.charlesbot.cryptocompare.CryptoCompareClient;
 import com.charlesbot.google.GoogleStockQuoteConverter;
 import com.charlesbot.model.WatchListRepository;
 import com.charlesbot.slack.AddToListCommandLineOptionsToStrings;
 import com.charlesbot.slack.ChartCommandLineOptionsToStrings;
 import com.charlesbot.slack.CurrencyExchangeRateCommandLineOptionsToStrings;
+import com.charlesbot.slack.CurrencyPriceCommandLineOptionsToStrings;
 import com.charlesbot.slack.HelpCommandLineOptionsToStrings;
 import com.charlesbot.slack.ListCommandLineOptionsToStrings;
 import com.charlesbot.slack.ListQuoteCommandLineOptionsToStrings;
 import com.charlesbot.slack.ListStatsCommandLineOptionsToStrings;
+import com.charlesbot.slack.PercentRanges;
 import com.charlesbot.slack.QuoteCommandLineOptionsToStrings;
 import com.charlesbot.slack.RemoveFromListCommandLineOptionsToStrings;
 import com.charlesbot.slack.StatsCommandLineOptionsToStrings;
@@ -75,22 +78,29 @@ public class Application extends WebMvcConfigurerAdapter {
 	}
 
 	@Bean
-	public ConversionServiceFactoryBean conversionService(YahooFinanceClient YahooFinanceClient, CoinBaseClient coinBaseClient, WatchListRepository watchListRepository) {
+	public PercentRanges percentRanges() {
+		return new PercentRanges();
+	}
+	
+	@Bean
+	public ConversionServiceFactoryBean conversionService(YahooFinanceClient yahooFinanceClient, CoinBaseClient coinBaseClient, 
+			CryptoCompareClient cryptoCompareClient, WatchListRepository watchListRepository, PercentRanges percentRanges) {
 		ConversionServiceFactoryBean conversionServiceFactoryBean = new ConversionServiceFactoryBean();
 		Set<Converter<?, ?>> converters = new HashSet<>();
 		
-		QuoteCommandLineOptionsToStrings quoteCommandLineOptionsToStrings = new QuoteCommandLineOptionsToStrings(YahooFinanceClient);
+		QuoteCommandLineOptionsToStrings quoteCommandLineOptionsToStrings = new QuoteCommandLineOptionsToStrings(yahooFinanceClient, percentRanges);
 		converters.add(quoteCommandLineOptionsToStrings);
-		converters.add(new StatsCommandLineOptionsToStrings(YahooFinanceClient));
+		converters.add(new StatsCommandLineOptionsToStrings(yahooFinanceClient));
 		converters.add(new ChartCommandLineOptionsToStrings());
 		converters.add(new AddToListCommandLineOptionsToStrings(watchListRepository));
 		converters.add(new RemoveFromListCommandLineOptionsToStrings(watchListRepository));
 		converters.add(new ListCommandLineOptionsToStrings(watchListRepository));
 		converters.add(new ListQuoteCommandLineOptionsToStrings(watchListRepository, quoteCommandLineOptionsToStrings));
 		converters.add(new HelpCommandLineOptionsToStrings());
-		converters.add(new StringToPortfolioQuoteMessage(YahooFinanceClient));
-		converters.add(new ListStatsCommandLineOptionsToStrings(watchListRepository, YahooFinanceClient));
+		converters.add(new StringToPortfolioQuoteMessage(yahooFinanceClient));
+		converters.add(new ListStatsCommandLineOptionsToStrings(watchListRepository, yahooFinanceClient));
 		converters.add(new CurrencyExchangeRateCommandLineOptionsToStrings(coinBaseClient));
+		converters.add(new CurrencyPriceCommandLineOptionsToStrings(cryptoCompareClient, percentRanges));
 		conversionServiceFactoryBean.setConverters(converters);
 		return conversionServiceFactoryBean;
 	}
@@ -110,6 +120,11 @@ public class Application extends WebMvcConfigurerAdapter {
 	@Bean
 	public CoinBaseClient coinBaseClient(RestTemplate restTemplate) {
 		return new CoinBaseClient(restTemplate);
+	}
+	
+	@Bean
+	public CryptoCompareClient cryptoCompareClient(RestTemplate restTemplate) {
+		return new CryptoCompareClient(restTemplate);
 	}
 
 	@Bean
