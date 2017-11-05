@@ -179,7 +179,7 @@ public class StringToPortfolioQuoteMessage implements Converter<String, Portfoli
 		HelpFormatter formatter = new HelpFormatter();
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
-		formatter.printHelp(pw, 80, "!pf <SYMBOL>,<QUANTITY>,<PRICE>[ <SYMBOL>,<QUANTITY>,<PRICE>]+", "SYMBOL is the Yahoo Finance ticker for the stock or index; QUANTITY is the number of shares; PRICE is the purchase price", options, 0, 3, "", true);
+		formatter.printHelp(pw, 80, "!pf <SYMBOL>,<QUANTITY>,<PRICE>[ <SYMBOL>,<QUANTITY>,<PRICE>]+", "SYMBOL is the IEX ticker for the stock or index; QUANTITY is the number of shares; PRICE is the purchase price", options, 0, 3, "", true);
 		String string = sw.toString();
 		return string;
 	}

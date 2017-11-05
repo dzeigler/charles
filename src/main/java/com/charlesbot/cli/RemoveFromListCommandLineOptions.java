@@ -13,7 +13,7 @@ public class RemoveFromListCommandLineOptions extends Command {
 	public static final String COMMAND_SYNTAX = COMMAND + " <LIST_NAME> [<SYMBOL>]";
 	public static final String COMMAND_HEADER = 
 			"LIST_NAME is the name watch list being modified\n"
-			+ "SYMBOL is the Yahoo Finance ticker for the stock or index";
+			+ "SYMBOL is the IEX ticker for the stock or index";
 	public static final String COMMAND_DESCRIPTION = "Removes the first matching symbol from the list or the entire list if no symbols are provided";
 	public static final String COMMAND_PATTERN = "^@\\w+:?\\s*(rm|del).*";
 

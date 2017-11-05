@@ -19,8 +19,7 @@ public class AddToListCommandLineOptions extends Command {
 	public static final String COMMAND_SYNTAX = COMMAND + " <LIST_NAME> <SYMBOL>[,<QUANTITY>,<PRICE>[,<DATE>]]...";
 	public static final String COMMAND_HEADER = 
 			"LIST_NAME is the name watch list being modified\n"
-			+ "SYMBOL is the Yahoo Finance ticker for the stock or index\n"
-			+ "QUANTITY is the number of shares included in the transaction\n"
+			+ "SYMBOL is the IEX shares included in the transaction\n"
 			+ "PRICE is the amount of money paid per share\n" 
 			+ "DATE should be in the format yyyy-MM-dd; defaults to the current date if omitted";
 	public static final String COMMAND_DESCRIPTION = "Adds ticker symbols or transactions to a list";

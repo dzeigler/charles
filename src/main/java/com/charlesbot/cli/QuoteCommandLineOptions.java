@@ -10,7 +10,7 @@ import org.apache.commons.cli.Options;
 public class QuoteCommandLineOptions extends Command {
 
 	public static final String COMMAND = "!q";
-	public static final String COMMAND_HEADER = "SYMBOL is the Yahoo Finance ticker for the stock or index";
+	public static final String COMMAND_HEADER = "SYMBOL is the IEX ticker for the stock or index";
 	public static final String COMMAND_DESCRIPTION = "Returns quotes for the given ticker symbol(s)";
 	
 	static Options options;

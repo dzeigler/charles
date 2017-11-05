@@ -93,7 +93,7 @@ public class SlackRestController {
 			message = conversionService.convert(stockQuotes.get(), QuoteMessage.class);
 		} else {
 			message = new QuoteMessage();
-			message.setText("An error occurred. Make sure the ticker symbol is valid for Yahoo Finance.");
+			message.setText("An error occurred. Make sure the ticker symbol is valid for IEX.");
 		}
 		return message;
 	}
@@ -106,7 +106,7 @@ public class SlackRestController {
 			message = conversionService.convert(stockQuotes.get(), StatsMessage.class);
 		} else {
 			message = new QuoteMessage();
-			message.setText("An error occurred. Make sure the ticker symbol is valid for Yahoo Finance");
+			message.setText("An error occurred. Make sure the ticker symbol is valid for IEX.");
 		}
 		return message;
 	}

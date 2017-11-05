@@ -10,7 +10,7 @@ public class StatsCommandLineOptions extends Command {
 
 	public static final String COMMAND = "!stats";
 	public static final String COMMAND_SYNTAX = COMMAND + " <SYMBOL>[ <SYMBOL>]...";
-	public static final String COMMAND_HEADER = "SYMBOL is the Yahoo Finance ticker for the stock or index";
+	public static final String COMMAND_HEADER = "SYMBOL is the IEX ticker for the stock or index";
 	public static final String COMMAND_DESCRIPTION = "Returns information about a stock";
 	
 	static Options options;

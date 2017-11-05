@@ -116,7 +116,7 @@ public class ChartCommandLineOptions extends Command {
 		}
 		timeSpan = commandLine.getOptionValue('t', DEFAULT_TIME_SPAN);
 		if (!SUPPORTED_TIME_SPANS.containsKey(timeSpan)) {
-			addWarning("The time span provided is not supported by Yahoo! Using the default of " + DEFAULT_TIME_SPAN + ".");
+			addWarning("The time span provided is not supported by IEX! Using the default of " + DEFAULT_TIME_SPAN + ".");
 			timeSpan = DEFAULT_TIME_SPAN;
 		}
 		if (commandLine.hasOption('c')) {
