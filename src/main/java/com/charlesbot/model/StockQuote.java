@@ -11,50 +11,38 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class StockQuote {
-	// c1
-	@JsonProperty("Change")
+
+	@JsonProperty("change")
 	private String change;
-	// p2
-	@JsonProperty("ChangeinPercent")
+
+	@JsonProperty("changePercent")
 	private String changeInPercent;
-	// h0
-	@JsonProperty("DaysHigh")
+
 	private String dayHigh;
-	// g0
-	@JsonProperty("DaysLow")
 	private String dayLow;
-	// m3
-	@JsonProperty("FiftydayMovingAverage")
-	private String fiftyDayMovingAverage;
-	// l1 - last price
-	@JsonProperty("LastTradePriceOnly")
+
+	@JsonProperty("latestPrice")
 	private String price;
-	// s0
+
 	@JsonProperty("symbol")
 	private String symbol;
-	// n0
-	@JsonProperty("Name")
+
+	@JsonProperty("companyName")
 	private String name;
 
-	@JsonProperty("MarketCapitalization")
+	@JsonProperty("marketCap")
 	private String marketCap;
-	@JsonProperty("PERatio")
+	@JsonProperty("peRatio")
 	private String pe;
-	@JsonProperty("EarningsShare")
 	private String eps;
-	@JsonProperty("YearHigh")
+	@JsonProperty("week52High")
 	private String fiftyTwoWeekHigh;
-	@JsonProperty("YearLow")
+	@JsonProperty("week52Low")
 	private String fiftyTwoWeekLow;
-	@JsonProperty("DividendShare")
 	private String dividend;
-	@JsonProperty("DividendYield")
 	private String yield;
-	@JsonProperty("el")
 	private String extendedHoursPrice;
-	@JsonProperty("ec")
 	private String extendedHoursChange;
-	@JsonProperty("ecp")
 	private String extendedHoursChangeInPercent;
 
 	public StockQuote() {
@@ -66,16 +54,16 @@ public class StockQuote {
 		}
 		return change;
 	}
-	
+
 	public BigDecimal getChangeAsBigDecimal() {
 		try {
 			return new BigDecimal(change);
 		} catch (NumberFormatException nfe) {
-			
+
 		}
 		return null;
 	}
-	
+
 	public String getChangeInPercent() {
 		if (StringUtils.isEmpty(changeInPercent)) {
 			return "-";
@@ -104,20 +92,13 @@ public class StockQuote {
 		return dayLow;
 	}
 
-	public String getMovingAverage50Day() {
-		if (StringUtils.isEmpty(fiftyDayMovingAverage)) {
-			return "-";
-		}
-		return fiftyDayMovingAverage;
-	}
-
 	public String getPrice() {
 		if (StringUtils.isEmpty(price)) {
 			return "-";
 		}
 		return price;
 	}
-	
+
 	public BigDecimal getPriceAsBigDecimal() {
 		try {
 			if (price != null) {
@@ -137,7 +118,7 @@ public class StockQuote {
 		}
 		return price;
 	}
-	
+
 	public String getSymbol() {
 		return symbol;
 	}
@@ -154,10 +135,6 @@ public class StockQuote {
 		this.dayLow = dayLow;
 	}
 
-	public void setFiftyDayMovingAverage(String fiftyDayMovingAverage) {
-		this.fiftyDayMovingAverage = fiftyDayMovingAverage;
-	}
-
 	public void setPrice(String price) {
 		this.price = price;
 	}
@@ -170,6 +147,9 @@ public class StockQuote {
 	}
 
 	public String getName() {
+		if (StringUtils.isEmpty(name)) {
+			return "-";
+		}
 		return name;
 	}
 
@@ -256,10 +236,6 @@ public class StockQuote {
 		this.extendedHoursChangeInPercent = extendedHoursChangeInPercent;
 	}
 
-	public String getFiftyDayMovingAverage() {
-		return fiftyDayMovingAverage;
-	}
-
 	public String getDividend() {
 		if (StringUtils.isEmpty(dividend)) {
 			return "-";
@@ -281,22 +257,22 @@ public class StockQuote {
 	public void setYield(String yield) {
 		this.yield = yield;
 	}
-	
+
 	public Double getTotalChangeInPercent() {
 		double changeInPercent = 0d;
-		try { 
+		try {
 			changeInPercent = new Double(getChangeInPercent());
 		} catch (Exception nfe) {
 			// ignore
 		}
-		
+
 		double extendedHoursChangeInPercent = 0d;
-		try { 
+		try {
 			extendedHoursChangeInPercent = new Double(getExtendedHoursChangeInPercent());
 		} catch (Exception nfe) {
 			// ignore
 		}
-		
+
 		double totalChangeInPercent = changeInPercent + extendedHoursChangeInPercent;
 		return totalChangeInPercent;
 	}
@@ -305,8 +281,7 @@ public class StockQuote {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("StockQuote [change=").append(change).append(", dayHigh=").append(dayHigh).append(", dayLow=")
-				.append(dayLow).append(", fiftyDayMovingAverage=").append(fiftyDayMovingAverage).append(", price=")
-				.append(price).append(", symbol=").append(symbol).append("]");
+				.append(dayLow).append(", price=").append(price).append(", symbol=").append(symbol).append("]");
 		return builder.toString();
 	}
 

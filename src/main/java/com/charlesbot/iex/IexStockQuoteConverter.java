@@ -1,7 +1,7 @@
-package com.charlesbot.google;
+package com.charlesbot.iex;
 
 import java.io.IOException;
-import java.util.List;
+import java.io.InputStreamReader;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,18 +11,19 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.AbstractHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
+import org.supercsv.io.CsvBeanReader;
+import org.supercsv.io.ICsvBeanReader;
+import org.supercsv.prefs.CsvPreference;
 
 import com.charlesbot.model.StockQuote;
 import com.charlesbot.model.StockQuotes;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class GoogleStockQuoteConverter extends AbstractHttpMessageConverter<StockQuotes> {
+public class IexStockQuoteConverter extends AbstractHttpMessageConverter<StockQuotes> {
 
-	private static final Logger log = LoggerFactory.getLogger(GoogleStockQuoteConverter.class);
+	private static final Logger log = LoggerFactory.getLogger(IexStockQuoteConverter.class);
 	
-	public GoogleStockQuoteConverter() {
-		super(MediaType.APPLICATION_JSON);
+	public IexStockQuoteConverter() {
+		super(MediaType.APPLICATION_OCTET_STREAM, MediaType.APPLICATION_FORM_URLENCODED);
 	}
 
 	@Override
@@ -34,20 +35,20 @@ public class GoogleStockQuoteConverter extends AbstractHttpMessageConverter<Stoc
 	@Override
 	protected StockQuotes readInternal(Class<? extends StockQuotes> clazz, HttpInputMessage inputMessage)
 			throws IOException, HttpMessageNotReadableException {
-		ObjectMapper mapper = new ObjectMapper();
+		ICsvBeanReader beanReader = null;
 		StockQuotes stockQuotes = new StockQuotes();
 		try {
-			String body = null;
-			try (java.util.Scanner s = new java.util.Scanner(inputMessage.getBody())) {
-				body = s.useDelimiter("\\A").hasNext() ? s.next() : ""; 
+			beanReader = new CsvBeanReader(new InputStreamReader(inputMessage.getBody()), CsvPreference.STANDARD_PREFERENCE);
+			StockQuote stockQuote = null;
+			while ((stockQuote = beanReader.read(StockQuote.class, StockQuote.getHeader())) != null) {
+				stockQuotes.get().add(stockQuote);
 			}
-			body = body.substring(3);
-			log.info("body='{}'", body);
-			
-			List<StockQuote> quotes = mapper.readValue(body, new TypeReference<List<StockQuote>>(){});
-			stockQuotes.get().addAll(quotes);
 		} catch (Exception e) {
-			log.error("Failure while parsing the json", e);
+			log.error("Failure while parsing the CSV", e);
+		} finally {
+			if (beanReader != null) {
+				beanReader.close();
+			}
 		}
 		return stockQuotes;
 	}

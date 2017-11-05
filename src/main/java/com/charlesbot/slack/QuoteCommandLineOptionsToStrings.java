@@ -8,25 +8,25 @@ import org.springframework.util.StringUtils;
 
 import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.cli.QuoteCommandLineOptions;
+import com.charlesbot.iex.IexStockQuoteClient;
 import com.charlesbot.model.StockQuote;
 import com.charlesbot.model.StockQuotePercentageComparator;
 import com.charlesbot.model.StockQuotes;
-import com.charlesbot.yahoo.YahooFinanceClient;
 import com.google.common.collect.Lists;
 
 public class QuoteCommandLineOptionsToStrings implements CommandConverter<QuoteCommandLineOptions> {
 
 	private PercentRanges percentRanges;
 
-	private YahooFinanceClient YahooFinanceClient;
+	private IexStockQuoteClient iexStockQuoteClient;
 	
 	public QuoteCommandLineOptionsToStrings() {
 		
 	}
 	
-	public QuoteCommandLineOptionsToStrings(YahooFinanceClient YahooFinanceClient, PercentRanges percentRanges) {
+	public QuoteCommandLineOptionsToStrings(IexStockQuoteClient iexStockQuoteClient, PercentRanges percentRanges) {
 		this();
-		this.YahooFinanceClient = YahooFinanceClient;
+		this.iexStockQuoteClient = iexStockQuoteClient;
 		this.percentRanges = percentRanges;
 	}
 	
@@ -37,7 +37,7 @@ public class QuoteCommandLineOptionsToStrings implements CommandConverter<QuoteC
 			String helpMessage = CommandLineProcessor.generateHelpMessage(options);
 			output.append("```"+helpMessage+"```");
 		} else {
-			Optional<StockQuotes> stockQuotesResult = YahooFinanceClient.getStockQuotes(options.tickerSymbols);
+			Optional<StockQuotes> stockQuotesResult = iexStockQuoteClient.getStockQuotes(options.tickerSymbols);
 			if (stockQuotesResult.isPresent()) {
 				StockQuotes stockQuotes = stockQuotesResult.get();
 			
@@ -50,7 +50,7 @@ public class QuoteCommandLineOptionsToStrings implements CommandConverter<QuoteC
 				
 				for (StockQuote quote : stockQuotes.get()) {
 					String colorEmoji = determineRangeString(quote);
-					output.append(MessageFormat.format(":_charles_{5}: {0} ({4}): {1} {2} {3}%", quote.getSymbol(), quote.getPrice(), quote.getChange(), quote.getChangeInPercent(), quote.getName(), colorEmoji));
+					output.append(MessageFormat.format(":_charles_{5}: {0} ({4}): ${1} [${2} {3}%]", quote.getSymbol(), quote.getPrice(), quote.getChange(), quote.getChangeInPercent(), quote.getName(), colorEmoji));
 					if (!StringUtils.isEmpty(quote.getExtendedHoursPrice())) {
 						output.append(MessageFormat.format(" extended hours: {0} {1} {2}%", quote.getExtendedHoursPrice(), quote.getExtendedHoursChange(), quote.getExtendedHoursChangeInPercent()));
 					}
@@ -60,7 +60,7 @@ public class QuoteCommandLineOptionsToStrings implements CommandConverter<QuoteC
 					}
 				}
 			} else {
-				output.append("Yahoo finance can't find a quote for the symbol you provided.");
+				output.append("IEX can't find a quote for the symbol you provided.");
 			}
 		}
 		return Lists.newArrayList(output.toString());

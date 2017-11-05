@@ -20,7 +20,7 @@ import com.brsanthu.dataexporter.model.AlignType;
 import com.brsanthu.dataexporter.model.StringColumn;
 import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.cli.ListStatsCommandLineOptions;
-import com.charlesbot.yahoo.YahooFinanceClient;
+import com.charlesbot.iex.IexStockQuoteClient;
 import com.charlesbot.model.StockQuote;
 import com.charlesbot.model.StockQuotes;
 import com.charlesbot.model.Transaction;
@@ -34,11 +34,11 @@ public class ListStatsCommandLineOptionsToStrings implements CommandConverter<Li
 	private static final Logger logger = LoggerFactory.getLogger(ListStatsCommandLineOptionsToStrings.class);
 
 	private WatchListRepository watchListRepository;
-	private YahooFinanceClient YahooFinanceClient;
+	private IexStockQuoteClient iexStockQuoteClient;
 
-	public ListStatsCommandLineOptionsToStrings(WatchListRepository watchListRepository, YahooFinanceClient YahooFinanceClient) {
+	public ListStatsCommandLineOptionsToStrings(WatchListRepository watchListRepository, IexStockQuoteClient iexStockQuoteClient) {
 		this.watchListRepository = watchListRepository;
-		this.YahooFinanceClient = YahooFinanceClient;
+		this.iexStockQuoteClient = iexStockQuoteClient;
 	}
 
 	@Override
@@ -167,7 +167,7 @@ public class ListStatsCommandLineOptionsToStrings implements CommandConverter<Li
 				.collect(Collectors.toList());
 
 		// get stock quotes for each key
-		Optional<StockQuotes> stockQuotes = YahooFinanceClient.getStockQuotes(symbols);
+		Optional<StockQuotes> stockQuotes = iexStockQuoteClient.getStockQuotes(symbols);
 
 		// build a map of each ticker symbol to its quote
 		Map<String, StockQuote> stockQuotesMap = new HashMap<>();

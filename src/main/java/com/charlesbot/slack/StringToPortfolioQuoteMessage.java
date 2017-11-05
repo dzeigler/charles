@@ -23,13 +23,13 @@ import com.brsanthu.dataexporter.DataExporter;
 import com.brsanthu.dataexporter.model.AlignType;
 import com.brsanthu.dataexporter.model.StringColumn;
 import com.brsanthu.dataexporter.output.texttable.TextTableExporter;
-import com.charlesbot.yahoo.YahooFinanceClient;
+import com.charlesbot.iex.IexStockQuoteClient;
 import com.charlesbot.model.StockQuote;
 import com.charlesbot.model.StockQuotes;
 
 public class StringToPortfolioQuoteMessage implements Converter<String, PortfolioQuoteMessage> {
 
-	private YahooFinanceClient YahooFinanceClient;
+	private IexStockQuoteClient iexStockQuoteClient;
 	
 	public class Position {
 		final String symbol;
@@ -56,8 +56,8 @@ public class StringToPortfolioQuoteMessage implements Converter<String, Portfoli
 	private CommandLineParser parser;
 	private Options options;
 
-	public StringToPortfolioQuoteMessage(YahooFinanceClient YahooFinanceClient) {
-		this.YahooFinanceClient = YahooFinanceClient;
+	public StringToPortfolioQuoteMessage(IexStockQuoteClient iexStockQuoteClient) {
+		this.iexStockQuoteClient = iexStockQuoteClient;
 		// create the command line parser
 		parser = new DefaultParser();
 
@@ -87,7 +87,7 @@ public class StringToPortfolioQuoteMessage implements Converter<String, Portfoli
 				// get stock quotes for each key
 				Set<String> keySet = positions.keySet();
 				ArrayList<String> list = new ArrayList<>(keySet);
-				Optional<StockQuotes> stockQuotes = YahooFinanceClient.getStockQuotes(list);
+				Optional<StockQuotes> stockQuotes = iexStockQuoteClient.getStockQuotes(list);
 				
 				// associate the StockQuote with each position
 				stockQuotes.ifPresent(quotes ->

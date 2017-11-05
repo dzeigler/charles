@@ -8,16 +8,16 @@ import com.brsanthu.dataexporter.model.Row;
 import com.brsanthu.dataexporter.model.StringColumn;
 import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.cli.StatsCommandLineOptions;
-import com.charlesbot.yahoo.YahooFinanceClient;
+import com.charlesbot.iex.IexStockQuoteClient;
 import com.charlesbot.model.StockQuote;
 import com.charlesbot.model.StockQuotes;
 
 public class StatsCommandLineOptionsToStrings implements CommandConverter<StatsCommandLineOptions> {
 
-	private YahooFinanceClient YahooFinanceClient;
+	private IexStockQuoteClient iexStockQuoteClient;
 	
-	public StatsCommandLineOptionsToStrings(YahooFinanceClient YahooFinanceClient) {
-		this.YahooFinanceClient = YahooFinanceClient;
+	public StatsCommandLineOptionsToStrings(IexStockQuoteClient iexStockQuoteClient) {
+		this.iexStockQuoteClient = iexStockQuoteClient;
 	}
 	
 	@Override
@@ -31,7 +31,7 @@ public class StatsCommandLineOptionsToStrings implements CommandConverter<StatsC
 			outputs.add(sb.toString());
 		} else {
 
-			StockQuotes stockQuotes = YahooFinanceClient.getStockQuotes(options.tickerSymbols).get();
+			StockQuotes stockQuotes = iexStockQuoteClient.getStockQuotes(options.tickerSymbols).get();
 			
 			StringColumn[] columns = {
 					new StringColumn("Symbol",8, AlignType.TOP_LEFT),

@@ -23,14 +23,12 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import com.charlesbot.cli.CommandLineProcessor;
-import com.charlesbot.coinbase.CoinBaseClient;
-import com.charlesbot.coinbase.CoinBaseCurrencyExchangeRateConverter;
 import com.charlesbot.cryptocompare.CryptoCompareClient;
-import com.charlesbot.google.GoogleStockQuoteConverter;
+import com.charlesbot.iex.IexStockQuoteClient;
+import com.charlesbot.iex.IexStockQuoteConverter;
 import com.charlesbot.model.WatchListRepository;
 import com.charlesbot.slack.AddToListCommandLineOptionsToStrings;
 import com.charlesbot.slack.ChartCommandLineOptionsToStrings;
-import com.charlesbot.slack.CurrencyExchangeRateCommandLineOptionsToStrings;
 import com.charlesbot.slack.CurrencyQuoteCommandLineOptionsToStrings;
 import com.charlesbot.slack.HelpCommandLineOptionsToStrings;
 import com.charlesbot.slack.ListCommandLineOptionsToStrings;
@@ -41,8 +39,6 @@ import com.charlesbot.slack.QuoteCommandLineOptionsToStrings;
 import com.charlesbot.slack.RemoveFromListCommandLineOptionsToStrings;
 import com.charlesbot.slack.StatsCommandLineOptionsToStrings;
 import com.charlesbot.slack.StringToPortfolioQuoteMessage;
-import com.charlesbot.yahoo.YahooFinanceClient;
-import com.charlesbot.yahoo.YahooStockQuoteConverter;
 
 @SpringBootApplication
 @Configuration
@@ -58,10 +54,8 @@ public class Application extends WebMvcConfigurerAdapter {
 	
 	@Bean
 	public HttpMessageConverters customConverters() {
-		HttpMessageConverter<?> yahooStockQuoteConverter = new YahooStockQuoteConverter();
-		HttpMessageConverter<?> googleStockQuoteConverter = new GoogleStockQuoteConverter();
-		HttpMessageConverter<?> coinBaseCurrencyExchangeRateConverter = new CoinBaseCurrencyExchangeRateConverter();
-		return new HttpMessageConverters(yahooStockQuoteConverter, googleStockQuoteConverter, coinBaseCurrencyExchangeRateConverter);
+		HttpMessageConverter<?> iexStockQuoteConverter = new IexStockQuoteConverter();
+		return new HttpMessageConverters(iexStockQuoteConverter);
 	}
 
 	@Bean
@@ -83,23 +77,22 @@ public class Application extends WebMvcConfigurerAdapter {
 	}
 	
 	@Bean
-	public ConversionServiceFactoryBean conversionService(YahooFinanceClient yahooFinanceClient, CoinBaseClient coinBaseClient, 
+	public ConversionServiceFactoryBean conversionService(IexStockQuoteClient iexStockQuoteClient, 
 			CryptoCompareClient cryptoCompareClient, WatchListRepository watchListRepository, PercentRanges percentRanges) {
 		ConversionServiceFactoryBean conversionServiceFactoryBean = new ConversionServiceFactoryBean();
 		Set<Converter<?, ?>> converters = new HashSet<>();
 		
-		QuoteCommandLineOptionsToStrings quoteCommandLineOptionsToStrings = new QuoteCommandLineOptionsToStrings(yahooFinanceClient, percentRanges);
+		QuoteCommandLineOptionsToStrings quoteCommandLineOptionsToStrings = new QuoteCommandLineOptionsToStrings(iexStockQuoteClient, percentRanges);
 		converters.add(quoteCommandLineOptionsToStrings);
-		converters.add(new StatsCommandLineOptionsToStrings(yahooFinanceClient));
+		converters.add(new StatsCommandLineOptionsToStrings(iexStockQuoteClient));
 		converters.add(new ChartCommandLineOptionsToStrings());
 		converters.add(new AddToListCommandLineOptionsToStrings(watchListRepository));
 		converters.add(new RemoveFromListCommandLineOptionsToStrings(watchListRepository));
 		converters.add(new ListCommandLineOptionsToStrings(watchListRepository));
 		converters.add(new ListQuoteCommandLineOptionsToStrings(watchListRepository, quoteCommandLineOptionsToStrings));
 		converters.add(new HelpCommandLineOptionsToStrings());
-		converters.add(new StringToPortfolioQuoteMessage(yahooFinanceClient));
-		converters.add(new ListStatsCommandLineOptionsToStrings(watchListRepository, yahooFinanceClient));
-		converters.add(new CurrencyExchangeRateCommandLineOptionsToStrings(coinBaseClient));
+		converters.add(new StringToPortfolioQuoteMessage(iexStockQuoteClient));
+		converters.add(new ListStatsCommandLineOptionsToStrings(watchListRepository, iexStockQuoteClient));
 		converters.add(new CurrencyQuoteCommandLineOptionsToStrings(cryptoCompareClient, percentRanges));
 		conversionServiceFactoryBean.setConverters(converters);
 		return conversionServiceFactoryBean;
@@ -113,13 +106,8 @@ public class Application extends WebMvcConfigurerAdapter {
     }
 
 	@Bean
-	public YahooFinanceClient yahooFinanceClient() {
-		return new YahooFinanceClient();
-	}
-	
-	@Bean
-	public CoinBaseClient coinBaseClient(RestTemplate restTemplate) {
-		return new CoinBaseClient(restTemplate);
+	public IexStockQuoteClient iexStockQuoteClient(RestTemplate restTemplate) {
+		return new IexStockQuoteClient(restTemplate);
 	}
 	
 	@Bean

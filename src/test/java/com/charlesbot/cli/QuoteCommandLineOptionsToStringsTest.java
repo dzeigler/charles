@@ -17,7 +17,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.mockito.stubbing.Answer;
 
-import com.charlesbot.yahoo.YahooFinanceClient;
+import com.charlesbot.iex.IexStockQuoteClient;
 import com.charlesbot.model.StockQuote;
 import com.charlesbot.model.StockQuotes;
 import com.charlesbot.slack.PercentRanges;
@@ -26,7 +26,7 @@ import com.charlesbot.slack.QuoteCommandLineOptionsToStrings;
 public class QuoteCommandLineOptionsToStringsTest {
 
 	@Mock
-	private YahooFinanceClient client;
+	private IexStockQuoteClient client;
 	
 	PercentRanges percentRanges = new PercentRanges();
 

@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.charlesbot.iex.IexStockQuoteClient;
 import com.charlesbot.model.StockQuotes;
-import com.charlesbot.yahoo.YahooFinanceClient;
 import com.google.common.base.Splitter;
 
 @RestController
@@ -29,7 +29,7 @@ public class SlackRestController {
 	private static final Logger log = LoggerFactory.getLogger(SlackRestController.class);
 	
 	@Inject
-	private YahooFinanceClient YahooFinanceClient;
+	private IexStockQuoteClient iexStockQuoteClient;
 	@Inject
 	private ConversionService conversionService;
 	@Inject SlackPostMessageSender slackMessageSender;
@@ -86,7 +86,7 @@ public class SlackRestController {
 	}
 	
 	private SlackIncomingMessage getStockQuotes(List<String> symbols) {
-		Optional<StockQuotes> stockQuotes = YahooFinanceClient.getStockQuotes(symbols);
+		Optional<StockQuotes> stockQuotes = iexStockQuoteClient.getStockQuotes(symbols);
 		log.debug("Returned stock quote {}", stockQuotes);
 		SlackIncomingMessage message = new QuoteMessage();
 		if (stockQuotes.isPresent()) {
@@ -99,7 +99,7 @@ public class SlackRestController {
 	}
 	
 	private SlackIncomingMessage getStockStats(List<String> symbols) {
-		Optional<StockQuotes> stockQuotes = YahooFinanceClient.getStockQuotes(symbols);
+		Optional<StockQuotes> stockQuotes = iexStockQuoteClient.getStockQuotes(symbols);
 		log.debug("Returned stock quote {}", stockQuotes);
 		SlackIncomingMessage message = new QuoteMessage();
 		if (stockQuotes.isPresent()) {

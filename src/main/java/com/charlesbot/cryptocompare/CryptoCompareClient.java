@@ -12,12 +12,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import com.charlesbot.coinbase.CoinBaseClient;
 import com.charlesbot.model.CurrencyQuote;
 
 public class CryptoCompareClient {
 
-	private static final Logger log = LoggerFactory.getLogger(CoinBaseClient.class);
+	private static final Logger log = LoggerFactory.getLogger(CryptoCompareClient.class);
 	private static final String PRICE_URL = "https://min-api.cryptocompare.com/data/pricemultifull?fsyms={fromCurrencies}&tsyms={toCurrency}";
 	private RestTemplate restTemplate;
 
