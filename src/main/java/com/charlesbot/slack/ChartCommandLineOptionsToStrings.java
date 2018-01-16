@@ -22,14 +22,17 @@ public class ChartCommandLineOptionsToStrings implements CommandConverter<ChartC
 			output = "```"+helpMessage+"```";
 		} else {
 			String timeSpan = ChartCommandLineOptions.SUPPORTED_TIME_SPANS.get(options.timeSpan);
+			String frequency = "1";
+			if (timeSpan.equals("1") || timeSpan.equals("2") || timeSpan.equals("3") || timeSpan.equals("18")) {
+				frequency = "6";
+			}
 			String compare = options.symbolsToCompare
 					.stream()
 					.filter(StringUtils::isNotBlank)	
 					.collect(Collectors.joining(","));
 			String symbol = options.tickerSymbol;
 			
-//			String url = MessageFormat.format("<http://chart.finance.yahoo.com/z?s={0}&t={1}&c={2}&q=l&z=l&p=s&a=v&cb={3,number,#}>", symbol, timeSpan, compare, System.currentTimeMillis());
-			String url = MessageFormat.format("<http://bigcharts.marketwatch.com/kaavio.Webhost/charts/big.chart?symb={0}&time={1}&comp={2}&cb={3,number,#}>", symbol, timeSpan, compare, System.currentTimeMillis());
+			String url = MessageFormat.format("<http://bigcharts.marketwatch.com/kaavio.Webhost/charts/big.chart?symb={0}&time={1}&freq={2}&comp={3}&cb={4,number,#}>", symbol, timeSpan, frequency, compare, System.currentTimeMillis());
 			
 			output = url;
 		}
