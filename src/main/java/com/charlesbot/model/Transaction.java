@@ -13,7 +13,7 @@ public class Transaction {
 	private String symbol;
 	public BigDecimal quantity;
 	public BigDecimal price;
-	public LocalDate date;
+	public LocalDate date = LocalDate.now();
 
 	public String toString(String delimiter) {
 		return Joiner.on(delimiter).skipNulls().join(getSymbol(), quantity, price, date);
