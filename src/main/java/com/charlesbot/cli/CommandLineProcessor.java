@@ -33,6 +33,7 @@ public class CommandLineProcessor {
 		supportedCommands.put(ListStatsCommandLineOptions::matcher, ListStatsCommandLineOptions::new);
 		//supportedCommands.put(CurrencyExchangeRateCommandLineOptions::matcher, CurrencyExchangeRateCommandLineOptions::new);
 		supportedCommands.put(CurrencyQuoteCommandLineOptions::matcher, CurrencyQuoteCommandLineOptions::new);
+		supportedCommands.put(CurrencyChartCommandLineOptions::matcher, CurrencyChartCommandLineOptions::new);
 		supportedCommands.put(HelpCommandLineOptions::matcher, HelpCommandLineOptions::new);
 	}
 	

@@ -29,6 +29,7 @@ import com.charlesbot.iex.IexStockQuoteConverter;
 import com.charlesbot.model.WatchListRepository;
 import com.charlesbot.slack.AddToListCommandLineOptionsToStrings;
 import com.charlesbot.slack.ChartCommandLineOptionsToStrings;
+import com.charlesbot.slack.CurrencyChartCommandLineOptionsToStrings;
 import com.charlesbot.slack.CurrencyQuoteCommandLineOptionsToStrings;
 import com.charlesbot.slack.HelpCommandLineOptionsToStrings;
 import com.charlesbot.slack.ListCommandLineOptionsToStrings;
@@ -94,6 +95,7 @@ public class Application extends WebMvcConfigurerAdapter {
 		converters.add(new StringToPortfolioQuoteMessage(iexStockQuoteClient));
 		converters.add(new ListStatsCommandLineOptionsToStrings(watchListRepository, iexStockQuoteClient));
 		converters.add(new CurrencyQuoteCommandLineOptionsToStrings(cryptoCompareClient, percentRanges));
+		converters.add(new CurrencyChartCommandLineOptionsToStrings());
 		conversionServiceFactoryBean.setConverters(converters);
 		return conversionServiceFactoryBean;
 	}
