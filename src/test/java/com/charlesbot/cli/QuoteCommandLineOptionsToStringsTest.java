@@ -34,7 +34,7 @@ public class QuoteCommandLineOptionsToStringsTest {
 	public MockitoRule rule = MockitoJUnit.rule();
 
 	public void mockReturnWhatsPassedIn() {
-		when(client.getStockQuotes(Mockito.anyListOf(String.class))).thenAnswer(new Answer<Optional<StockQuotes>>() {
+		when(client.getStockQuotes(Mockito.anyList())).thenAnswer(new Answer<Optional<StockQuotes>>() {
 			@SuppressWarnings("unchecked")
 			@Override
 			public Optional<StockQuotes> answer(InvocationOnMock invocation) throws Throwable {

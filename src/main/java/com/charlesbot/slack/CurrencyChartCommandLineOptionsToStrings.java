@@ -6,7 +6,6 @@ import java.util.List;
 import org.assertj.core.util.Lists;
 import org.springframework.stereotype.Component;
 
-import com.charlesbot.cli.ChartCommandLineOptions;
 import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.cli.CurrencyChartCommandLineOptions;
 import com.charlesbot.cli.CurrencyChartOption;

@@ -7,20 +7,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.web.HttpMessageConverters;
+import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ConversionServiceFactoryBean;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.format.support.FormattingConversionService;
 import org.springframework.format.support.FormattingConversionServiceFactoryBean;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.web.client.AsyncRestTemplate;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.cryptocompare.CryptoCompareClient;
@@ -43,7 +40,7 @@ import com.charlesbot.slack.StringToPortfolioQuoteMessage;
 
 @SpringBootApplication
 @Configuration
-public class Application extends WebMvcConfigurerAdapter {
+public class Application implements WebMvcConfigurer {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(Application.class);
@@ -62,14 +59,6 @@ public class Application extends WebMvcConfigurerAdapter {
 	@Bean
 	public RestTemplate restTemplate() {
 		return new RestTemplate(customConverters().getConverters());
-	}
-
-	@Bean
-	public AsyncRestTemplate asyncRestTemplate() {
-		SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-		factory.setTaskExecutor(new SimpleAsyncTaskExecutor());
-		AsyncRestTemplate asyncRestTemplate = new AsyncRestTemplate(factory, restTemplate());
-		return asyncRestTemplate;
 	}
 
 	@Bean
