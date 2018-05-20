@@ -261,14 +261,14 @@ public class StockQuote {
 	public Double getTotalChangeInPercent() {
 		double changeInPercent = 0d;
 		try {
-			changeInPercent = new Double(getChangeInPercent());
+			changeInPercent = Double.parseDouble(getChangeInPercent());
 		} catch (Exception nfe) {
 			// ignore
 		}
 
 		double extendedHoursChangeInPercent = 0d;
 		try {
-			extendedHoursChangeInPercent = new Double(getExtendedHoursChangeInPercent());
+			extendedHoursChangeInPercent = Double.parseDouble(getExtendedHoursChangeInPercent());
 		} catch (Exception nfe) {
 			// ignore
 		}
