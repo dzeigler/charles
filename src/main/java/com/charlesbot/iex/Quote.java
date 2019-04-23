@@ -76,5 +76,12 @@ public class Quote {
 	@JsonProperty
 	public BigDecimal week52Low;
 	
+	@JsonProperty
+	public BigDecimal extendedPrice;
 	
+	@JsonProperty
+	public BigDecimal extendedChange;
+	
+	@JsonProperty
+	public BigDecimal extendedChangePercent	;
 }
