@@ -99,7 +99,7 @@ public class SlackRestController {
 	}
 	
 	private SlackIncomingMessage getStockStats(List<String> symbols) {
-		Optional<StockQuotes> stockQuotes = iexStockQuoteClient.getStockQuotes(symbols);
+		Optional<StockQuotes> stockQuotes = iexStockQuoteClient.getStockQuotesAndStats(symbols);
 		log.debug("Returned stock quote {}", stockQuotes);
 		SlackIncomingMessage message = new QuoteMessage();
 		if (stockQuotes.isPresent()) {

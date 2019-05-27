@@ -167,7 +167,7 @@ public class ListStatsCommandLineOptionsToStrings implements CommandConverter<Li
 				.collect(Collectors.toList());
 
 		// get stock quotes for each key
-		Optional<StockQuotes> stockQuotes = iexStockQuoteClient.getStockQuotes(symbols);
+		Optional<StockQuotes> stockQuotes = iexStockQuoteClient.getStockQuotesAndStats(symbols);
 
 		// build a map of each ticker symbol to its quote
 		Map<String, StockQuote> stockQuotesMap = new HashMap<>();

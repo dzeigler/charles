@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
@@ -49,6 +50,9 @@ public class Application implements WebMvcConfigurer {
 	public static PropertySourcesPlaceholderConfigurer ppc() {
 		return new PropertySourcesPlaceholderConfigurer();
 	}
+
+	@Value("${IEX_API_TOKEN}")
+	private String iexApiToken;
 	
 	@Bean
 	public HttpMessageConverters customConverters() {
@@ -98,7 +102,7 @@ public class Application implements WebMvcConfigurer {
 
 	@Bean
 	public IexStockQuoteClient iexStockQuoteClient(RestTemplate restTemplate) {
-		return new IexStockQuoteClient(restTemplate);
+		return new IexStockQuoteClient(restTemplate, iexApiToken);
 	}
 	
 	@Bean

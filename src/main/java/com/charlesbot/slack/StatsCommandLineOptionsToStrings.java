@@ -31,7 +31,7 @@ public class StatsCommandLineOptionsToStrings implements CommandConverter<StatsC
 			outputs.add(sb.toString());
 		} else {
 
-			StockQuotes stockQuotes = iexStockQuoteClient.getStockQuotes(options.tickerSymbols).get();
+			StockQuotes stockQuotes = iexStockQuoteClient.getStockQuotesAndStats(options.tickerSymbols).get();
 			
 			StringColumn[] columns = {
 					new StringColumn("Symbol",8, AlignType.TOP_LEFT),
