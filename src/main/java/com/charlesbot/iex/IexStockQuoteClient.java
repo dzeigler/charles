@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.inject.Named;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -19,15 +17,17 @@ import com.charlesbot.model.StockQuote;
 import com.charlesbot.model.StockQuotes;
 import com.google.common.base.Joiner;
 
-@Named
 public class IexStockQuoteClient {
 
 	private static final Logger log = LoggerFactory.getLogger(IexStockQuoteConverter.class);
-	private static final String QUOTE_URL = "https://api.iextrading.com/1.0/stock/market/batch?symbols={symbols}&types=quote,stats&displayPercent=true";
+	private static final String QUOTE_URL = "https://cloud.iexapis.com/stable/stock/market/batch?symbols={symbols}&types=quote,stats&displayPercent=true&token={iexApiToken}";
 	private RestTemplate restTemplate;
 
-	public IexStockQuoteClient(RestTemplate restTemplate) {
+	private String iexApiToken;
+	
+	public IexStockQuoteClient(RestTemplate restTemplate, String iexApiToken) {
 		this.restTemplate = restTemplate;
+		this.iexApiToken = iexApiToken;
 	}
 
 	public Optional<StockQuotes> getStockQuotes(List<String> symbols) {
@@ -35,6 +35,7 @@ public class IexStockQuoteClient {
 		String symbolsString = Joiner.on(',').join(symbols);
 		Map<String, String> variables = new HashMap<String, String>();
 		variables.put("symbols", symbolsString);
+		variables.put("iexApiToken", iexApiToken);
 		try {
 			ResponseEntity<BatchResponse> response = restTemplate.getForEntity(QUOTE_URL, BatchResponse.class, variables);
 			log.debug("Completed Request {}", response);
@@ -63,7 +64,7 @@ public class IexStockQuoteClient {
 				if (quote.week52High != null) {
 					stockQuote.setFiftyTwoWeekHigh(quote.week52High.setScale(2, RoundingMode.HALF_UP).toString());
 				}
-				if (quote.week52High != null) {
+				if (quote.week52Low != null) {
 					stockQuote.setFiftyTwoWeekLow(quote.week52Low.setScale(2, RoundingMode.HALF_UP).toString());
 				}
 				if (quote.marketCap != null) {
@@ -86,6 +87,15 @@ public class IexStockQuoteClient {
 				}
 				if (quote.symbol != null) {
 					stockQuote.setSymbol(quote.symbol.toString());
+				}
+				if (quote.extendedPrice != null && quote.extendedPrice.compareTo(quote.latestPrice) != 0 && BigDecimal.ZERO.compareTo(quote.extendedPrice) != 0) {
+					stockQuote.setExtendedHoursPrice(quote.extendedPrice.setScale(2, RoundingMode.HALF_UP).toString());
+					if (quote.extendedChangePercent != null) {
+						stockQuote.setExtendedHoursChangeInPercent(quote.extendedChangePercent.setScale(2, RoundingMode.HALF_UP).toString());
+					}
+					if (quote.extendedChange != null) {
+						stockQuote.setExtendedHoursChange(quote.extendedChange.setScale(2, RoundingMode.HALF_UP).toString());
+					}
 				}
 			}
 			if (priceInfo.stats != null) {
