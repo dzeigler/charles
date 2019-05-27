@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
+import org.hamcrest.core.IsInstanceOf;
 import org.junit.Test;
 
 public class CommandLineProcessorTest {
@@ -15,7 +16,7 @@ public class CommandLineProcessorTest {
 	public void unsupportedCommand() {
 		Command command = processor.process("safasdf", "userid", "botname");
 		
-		assertThat(command, is(nullValue()));
+		assertThat(command, IsInstanceOf.instanceOf(HelpCommandLineOptions.class));
 	}
 
 	@Test
