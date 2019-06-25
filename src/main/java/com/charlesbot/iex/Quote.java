@@ -59,6 +59,9 @@ public class Quote {
 	public BigDecimal latestPrice;
 	
 	@JsonProperty
+	public Long latestUpdate;
+	
+	@JsonProperty
 	public BigDecimal change;
 	
 	@JsonProperty
@@ -84,4 +87,7 @@ public class Quote {
 	
 	@JsonProperty
 	public BigDecimal extendedChangePercent;
+	
+	@JsonProperty
+	public Long extendedPriceTime;
 }
