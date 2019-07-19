@@ -57,7 +57,9 @@ public class StockQuote {
 
 	public BigDecimal getChangeAsBigDecimal() {
 		try {
-			return new BigDecimal(change);
+			if (change != null) {
+				return new BigDecimal(change);
+			}
 		} catch (NumberFormatException nfe) {
 
 		}
