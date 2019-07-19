@@ -103,13 +103,14 @@ public class ListStatsCommandLineOptionsToStrings implements CommandConverter<Li
 					marketValueTotal = marketValueTotal.add(marketValue);
 					BigDecimal gain = marketValue.subtract(costBasis);
 					BigDecimal gainPercent = gain.divide(costBasis, 6, RoundingMode.HALF_UP);
-					BigDecimal dayGain = position.quantity.multiply(position.getQuote().getChangeAsBigDecimal());
-				
+					if (position.getQuote().getChangeAsBigDecimal() != null) {
+						BigDecimal dayGain = position.quantity.multiply(position.getQuote().getChangeAsBigDecimal());
+						row.setDayGain(dayGain);
+					}
 					row.setCostBasis(costBasis);
 					row.setMarketValue(marketValue);
 					row.setGain(gain);
 					row.setGainPercent(gainPercent);
-					row.setDayGain(dayGain);
 				}
 			}
 
