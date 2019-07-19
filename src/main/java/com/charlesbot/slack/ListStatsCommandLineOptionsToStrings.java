@@ -141,7 +141,9 @@ public class ListStatsCommandLineOptionsToStrings implements CommandConverter<Li
 				row.setListPercent(row.getMarketValue().divide(marketValueTotal, 4, RoundingMode.HALF_UP));
 				totalRow.setCostBasis(totalRow.getCostBasis().add(row.getCostBasis()));
 				totalRow.setGain(totalRow.getGain().add(row.getGain()));
+				if (row.getDayGain() != null) {
 				totalRow.setDayGain(totalRow.getDayGain().add(row.getDayGain()));
+				}
 				totalRow.setMarketValue(totalRow.getMarketValue().add(row.getMarketValue()));
 			}
 		}
