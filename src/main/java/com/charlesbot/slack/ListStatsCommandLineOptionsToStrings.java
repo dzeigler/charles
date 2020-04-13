@@ -175,7 +175,9 @@ public class ListStatsCommandLineOptionsToStrings implements CommandConverter<Li
 		// build a map of each ticker symbol to its quote
 		Map<String, StockQuote> stockQuotesMap = new HashMap<>();
 		for (StockQuote q : stockQuotes.get().get()) {
-			stockQuotesMap.put(q.getSymbol().toUpperCase(), q);
+			if (q != null && q.getSymbol() != null) {
+				stockQuotesMap.put(q.getSymbol().toUpperCase(), q);
+			}
 		}
 
 		// build a map with all of the transactions
