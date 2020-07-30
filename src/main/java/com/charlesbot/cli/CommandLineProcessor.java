@@ -48,7 +48,7 @@ public class CommandLineProcessor {
 		Command command = null;
 
 		// tokenize the command
-		String[] tokens = commandString.split("\\s+");
+		String[] tokens = commandString.split("\\p{Z}+");
 		
 			
 		Supplier<Command> supplier = supportedCommands.keySet()

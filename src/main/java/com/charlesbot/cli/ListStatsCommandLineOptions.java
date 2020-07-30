@@ -11,7 +11,7 @@ public class ListStatsCommandLineOptions extends Command {
 	public static final String COMMAND_HEADER = 
 			"LIST_NAME is the name of the portfolio to get stats for";
 	public static final String COMMAND_DESCRIPTION = "Returns performance stats for the positions in the given list. Only support USD.";
-	public static final String COMMAND_PATTERN = "^@\\w+:?\\s*stats.*";
+	public static final String COMMAND_PATTERN = "(?i)^@\\w+:?\\p{Z}*stats.*";
 
 	static Options options;
 
@@ -103,7 +103,7 @@ public class ListStatsCommandLineOptions extends Command {
 	}
 	
 	public static boolean matcher(String t) {
-		return t.toLowerCase().matches(COMMAND_PATTERN.toLowerCase());
+		return t.toLowerCase().matches(COMMAND_PATTERN);
 	}
 
 	@Override

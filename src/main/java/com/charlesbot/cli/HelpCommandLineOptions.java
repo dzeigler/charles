@@ -8,7 +8,7 @@ public class HelpCommandLineOptions extends Command {
 	public static final String COMMAND = "help";
 	public static final String COMMAND_DESCRIPTION = "Prints this message";
 	public static final String COMMAND_SYNTAX = COMMAND;
-	public static final String COMMAND_PATTERN = "^@\\w+:? .*";
+	public static final String COMMAND_PATTERN = "(?i)^@\\w+:?\\p{Z}+.*";
 
 	static Options options;
 
@@ -53,7 +53,7 @@ public class HelpCommandLineOptions extends Command {
 	}
 	
 	public static boolean matcher(String t) {
-		return t.toLowerCase().matches(COMMAND_PATTERN.toLowerCase());
+		return t.toLowerCase().matches(COMMAND_PATTERN);
 	}
 
 	@Override

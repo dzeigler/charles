@@ -122,7 +122,7 @@ public class ChartCommandLineOptions extends Command {
 		if (commandLine.hasOption('c')) {
 			List<String> compareValues = Arrays.asList(commandLine.getOptionValues('c'));
 			this.symbolsToCompare = compareValues.stream()
-					.map(x -> x.split("[,\\s]"))
+					.map(x -> x.split("[,\\p{Z}]"))
 					.flatMap(Arrays::stream)
 					.filter(StringUtils::isNotBlank)
 					.collect(Collectors.toList());

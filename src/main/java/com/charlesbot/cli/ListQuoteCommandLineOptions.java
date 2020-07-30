@@ -11,7 +11,7 @@ public class ListQuoteCommandLineOptions extends Command {
 	public static final String COMMAND_HEADER = 
 			"LIST_NAME is the name watch list to get quotes for";
 	public static final String COMMAND_DESCRIPTION = "Returns quotes for the ticker symbol(s) in the given list";
-	public static final String COMMAND_PATTERN = "^@\\w+:?\\s*q.*";
+	public static final String COMMAND_PATTERN = "(?i)^@\\w+:?\\p{Z}*q.*";
 
 	static Options options;
 
@@ -87,7 +87,7 @@ public class ListQuoteCommandLineOptions extends Command {
 	}
 	
 	public static boolean matcher(String t) {
-		return t.toLowerCase().matches(COMMAND_PATTERN.toLowerCase());
+		return t.toLowerCase().matches(COMMAND_PATTERN);
 	}
 
 	@Override

@@ -15,7 +15,7 @@ public class RemoveFromListCommandLineOptions extends Command {
 			"LIST_NAME is the name watch list being modified\n"
 			+ "SYMBOL is the IEX ticker for the stock or index";
 	public static final String COMMAND_DESCRIPTION = "Removes the first matching symbol from the list or the entire list if no symbols are provided";
-	public static final String COMMAND_PATTERN = "^@\\w+:?\\s*(rm|del).*";
+	public static final String COMMAND_PATTERN = "(?i)^@\\w+:?\\p{Z}*(rm|del).*";
 
 	static Options options;
 
@@ -88,7 +88,7 @@ public class RemoveFromListCommandLineOptions extends Command {
 	}
 	
 	public static boolean matcher(String t) {
-		return t.toLowerCase().matches(COMMAND_PATTERN.toLowerCase());
+		return t.toLowerCase().matches(COMMAND_PATTERN);
 	}
 
 	@Override

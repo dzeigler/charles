@@ -11,7 +11,7 @@ public class ListCommandLineOptions extends Command {
 	public static final String COMMAND_HEADER = 
 			"LIST_NAME is the name of the watch list to look up. If provided, all items on the list will be returned.";
 	public static final String COMMAND_DESCRIPTION = "Lists all the lists for a user or all of the items on a watch list";
-	public static final String COMMAND_PATTERN = "^@\\w+:?\\s*ls.*";
+	public static final String COMMAND_PATTERN = "(?i)^@\\w+:?\\p{Z}*ls.*";
 
 	static Options options;
 
@@ -88,7 +88,7 @@ public class ListCommandLineOptions extends Command {
 	}
 	
 	public static boolean matcher(String t) {
-		return t.toLowerCase().matches(COMMAND_PATTERN.toLowerCase());
+		return t.toLowerCase().matches(COMMAND_PATTERN);
 	}
 
 	@Override

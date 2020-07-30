@@ -44,6 +44,20 @@ public class CommandLineProcessorTest {
 	}
 	
 	@Test
+	public void quoteMessageWithNbsp() {
+		Command command = processor.process("!q tsla amzn goog", "userid", "botname");
+		
+		assertThat(command.getName(), is(QuoteCommandLineOptions.COMMAND));
+		
+		QuoteCommandLineOptions qCommand = (QuoteCommandLineOptions) command;
+		assertThat(qCommand.tickerSymbols, hasSize(3));
+		assertThat(qCommand.tickerSymbols, hasItem("tsla"));
+		assertThat(qCommand.tickerSymbols, hasItem("goog"));
+		assertThat(qCommand.tickerSymbols, hasItem("amzn"));
+		assertThat(qCommand.isHelp(), is(false));
+	}
+	
+	@Test
 	public void quoteWithNoTicker() {
 		Command command = processor.process("!q", "userid", "botname");
 		

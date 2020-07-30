@@ -76,7 +76,7 @@ public class StringToPortfolioQuoteMessage implements Converter<String, Portfoli
 	public PortfolioQuoteMessage convert(String text) {
 		PortfolioQuoteMessage message = new PortfolioQuoteMessage();
 		try {
-			CommandLine command = parser.parse(options, text.split("\\s+"));
+			CommandLine command = parser.parse(options, text.split("\\p{Z}+"));
 			List<String> argList = command.getArgList();
 			if (argList.size() < 1 || command.hasOption('?')) {
 				String helpMessage = generateHelpMessage();

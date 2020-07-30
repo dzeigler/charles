@@ -23,7 +23,7 @@ public class AddToListCommandLineOptions extends Command {
 			+ "PRICE is the amount of money paid per share\n" 
 			+ "DATE should be in the format yyyy-MM-dd; defaults to the current date if omitted";
 	public static final String COMMAND_DESCRIPTION = "Adds ticker symbols or transactions to a list";
-	public static final String COMMAND_PATTERN = "^@\\w+:?\\s*add.*";
+	public static final String COMMAND_PATTERN = "(?i)^@\\w+:?\\p{Z}*add.*";
 
 	static Options options;
 
@@ -119,7 +119,7 @@ public class AddToListCommandLineOptions extends Command {
 	}
 	
 	public static boolean matcher(String t) {
-		return t.toLowerCase().matches(COMMAND_PATTERN.toLowerCase());
+		return t.toLowerCase().matches(COMMAND_PATTERN);
 	}
 
 	@Override
