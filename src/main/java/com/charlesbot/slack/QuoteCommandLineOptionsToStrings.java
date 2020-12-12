@@ -1,11 +1,5 @@
 package com.charlesbot.slack;
 
-import java.text.MessageFormat;
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.util.StringUtils;
-
 import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.cli.QuoteCommandLineOptions;
 import com.charlesbot.iex.IexStockQuoteClient;
@@ -13,6 +7,10 @@ import com.charlesbot.model.StockQuote;
 import com.charlesbot.model.StockQuotePercentageComparator;
 import com.charlesbot.model.StockQuotes;
 import com.google.common.collect.Lists;
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.Optional;
+import org.springframework.util.StringUtils;
 
 public class QuoteCommandLineOptionsToStrings implements CommandConverter<QuoteCommandLineOptions> {
 

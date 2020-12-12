@@ -1,16 +1,14 @@
 package com.charlesbot.slack;
 
-import java.text.MessageFormat;
-
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.util.StringUtils;
-
 import com.charlesbot.model.StockQuote;
 import com.charlesbot.model.StockQuotePercentageComparator;
 import com.charlesbot.model.StockQuotes;
 import com.google.common.collect.Range;
 import com.google.common.collect.RangeMap;
 import com.google.common.collect.TreeRangeMap;
+import java.text.MessageFormat;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.util.StringUtils;
 
 public class StockQuotesToQuoteMessage implements Converter<StockQuotes, QuoteMessage> {
 

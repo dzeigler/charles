@@ -1,14 +1,13 @@
 package com.charlesbot.slack;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.charlesbot.cli.AddToListCommandLineOptions;
 import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.model.Transaction;
 import com.charlesbot.model.WatchList;
 import com.charlesbot.model.WatchListRepository;
 import com.google.common.collect.Lists;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AddToListCommandLineOptionsToStrings implements CommandConverter<AddToListCommandLineOptions> {
 

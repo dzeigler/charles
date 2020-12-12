@@ -1,11 +1,9 @@
 package com.charlesbot.slack;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.charlesbot.model.StockQuote;
+import org.junit.jupiter.api.Test;
 
 public class StockQuoteToQuoteMessageTest {
 
@@ -18,7 +16,7 @@ public class StockQuoteToQuoteMessageTest {
 
 		String emoji = new StockQuotesToQuoteMessage().determineRangeString(quote);
 		
-		assertThat(emoji, is("red5"));
+		assertThat(emoji).isEqualTo("red5");
 	}
 	
 	@Test
@@ -29,7 +27,7 @@ public class StockQuoteToQuoteMessageTest {
 
 		String emoji = new StockQuotesToQuoteMessage().determineRangeString(quote);
 		
-		assertThat(emoji, is("red5"));
+		assertThat(emoji).isEqualTo("red5");
 	}
 	
 	@Test
@@ -40,7 +38,7 @@ public class StockQuoteToQuoteMessageTest {
 
 		String emoji = new StockQuotesToQuoteMessage().determineRangeString(quote);
 		
-		assertThat(emoji, is("red4"));
+		assertThat(emoji).isEqualTo("red4");
 	}
 	
 	@Test
@@ -51,7 +49,7 @@ public class StockQuoteToQuoteMessageTest {
 
 		String emoji = new StockQuotesToQuoteMessage().determineRangeString(quote);
 		
-		assertThat(emoji, is("red4"));
+		assertThat(emoji).isEqualTo("red4");
 	}
 	
 	@Test
@@ -62,7 +60,7 @@ public class StockQuoteToQuoteMessageTest {
 
 		String emoji = new StockQuotesToQuoteMessage().determineRangeString(quote);
 		
-		assertThat(emoji, is("red3"));
+		assertThat(emoji).isEqualTo("red3");
 	}
 	
 	@Test
@@ -73,7 +71,7 @@ public class StockQuoteToQuoteMessageTest {
 
 		String emoji = new StockQuotesToQuoteMessage().determineRangeString(quote);
 		
-		assertThat(emoji, is("red3"));
+		assertThat(emoji).isEqualTo("red3");
 	}
 	
 	@Test
@@ -84,7 +82,7 @@ public class StockQuoteToQuoteMessageTest {
 
 		String emoji = new StockQuotesToQuoteMessage().determineRangeString(quote);
 		
-		assertThat(emoji, is("red2"));
+		assertThat(emoji).isEqualTo("red2");
 	}
 	
 	@Test
@@ -95,7 +93,7 @@ public class StockQuoteToQuoteMessageTest {
 
 		String emoji = new StockQuotesToQuoteMessage().determineRangeString(quote);
 		
-		assertThat(emoji, is("red2"));
+		assertThat(emoji).isEqualTo("red2");
 	}
 	
 	@Test
@@ -106,7 +104,7 @@ public class StockQuoteToQuoteMessageTest {
 
 		String emoji = new StockQuotesToQuoteMessage().determineRangeString(quote);
 		
-		assertThat(emoji, is("red1"));
+		assertThat(emoji).isEqualTo("red1");
 	}
 	
 	@Test
@@ -117,7 +115,7 @@ public class StockQuoteToQuoteMessageTest {
 
 		String emoji = new StockQuotesToQuoteMessage().determineRangeString(quote);
 		
-		assertThat(emoji, is("black"));
+		assertThat(emoji).isEqualTo("black");
 	}
 	
 	@Test
@@ -128,7 +126,7 @@ public class StockQuoteToQuoteMessageTest {
 
 		String emoji = new StockQuotesToQuoteMessage().determineRangeString(quote);
 		
-		assertThat(emoji, is("green5"));
+		assertThat(emoji).isEqualTo("green5");
 	}
 	
 	@Test
@@ -139,7 +137,7 @@ public class StockQuoteToQuoteMessageTest {
 
 		String emoji = new StockQuotesToQuoteMessage().determineRangeString(quote);
 		
-		assertThat(emoji, is("green5"));
+		assertThat(emoji).isEqualTo("green5");
 	}
 	
 	@Test
@@ -150,7 +148,7 @@ public class StockQuoteToQuoteMessageTest {
 
 		String emoji = new StockQuotesToQuoteMessage().determineRangeString(quote);
 		
-		assertThat(emoji, is("green4"));
+		assertThat(emoji).isEqualTo("green4");
 	}
 	
 	@Test
@@ -161,7 +159,7 @@ public class StockQuoteToQuoteMessageTest {
 
 		String emoji = new StockQuotesToQuoteMessage().determineRangeString(quote);
 		
-		assertThat(emoji, is("green4"));
+		assertThat(emoji).isEqualTo("green4");
 	}
 	
 	@Test
@@ -172,7 +170,7 @@ public class StockQuoteToQuoteMessageTest {
 
 		String emoji = new StockQuotesToQuoteMessage().determineRangeString(quote);
 		
-		assertThat(emoji, is("green3"));
+		assertThat(emoji).isEqualTo("green3");
 	}
 	
 	@Test
@@ -183,7 +181,7 @@ public class StockQuoteToQuoteMessageTest {
 
 		String emoji = new StockQuotesToQuoteMessage().determineRangeString(quote);
 		
-		assertThat(emoji, is("green3"));
+		assertThat(emoji).isEqualTo("green3");
 	}
 	
 	@Test
@@ -194,7 +192,7 @@ public class StockQuoteToQuoteMessageTest {
 
 		String emoji = new StockQuotesToQuoteMessage().determineRangeString(quote);
 		
-		assertThat(emoji, is("green2"));
+		assertThat(emoji).isEqualTo("green2");
 	}
 	
 	@Test
@@ -205,7 +203,7 @@ public class StockQuoteToQuoteMessageTest {
 
 		String emoji = new StockQuotesToQuoteMessage().determineRangeString(quote);
 		
-		assertThat(emoji, is("green2"));
+		assertThat(emoji).isEqualTo("green2");
 	}
 	
 	@Test
@@ -216,6 +214,6 @@ public class StockQuoteToQuoteMessageTest {
 
 		String emoji = new StockQuotesToQuoteMessage().determineRangeString(quote);
 		
-		assertThat(emoji, is("green1"));
+		assertThat(emoji).isEqualTo("green1");
 	}
 }

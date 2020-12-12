@@ -1,21 +1,18 @@
 package com.charlesbot;
 
+import com.charlesbot.cli.CommandLineProcessor;
+import com.charlesbot.model.WatchListRepository;
+import com.charlesbot.slack.listeners.MessageListener;
+import com.ullink.slack.simpleslackapi.SlackSession;
+import com.ullink.slack.simpleslackapi.impl.SlackSessionFactory;
 import java.io.IOException;
-
 import javax.annotation.PreDestroy;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.ConversionService;
-
-import com.charlesbot.cli.CommandLineProcessor;
-import com.charlesbot.model.WatchListRepository;
-import com.charlesbot.slack.listeners.MessageListener;
-import com.ullink.slack.simpleslackapi.SlackSession;
-import com.ullink.slack.simpleslackapi.impl.SlackSessionFactory;
 
 @Configuration
 public class SlackBotConfiguration {

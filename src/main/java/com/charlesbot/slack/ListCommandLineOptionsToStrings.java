@@ -1,16 +1,14 @@
 package com.charlesbot.slack;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.cli.ListCommandLineOptions;
 import com.charlesbot.model.WatchList;
 import com.charlesbot.model.WatchListRepository;
 import com.google.common.collect.Lists;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ListCommandLineOptionsToStrings implements CommandConverter<ListCommandLineOptions> {
 

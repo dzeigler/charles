@@ -1,5 +1,12 @@
 package com.charlesbot.slack;
 
+import com.brsanthu.dataexporter.DataExporter;
+import com.brsanthu.dataexporter.model.AlignType;
+import com.brsanthu.dataexporter.model.StringColumn;
+import com.brsanthu.dataexporter.output.texttable.TextTableExporter;
+import com.charlesbot.iex.IexStockQuoteClient;
+import com.charlesbot.model.StockQuote;
+import com.charlesbot.model.StockQuotes;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.math.BigDecimal;
@@ -10,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -18,14 +24,6 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.springframework.core.convert.converter.Converter;
-
-import com.brsanthu.dataexporter.DataExporter;
-import com.brsanthu.dataexporter.model.AlignType;
-import com.brsanthu.dataexporter.model.StringColumn;
-import com.brsanthu.dataexporter.output.texttable.TextTableExporter;
-import com.charlesbot.iex.IexStockQuoteClient;
-import com.charlesbot.model.StockQuote;
-import com.charlesbot.model.StockQuotes;
 
 public class StringToPortfolioQuoteMessage implements Converter<String, PortfolioQuoteMessage> {
 

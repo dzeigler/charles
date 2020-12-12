@@ -1,14 +1,12 @@
 package com.charlesbot.slack;
 
-import java.text.MessageFormat;
-import java.util.List;
-
-import org.assertj.core.util.Lists;
-import org.springframework.stereotype.Component;
-
 import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.cli.CurrencyChartCommandLineOptions;
 import com.charlesbot.cli.CurrencyChartOption;
+import com.google.common.collect.Lists;
+import java.text.MessageFormat;
+import java.util.List;
+import org.springframework.stereotype.Component;
 
 @Component
 public class CurrencyChartCommandLineOptionsToStrings implements CommandConverter<CurrencyChartCommandLineOptions> {

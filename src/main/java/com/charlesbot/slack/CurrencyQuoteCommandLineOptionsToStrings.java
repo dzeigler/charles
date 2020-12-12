@@ -1,17 +1,15 @@
 package com.charlesbot.slack;
 
-import java.text.MessageFormat;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.cli.CurrencyQuoteCommandLineOptions;
 import com.charlesbot.cryptocompare.CryptoCompareClient;
 import com.charlesbot.model.CurrencyQuote;
 import com.charlesbot.model.CurrencyQuotePercentageComparator;
 import com.google.common.collect.Lists;
+import java.text.MessageFormat;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CurrencyQuoteCommandLineOptionsToStrings implements CommandConverter<CurrencyQuoteCommandLineOptions> {
 

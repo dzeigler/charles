@@ -1,8 +1,9 @@
 package com.charlesbot.iex;
 
+import com.charlesbot.model.StockQuote;
+import com.charlesbot.model.StockQuotes;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpInputMessage;
@@ -14,9 +15,6 @@ import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.supercsv.io.CsvBeanReader;
 import org.supercsv.io.ICsvBeanReader;
 import org.supercsv.prefs.CsvPreference;
-
-import com.charlesbot.model.StockQuote;
-import com.charlesbot.model.StockQuotes;
 
 public class IexStockQuoteConverter extends AbstractHttpMessageConverter<StockQuotes> {
 

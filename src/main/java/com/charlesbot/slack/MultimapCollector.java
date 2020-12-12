@@ -1,10 +1,9 @@
 package com.charlesbot.slack;
 
+import com.google.common.collect.Multimap;
 import java.util.Map.Entry;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
-
-import com.google.common.collect.Multimap;
 
 public class MultimapCollector {
 

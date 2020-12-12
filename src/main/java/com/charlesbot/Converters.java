@@ -1,7 +1,6 @@
 package com.charlesbot;
 
 import java.util.Set;
-
 import org.springframework.core.convert.converter.Converter;
 
 public class Converters {

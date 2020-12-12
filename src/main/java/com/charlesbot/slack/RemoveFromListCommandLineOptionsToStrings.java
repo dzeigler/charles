@@ -1,15 +1,14 @@
 package com.charlesbot.slack;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.cli.RemoveFromListCommandLineOptions;
 import com.charlesbot.model.Transaction;
 import com.charlesbot.model.WatchList;
 import com.charlesbot.model.WatchListRepository;
 import com.google.common.collect.Lists;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class RemoveFromListCommandLineOptionsToStrings implements CommandConverter<RemoveFromListCommandLineOptions> {
 

@@ -1,15 +1,14 @@
 package com.charlesbot.slack;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Supplier;
-
 import com.charlesbot.cli.Command;
 import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.cli.HelpCommandLineOptions;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Supplier;
 
 public class HelpCommandLineOptionsToStrings implements CommandConverter<HelpCommandLineOptions> {
 

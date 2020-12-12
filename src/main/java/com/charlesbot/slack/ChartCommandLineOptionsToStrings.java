@@ -1,15 +1,13 @@
 package com.charlesbot.slack;
 
+import com.charlesbot.cli.ChartCommandLineOptions;
+import com.charlesbot.cli.CommandLineProcessor;
+import com.google.common.collect.Lists;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.apache.commons.lang3.StringUtils;
-import org.assertj.core.util.Lists;
 import org.springframework.stereotype.Component;
-
-import com.charlesbot.cli.ChartCommandLineOptions;
-import com.charlesbot.cli.CommandLineProcessor;
 
 @Component
 public class ChartCommandLineOptionsToStrings implements CommandConverter<ChartCommandLineOptions> {

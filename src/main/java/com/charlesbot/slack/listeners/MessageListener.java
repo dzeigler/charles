@@ -1,12 +1,5 @@
 package com.charlesbot.slack.listeners;
 
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.convert.ConversionService;
-
 import com.charlesbot.cli.Command;
 import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.model.WatchListRepository;
@@ -16,6 +9,11 @@ import com.ullink.slack.simpleslackapi.SlackPersona;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.ullink.slack.simpleslackapi.listeners.SlackMessagePostedListener;
+import java.util.List;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.convert.ConversionService;
 
 public class MessageListener implements SlackMessagePostedListener {
 

@@ -1,18 +1,16 @@
 package com.charlesbot.cryptocompare;
 
+import com.charlesbot.model.CurrencyQuote;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-
-import com.charlesbot.model.CurrencyQuote;
 
 public class CryptoCompareClient {
 

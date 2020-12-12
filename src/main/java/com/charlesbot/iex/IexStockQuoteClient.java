@@ -1,21 +1,19 @@
 package com.charlesbot.iex;
 
+import com.charlesbot.model.StockQuote;
+import com.charlesbot.model.StockQuotes;
+import com.google.common.base.Joiner;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-
-import com.charlesbot.model.StockQuote;
-import com.charlesbot.model.StockQuotes;
-import com.google.common.base.Joiner;
 
 public class IexStockQuoteClient {
 

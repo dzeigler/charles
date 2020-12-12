@@ -1,17 +1,15 @@
 package com.charlesbot.cli;
 
+import com.charlesbot.model.Transaction;
+import com.google.common.base.Splitter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.commons.lang3.StringUtils;
-
-import com.charlesbot.model.Transaction;
-import com.google.common.base.Splitter;
 
 public class AddToListCommandLineOptions extends Command {
 

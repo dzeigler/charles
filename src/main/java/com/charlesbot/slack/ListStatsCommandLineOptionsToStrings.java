@@ -3,19 +3,6 @@ package com.charlesbot.slack;
 import static java.util.Comparator.nullsFirst;
 import static java.util.Comparator.reverseOrder;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.brsanthu.dataexporter.model.AlignType;
 import com.brsanthu.dataexporter.model.StringColumn;
 import com.charlesbot.cli.CommandLineProcessor;
@@ -28,6 +15,17 @@ import com.charlesbot.model.WatchList;
 import com.charlesbot.model.WatchListRepository;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ListStatsCommandLineOptionsToStrings implements CommandConverter<ListStatsCommandLineOptions> {
 

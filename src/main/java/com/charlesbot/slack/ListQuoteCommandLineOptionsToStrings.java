@@ -1,14 +1,13 @@
 package com.charlesbot.slack;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.cli.ListQuoteCommandLineOptions;
 import com.charlesbot.cli.QuoteCommandLineOptions;
 import com.charlesbot.model.WatchList;
 import com.charlesbot.model.WatchListRepository;
 import com.google.common.collect.Lists;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ListQuoteCommandLineOptionsToStrings implements CommandConverter<ListQuoteCommandLineOptions> {
 

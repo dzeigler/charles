@@ -3,7 +3,6 @@ package com.charlesbot.cli;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;

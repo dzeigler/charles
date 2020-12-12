@@ -1,25 +1,5 @@
 package com.charlesbot;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.ConversionServiceFactoryBean;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.format.support.FormattingConversionService;
-import org.springframework.format.support.FormattingConversionServiceFactoryBean;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
 import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.cryptocompare.CryptoCompareClient;
 import com.charlesbot.iex.IexStockQuoteClient;
@@ -38,6 +18,24 @@ import com.charlesbot.slack.QuoteCommandLineOptionsToStrings;
 import com.charlesbot.slack.RemoveFromListCommandLineOptionsToStrings;
 import com.charlesbot.slack.StatsCommandLineOptionsToStrings;
 import com.charlesbot.slack.StringToPortfolioQuoteMessage;
+import java.util.HashSet;
+import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ConversionServiceFactoryBean;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.format.support.FormattingConversionService;
+import org.springframework.format.support.FormattingConversionServiceFactoryBean;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
 @Configuration

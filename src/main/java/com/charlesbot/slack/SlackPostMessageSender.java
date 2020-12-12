@@ -1,20 +1,19 @@
 package com.charlesbot.slack;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-@Named
+@Component
 public class SlackPostMessageSender {
 
 	private static final Logger log = LoggerFactory.getLogger(SlackPostMessageSender.class);
 	
-	@Inject
+	@Autowired
 	private RestTemplate restTemplate;
 	@Value("${WEBHOOK_URL}")
 	private String webhookUrl;

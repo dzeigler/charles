@@ -2,7 +2,6 @@ package com.charlesbot.cli;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 

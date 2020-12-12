@@ -1,10 +1,9 @@
 package com.charlesbot.model;
 
+import com.google.common.base.Joiner;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-
-import com.google.common.base.Joiner;
 
 public class Transaction {
 

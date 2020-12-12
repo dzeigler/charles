@@ -1,15 +1,16 @@
 package com.charlesbot.slack;
 
+import com.charlesbot.iex.IexStockQuoteClient;
+import com.charlesbot.model.StockQuotes;
+import com.google.common.base.Splitter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
-
-import javax.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.MediaType;
 import org.springframework.util.MultiValueMap;
@@ -19,20 +20,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.charlesbot.iex.IexStockQuoteClient;
-import com.charlesbot.model.StockQuotes;
-import com.google.common.base.Splitter;
-
 @RestController
 public class SlackRestController {
 
 	private static final Logger log = LoggerFactory.getLogger(SlackRestController.class);
 	
-	@Inject
+	@Autowired
 	private IexStockQuoteClient iexStockQuoteClient;
-	@Inject
+	@Autowired
 	private ConversionService conversionService;
-	@Inject SlackPostMessageSender slackMessageSender;
+	@Autowired
+	SlackPostMessageSender slackMessageSender;
 	
 	@RequestMapping(value = "/")
 	@ResponseBody

@@ -1,8 +1,5 @@
 package com.charlesbot.slack;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.brsanthu.dataexporter.model.AlignType;
 import com.brsanthu.dataexporter.model.Row;
 import com.brsanthu.dataexporter.model.StringColumn;
@@ -11,6 +8,8 @@ import com.charlesbot.cli.StatsCommandLineOptions;
 import com.charlesbot.iex.IexStockQuoteClient;
 import com.charlesbot.model.StockQuote;
 import com.charlesbot.model.StockQuotes;
+import java.util.ArrayList;
+import java.util.List;
 
 public class StatsCommandLineOptionsToStrings implements CommandConverter<StatsCommandLineOptions> {
 

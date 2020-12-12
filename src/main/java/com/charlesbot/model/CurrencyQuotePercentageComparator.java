@@ -1,7 +1,6 @@
 package com.charlesbot.model;
 
 import java.util.Comparator;
-
 import org.apache.commons.lang3.ObjectUtils;
 
 public class CurrencyQuotePercentageComparator implements Comparator<CurrencyQuote> {
