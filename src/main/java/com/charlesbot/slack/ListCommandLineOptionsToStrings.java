@@ -2,10 +2,13 @@ package com.charlesbot.slack;
 
 import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.cli.ListCommandLineOptions;
+import com.charlesbot.model.User;
+import com.charlesbot.model.UserRepository;
 import com.charlesbot.model.WatchList;
 import com.charlesbot.model.WatchListRepository;
 import com.google.common.collect.Lists;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,12 +19,14 @@ public class ListCommandLineOptionsToStrings implements CommandConverter<ListCom
 	private static final Logger log = LoggerFactory.getLogger(ListCommandLineOptionsToStrings.class);
 	
 	private WatchListRepository watchListRepository;
+	private UserRepository userRepository;
 
 	public ListCommandLineOptionsToStrings() {
 	}
 
-	public ListCommandLineOptionsToStrings(WatchListRepository watchListRepository) {
+	public ListCommandLineOptionsToStrings(WatchListRepository watchListRepository, UserRepository userRepository) {
 		this.watchListRepository = watchListRepository;
+		this.userRepository = userRepository;
 	}
 
 	@Override
@@ -42,8 +47,14 @@ public class ListCommandLineOptionsToStrings implements CommandConverter<ListCom
 			
 			if (options.watchListName == null) {
 				List<WatchList> watchLists = watchListRepository.findByUserId(options.userId);
+				Optional<User> user = userRepository.findById(options.userId);
 				String reply = watchLists.stream()
-			        .map(wl -> wl.name)
+			        .map(wl -> {
+						if (user.isPresent() && wl.equals(user.get().defaultWatchList)) {
+							return wl.name + "*";
+						}
+						return wl.name;
+					})
 			        .collect(Collectors.joining(" "));
 				output.append(reply);
 			} else {

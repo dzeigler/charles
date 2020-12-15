@@ -1,5 +1,6 @@
 package com.charlesbot.cli;
 
+import com.charlesbot.model.User;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -11,7 +12,7 @@ public class ListStatsCommandLineOptions extends Command {
 	public static final String COMMAND_HEADER = 
 			"LIST_NAME is the name of the portfolio to get stats for";
 	public static final String COMMAND_DESCRIPTION = "Returns performance stats for the positions in the given list. Only support USD.";
-	public static final String COMMAND_PATTERN = "(?i)^@\\w+:?\\p{Z}*stats.*";
+	public static final String COMMAND_PATTERN = "(?i)^@\\w+:?\\p{Z}*stats\\p{Z}*.*";
 
 	static Options options;
 
@@ -74,16 +75,20 @@ public class ListStatsCommandLineOptions extends Command {
 	}
 
 	@Override
-	public void populateOptions(CommandLine commandLine, String senderUserId) {
+	public void populateOptions(CommandLine commandLine, User user) {
 		if (commandLine.hasOption("?")) {
 			forceHelp();
 		} else if (commandLine.getArgList().isEmpty()) {
 			forceHelp();
-		} else if (commandLine.getArgList().size() != 2) {
+		} else if (commandLine.getArgList().size() != 1 && commandLine.getArgList().size() != 2) {
 			forceHelp();
 		}
 
-		if (commandLine.getArgList().size() == 2) {
+		if (commandLine.getArgList().size() == 1) {
+			if (user.defaultWatchList != null) {
+				watchListName = user.defaultWatchList.name;
+			}
+		} else if (commandLine.getArgList().size() == 2) {
 			watchListName = commandLine.getArgList().get(1);
 		}
 		String userMention = commandLine.getOptionValue('u');
@@ -93,7 +98,7 @@ public class ListStatsCommandLineOptions extends Command {
 			}
 			this.userId = userMention.replaceAll("[<@>]", "");
 		} else {
-			this.userId = senderUserId;
+			this.userId = user.userId;
 		}
 		
 		if (commandLine.hasOption("s")) {

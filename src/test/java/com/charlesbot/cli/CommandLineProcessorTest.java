@@ -1,11 +1,34 @@
 package com.charlesbot.cli;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
+import com.charlesbot.model.UserRepository;
+import java.util.Optional;
+import javax.swing.text.html.Option;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.mock.mockito.MockBean;
+
+@ExtendWith(MockitoExtension.class)
 public class CommandLineProcessorTest {
 
-	CommandLineProcessor processor = new CommandLineProcessor();
+	@Mock
+	private UserRepository userRepository;
+	private CommandLineProcessor processor;
+
+	@BeforeEach
+	public void setup() {
+		when(userRepository.findById(anyString())).thenReturn(Optional.empty());
+		processor = new CommandLineProcessor(userRepository);
+	}
+
 	@Test
 	public void unsupportedCommand() {
 		Command command = processor.process("safasdf", "userid", "botname");

@@ -1,5 +1,6 @@
 package com.charlesbot.cli;
 
+import com.charlesbot.model.User;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Collections;
 import java.util.Map;
@@ -92,7 +93,7 @@ public class CurrencyChartCommandLineOptions extends Command {
 	}
 
 	@Override
-	public void populateOptions(CommandLine commandLine, String senderUserId) {
+	public void populateOptions(CommandLine commandLine, User user) {
 		if (commandLine.getArgList().isEmpty() || commandLine.getArgList().size() > 1 || commandLine.hasOption('?')) {
 			forceHelp();
 			return;

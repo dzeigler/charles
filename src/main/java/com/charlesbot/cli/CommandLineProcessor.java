@@ -1,5 +1,7 @@
 package com.charlesbot.cli;
 
+import com.charlesbot.model.User;
+import com.charlesbot.model.UserRepository;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
@@ -17,9 +19,10 @@ import org.slf4j.LoggerFactory;
 public class CommandLineProcessor {
 
 	private static final Logger log = LoggerFactory.getLogger(CommandLineProcessor.class);
-	
+	private final UserRepository userRepository;
+
 	private CommandLineParser parser;
-	
+
 	public static final Map<Predicate<String>, Supplier<Command>> supportedCommands = new LinkedHashMap<>();
 	static {
 		supportedCommands.put(QuoteCommandLineOptions::matcher, QuoteCommandLineOptions::new);
@@ -37,12 +40,14 @@ public class CommandLineProcessor {
 	}
 	
 	
-	public CommandLineProcessor() {
+	public CommandLineProcessor(UserRepository userRepository) {
 		
 		// create the command line parser
 		parser = new DefaultParser();
+
+		this.userRepository = userRepository;
 	}
-	
+
 	public Command process(String commandString, String senderUserId, String botUserName) {
 		Command command = null;
 
@@ -72,8 +77,14 @@ public class CommandLineProcessor {
 			}
 			try {
 				command.setBotUsername(botUserName);
-				CommandLine commandLine = parser.parse(command.getOptions(), arguments);	
-				command.populateOptions(commandLine, senderUserId);
+				CommandLine commandLine = parser.parse(command.getOptions(), arguments);
+
+				User user = userRepository.findById(senderUserId).orElseGet(() -> {
+					User u = new User();
+					u.userId = senderUserId;
+					return userRepository.save(u);
+				});
+				command.populateOptions(commandLine, user);
 				
 			} catch (Exception e) {
 				log.error("An error occurred while processing [{}] {}", e, commandString);

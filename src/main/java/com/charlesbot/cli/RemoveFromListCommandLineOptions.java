@@ -1,5 +1,6 @@
 package com.charlesbot.cli;
 
+import com.charlesbot.model.User;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.cli.CommandLine;
@@ -64,7 +65,7 @@ public class RemoveFromListCommandLineOptions extends Command {
 	}
 
 	@Override
-	public void populateOptions(CommandLine commandLine, String userId) {
+	public void populateOptions(CommandLine commandLine, User user) {
 		if (commandLine.getArgList().isEmpty() || commandLine.hasOption('?')) {
 			forceHelp();
 		} else if (commandLine.getArgList().size() < 2) {

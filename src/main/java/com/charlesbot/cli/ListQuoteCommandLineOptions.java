@@ -1,5 +1,6 @@
 package com.charlesbot.cli;
 
+import com.charlesbot.model.User;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -11,7 +12,7 @@ public class ListQuoteCommandLineOptions extends Command {
 	public static final String COMMAND_HEADER = 
 			"LIST_NAME is the name watch list to get quotes for";
 	public static final String COMMAND_DESCRIPTION = "Returns quotes for the ticker symbol(s) in the given list";
-	public static final String COMMAND_PATTERN = "(?i)^@\\w+:?\\p{Z}*q.*";
+	public static final String COMMAND_PATTERN = "(?i)^@\\w+:?\\p{Z}*q\\p{Z}*.*";
 
 	static Options options;
 
@@ -62,16 +63,20 @@ public class ListQuoteCommandLineOptions extends Command {
 	}
 
 	@Override
-	public void populateOptions(CommandLine commandLine, String senderUserId) {
+	public void populateOptions(CommandLine commandLine, User user) {
 		if (commandLine.hasOption("?")) {
 			forceHelp();
 		} else if (commandLine.getArgList().isEmpty()) {
 			forceHelp();
-		} else if (commandLine.getArgList().size() != 2) {
+		} else if (commandLine.getArgList().size() != 1 && commandLine.getArgList().size() != 2) {
 			forceHelp();
 		}
 
-		if (commandLine.getArgList().size() == 2) {
+		if (commandLine.getArgList().size() == 1) {
+			if (user.defaultWatchList != null) {
+				watchListName = user.defaultWatchList.name;
+			}
+		} else if (commandLine.getArgList().size() == 2) {
 			watchListName = commandLine.getArgList().get(1);
 		}
 		
@@ -82,7 +87,7 @@ public class ListQuoteCommandLineOptions extends Command {
 			}
 			this.userId = userMention.replaceAll("[<@>]", "");
 		} else {
-			this.userId = senderUserId;
+			this.userId = user.userId;
 		}
 	}
 	

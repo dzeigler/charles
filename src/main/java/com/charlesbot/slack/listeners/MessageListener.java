@@ -40,14 +40,16 @@ public class MessageListener implements SlackMessagePostedListener {
 			String userId = sessionPersona.getId();
 			String userIdMention = "<@"+userId+">";
 			String userNameMention = "@"+sessionPersona.getUserName();
-			if (isCharlesCommand(messageContent, userIdMention) && !event.getSender().getId().equals(userId)) {
-				SlackChannel channel = event.getChannel();
-				
+			SlackChannel channel = event.getChannel();
+			if (isCharlesCommand(messageContent, userIdMention, channel) && !event.getSender().getId().equals(userId)) {
 				String sanitizedCommandString = event.getMessageContent().replace(userIdMention, userNameMention);
+
+				if (channel.isDirect() && !sanitizedCommandString.matches("^\\p{Z}*[!@].*")) {
+					sanitizedCommandString = "@" + sessionPersona.getUserName() + " " + sanitizedCommandString;
+				}
 
 				// slack adds <> around some stock symbols it thinks are links, like 2498.tw
 				sanitizedCommandString = sanitizedCommandString.replaceAll("<.+\\|(.*)>", "$1");
-				
 				Command command = commandLineProcessor.process(sanitizedCommandString, event.getSender().getId(), sessionPersona.getUserName());
 				@SuppressWarnings("unchecked")
 				List<String> replies = conversionService.convert(command, List.class);
@@ -64,8 +66,8 @@ public class MessageListener implements SlackMessagePostedListener {
 		}
 	}
 	
-	private boolean isCharlesCommand(String command, String userIdMention) {
-		
+	private boolean isCharlesCommand(String command, String userIdMention, SlackChannel channel) {
+
 		for (String word : keywords) {
 			if (command.toLowerCase().startsWith(word.toLowerCase())) {
 				return true;
@@ -75,7 +77,8 @@ public class MessageListener implements SlackMessagePostedListener {
 		if (command.startsWith(userIdMention)) {
 			return true;
 		}
-		return false;
+
+		return channel.isDirect();
 	}
 	
 }

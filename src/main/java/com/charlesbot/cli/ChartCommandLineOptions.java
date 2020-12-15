@@ -1,5 +1,6 @@
 package com.charlesbot.cli;
 
+import com.charlesbot.model.User;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -106,7 +107,7 @@ public class ChartCommandLineOptions extends Command {
 	}
 
 	@Override
-	public void populateOptions(CommandLine commandLine, String senderUserId) {
+	public void populateOptions(CommandLine commandLine, User user) {
 		if (commandLine.getArgList().isEmpty() || commandLine.getArgList().size() > 1 || commandLine.hasOption('?')) {
 			forceHelp();
 			return;

@@ -1,5 +1,6 @@
 package com.charlesbot.cli;
 
+import com.charlesbot.model.User;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 
@@ -48,7 +49,7 @@ public class HelpCommandLineOptions extends Command {
 	}
 
 	@Override
-	public void populateOptions(CommandLine commandLine, String userId) {
+	public void populateOptions(CommandLine commandLine, User user) {
 		forceHelp();
 	}
 	

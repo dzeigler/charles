@@ -1,5 +1,6 @@
 package com.charlesbot.cli;
 
+import com.charlesbot.model.User;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -63,7 +64,7 @@ public class ListCommandLineOptions extends Command {
 	}
 
 	@Override
-	public void populateOptions(CommandLine commandLine, String senderUserId) {
+	public void populateOptions(CommandLine commandLine, User user) {
 		if (commandLine.hasOption("?")) {
 			forceHelp();
 		} else if (commandLine.getArgList().isEmpty()) {
@@ -83,7 +84,7 @@ public class ListCommandLineOptions extends Command {
 			}
 			this.userId = userMention.replaceAll("[<@>]", "");
 		} else {
-			this.userId = senderUserId;
+			this.userId = user.userId;
 		}
 	}
 	

@@ -1,5 +1,6 @@
 package com.charlesbot.cli;
 
+import com.charlesbot.model.User;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -65,7 +66,7 @@ public class CurrencyQuoteCommandLineOptions extends Command {
 	}
 
 	@Override
-	public void populateOptions(CommandLine commandLine, String senderUserId) {
+	public void populateOptions(CommandLine commandLine, User user) {
 		if (commandLine.hasOption('?')) {
 			forceHelp();
 			return;

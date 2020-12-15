@@ -1,5 +1,6 @@
 package com.charlesbot.cli;
 
+import com.charlesbot.model.User;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.cli.CommandLine;
@@ -46,7 +47,7 @@ public abstract class Command {
 //	public abstract Predicate<String> matcher();
 	
 
-	public abstract void populateOptions(CommandLine commandLine, String userId);
+	public abstract void populateOptions(CommandLine commandLine, User user);
 
 	public String getBotUsername() {
 		return botUsername;

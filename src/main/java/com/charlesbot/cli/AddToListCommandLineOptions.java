@@ -1,6 +1,7 @@
 package com.charlesbot.cli;
 
 import com.charlesbot.model.Transaction;
+import com.charlesbot.model.User;
 import com.google.common.base.Splitter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -62,7 +63,7 @@ public class AddToListCommandLineOptions extends Command {
 	}
 
 	@Override
-	public void populateOptions(CommandLine commandLine, String userId) {
+	public void populateOptions(CommandLine commandLine, User user) {
 		if (commandLine.getArgList().isEmpty()) {
 			forceHelp();
 		} else if (commandLine.getArgList().size() < 3) {

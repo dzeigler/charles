@@ -4,6 +4,7 @@ import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.cryptocompare.CryptoCompareClient;
 import com.charlesbot.iex.IexStockQuoteClient;
 import com.charlesbot.iex.IexStockQuoteConverter;
+import com.charlesbot.model.UserRepository;
 import com.charlesbot.model.WatchListRepository;
 import com.charlesbot.slack.AddToListCommandLineOptionsToStrings;
 import com.charlesbot.slack.ChartCommandLineOptionsToStrings;
@@ -70,7 +71,8 @@ public class Application implements WebMvcConfigurer {
 	
 	@Bean
 	public ConversionServiceFactoryBean conversionService(IexStockQuoteClient iexStockQuoteClient, 
-			CryptoCompareClient cryptoCompareClient, WatchListRepository watchListRepository, PercentRanges percentRanges) {
+			CryptoCompareClient cryptoCompareClient, WatchListRepository watchListRepository, UserRepository userRepository,
+			PercentRanges percentRanges) {
 		ConversionServiceFactoryBean conversionServiceFactoryBean = new ConversionServiceFactoryBean();
 		Set<Converter<?, ?>> converters = new HashSet<>();
 		
@@ -80,7 +82,7 @@ public class Application implements WebMvcConfigurer {
 		converters.add(new ChartCommandLineOptionsToStrings());
 		converters.add(new AddToListCommandLineOptionsToStrings(watchListRepository));
 		converters.add(new RemoveFromListCommandLineOptionsToStrings(watchListRepository));
-		converters.add(new ListCommandLineOptionsToStrings(watchListRepository));
+		converters.add(new ListCommandLineOptionsToStrings(watchListRepository, userRepository));
 		converters.add(new ListQuoteCommandLineOptionsToStrings(watchListRepository, quoteCommandLineOptionsToStrings));
 		converters.add(new HelpCommandLineOptionsToStrings());
 		converters.add(new StringToPortfolioQuoteMessage(iexStockQuoteClient));
@@ -109,8 +111,8 @@ public class Application implements WebMvcConfigurer {
 	}
 
 	@Bean
-	public CommandLineProcessor commandLineProcessor() {
-		return new CommandLineProcessor();
+	public CommandLineProcessor commandLineProcessor(UserRepository userRepository) {
+		return new CommandLineProcessor(userRepository);
 	}
 
 	public static void main(String[] args) {

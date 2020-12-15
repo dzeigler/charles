@@ -1,6 +1,9 @@
 package com.charlesbot;
 
 import com.charlesbot.cli.CommandLineProcessor;
+import com.charlesbot.model.User;
+import com.charlesbot.model.UserRepository;
+import com.charlesbot.model.WatchList;
 import com.charlesbot.model.WatchListRepository;
 import com.charlesbot.slack.listeners.MessageListener;
 import com.ullink.slack.simpleslackapi.SlackSession;
@@ -32,7 +35,7 @@ public class SlackBotConfiguration {
 	}
 	
 	@Bean
-	public MessageListener messageListener(ConversionService conversionService,  WatchListRepository watchListRepository, CommandLineProcessor commandLineProcessor) {
+	public MessageListener messageListener(ConversionService conversionService, WatchListRepository watchListRepository, CommandLineProcessor commandLineProcessor) {
 		return new MessageListener(conversionService, watchListRepository, commandLineProcessor);
 	}
 	
