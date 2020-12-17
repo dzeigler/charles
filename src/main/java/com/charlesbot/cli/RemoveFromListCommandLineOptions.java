@@ -72,7 +72,7 @@ public class RemoveFromListCommandLineOptions extends Command {
 			forceHelp();
 		}
 
-		this.userId = userId;
+		this.userId = user.userId;
 		watchListName = commandLine.getArgList().get(1);
 		List<String> subList = commandLine.getArgList().subList(2, commandLine.getArgList().size());
 		this.tickerSymbols.addAll(subList);

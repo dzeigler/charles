@@ -70,7 +70,7 @@ public class AddToListCommandLineOptions extends Command {
 			forceHelp();
 		}
 
-		this.userId = userId;
+		this.userId = user.userId;
 		watchListName = commandLine.getArgList().get(1);
 		
 		for (String transactionString : commandLine.getArgList().subList(2, commandLine.getArgList().size())) {
