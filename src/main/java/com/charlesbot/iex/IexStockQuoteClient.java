@@ -60,7 +60,11 @@ public class IexStockQuoteClient {
 		
 		for (Stock priceInfo : response.getStocks()) {
 			StockQuote stockQuote = new StockQuote();
-			quotes.get().add(stockQuote);
+			if (priceInfo.quote != null && priceInfo.quote.symbol != null) {
+				quotes.get().add(stockQuote);
+			} else {
+				continue;
+			}
 			if (priceInfo.quote != null) {
 				Quote quote = priceInfo.quote;
 				if (quote.change != null) {

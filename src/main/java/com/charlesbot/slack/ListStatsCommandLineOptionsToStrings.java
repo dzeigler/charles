@@ -8,36 +8,38 @@ import com.brsanthu.dataexporter.model.StringColumn;
 import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.cli.ListStatsCommandLineOptions;
 import com.charlesbot.iex.IexStockQuoteClient;
+import com.charlesbot.model.Position;
 import com.charlesbot.model.StockQuote;
 import com.charlesbot.model.StockQuotes;
 import com.charlesbot.model.Transaction;
 import com.charlesbot.model.WatchList;
 import com.charlesbot.model.WatchListRepository;
+import com.charlesbot.service.PositionService;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequiredArgsConstructor
 public class ListStatsCommandLineOptionsToStrings implements CommandConverter<ListStatsCommandLineOptions> {
 
 	private static final Logger logger = LoggerFactory.getLogger(ListStatsCommandLineOptionsToStrings.class);
 
-	private WatchListRepository watchListRepository;
-	private IexStockQuoteClient iexStockQuoteClient;
-
-	public ListStatsCommandLineOptionsToStrings(WatchListRepository watchListRepository, IexStockQuoteClient iexStockQuoteClient) {
-		this.watchListRepository = watchListRepository;
-		this.iexStockQuoteClient = iexStockQuoteClient;
-	}
+	private final WatchListRepository watchListRepository;
+	private final PositionService positionService;
+	private final IexStockQuoteClient iexStockQuoteClient;
 
 	@Override
 	public List<String> convert(ListStatsCommandLineOptions options) {
@@ -66,6 +68,7 @@ public class ListStatsCommandLineOptionsToStrings implements CommandConverter<Li
 	}
 
 	private List<String> buildStatsTable(ListStatsCommandLineOptions options) {
+		List<String> outputs = new ArrayList<>();
 		StringColumn[] columns = { new StringColumn("symbol", "Symbol", 8, AlignType.TOP_LEFT),
 				new StringColumn("name", "Name", 20, AlignType.TOP_LEFT),
 				new StringColumn("price", "Price", 10, AlignType.TOP_RIGHT),
@@ -79,12 +82,38 @@ public class ListStatsCommandLineOptionsToStrings implements CommandConverter<Li
 				new StringColumn("formattedListPercent", "List%", 5, AlignType.TOP_RIGHT),
 				new StringColumn("formattedDayGain", "Day Gain", 10, AlignType.TOP_RIGHT) };
 
-		Iterable<Position> positions = getPositionsList(options.userId, options.watchListName);
-		List<ListStatsRow> rows = buildRows(positions, options.shortened);
+		WatchList watchList = watchListRepository.findByUserIdAndName(options.userId, options.watchListName);
+		if (watchList == null) {
+			outputs.add("No list named " + options.watchListName + " for that user.");
+		} else {
+			Collection<Position> positions = positionService.getPositionsList(watchList).stream()
+					// omit closed positions
+					.filter(p -> BigDecimal.ZERO.compareTo(p.getQuantity()) != 0)
+					.collect(Collectors.toList());
+			setPositionQuotes(positions);
+			List<ListStatsRow> rows = buildRows(positions, options.shortened);
 
-		List<String> outputs = new TableUtils().addColumns(columns).addBeanRows(rows).buildTableOutput();
-
+			outputs = new TableUtils().addColumns(columns).addBeanRows(rows).buildTableOutput();
+		}
 		return outputs;
+	}
+
+	private void setPositionQuotes(Collection<Position> positions) {
+		List<String> symbols = positions.stream().map(p -> p.getSymbol().toUpperCase()).distinct()
+				.collect(Collectors.toList());
+
+		// get stock quotes for each key
+		Optional<StockQuotes> stockQuotes = iexStockQuoteClient.getStockQuotesAndStats(symbols);
+
+		// build a map of each ticker symbol to its quote
+		Map<String, StockQuote> stockQuotesMap = stockQuotes.map(quotes ->
+				quotes.get().stream()
+						.filter(q -> q != null && q.getSymbol() != null)
+						.collect(Collectors.toMap(StockQuote::getSymbol, Function.identity()))
+		).orElse(new HashMap<>());
+
+		positions.stream()
+				.forEach(p -> p.setQuote(stockQuotesMap.get(p.getSymbol())));
 	}
 
 	private List<ListStatsRow> buildRows(Iterable<Position> positions, boolean totalsOnly) {
@@ -92,17 +121,17 @@ public class ListStatsCommandLineOptionsToStrings implements CommandConverter<Li
 		BigDecimal marketValueTotal = BigDecimal.ZERO;
 		for (Position position : positions) {
 			ListStatsRow row = new ListStatsRow();
-			row.setSymbol(position.symbol);
+			row.setSymbol(position.getSymbol());
 
-			if (!BigDecimal.ZERO.equals(position.price) && !BigDecimal.ZERO.equals(position.quantity)) {
-				BigDecimal costBasis = position.quantity.multiply(position.price);
+			if (!BigDecimal.ZERO.equals(position.getPrice()) && !BigDecimal.ZERO.equals(position.getQuantity())) {
+				BigDecimal costBasis = position.getQuantity().multiply(position.getPrice());
 				if (position.getQuote() != null && position.getQuote().getPriceAsBigDecimal() != null) {
-					BigDecimal marketValue = position.quantity.multiply(position.getQuote().getPriceAsBigDecimal());
+					BigDecimal marketValue = position.getQuantity().multiply(position.getQuote().getPriceAsBigDecimal());
 					marketValueTotal = marketValueTotal.add(marketValue);
 					BigDecimal gain = marketValue.subtract(costBasis);
 					BigDecimal gainPercent = gain.divide(costBasis, 6, RoundingMode.HALF_UP);
 					if (position.getQuote().getChangeAsBigDecimal() != null) {
-						BigDecimal dayGain = position.quantity.multiply(position.getQuote().getChangeAsBigDecimal());
+						BigDecimal dayGain = position.getQuantity().multiply(position.getQuote().getChangeAsBigDecimal());
 						row.setDayGain(dayGain);
 					}
 					row.setCostBasis(costBasis);
@@ -112,8 +141,8 @@ public class ListStatsCommandLineOptionsToStrings implements CommandConverter<Li
 				}
 			}
 
-			if (position.quantity != null) {
-				row.setQuantity(position.quantity);
+			if (position.getQuantity() != null) {
+				row.setQuantity(position.getQuantity());
 			}
 
 			if (position.getQuote() != null) {
@@ -140,7 +169,7 @@ public class ListStatsCommandLineOptionsToStrings implements CommandConverter<Li
 				totalRow.setCostBasis(totalRow.getCostBasis().add(row.getCostBasis()));
 				totalRow.setGain(totalRow.getGain().add(row.getGain()));
 				if (row.getDayGain() != null) {
-				totalRow.setDayGain(totalRow.getDayGain().add(row.getDayGain()));
+					totalRow.setDayGain(totalRow.getDayGain().add(row.getDayGain()));
 				}
 				totalRow.setMarketValue(totalRow.getMarketValue().add(row.getMarketValue()));
 			}
@@ -161,98 +190,6 @@ public class ListStatsCommandLineOptionsToStrings implements CommandConverter<Li
 		return rows;
 	}
 
-	private Iterable<Position> getPositionsList(String userId, String watchListName) {
-		WatchList watchList = watchListRepository.findByUserIdAndName(userId, watchListName);
 
-		List<String> symbols = watchList.transactions.stream().map(t -> t.getSymbol().toUpperCase()).distinct()
-				.collect(Collectors.toList());
-
-		// get stock quotes for each key
-		Optional<StockQuotes> stockQuotes = iexStockQuoteClient.getStockQuotesAndStats(symbols);
-
-		// build a map of each ticker symbol to its quote
-		Map<String, StockQuote> stockQuotesMap = new HashMap<>();
-		for (StockQuote q : stockQuotes.get().get()) {
-			if (q != null && q.getSymbol() != null) {
-				stockQuotesMap.put(q.getSymbol().toUpperCase(), q);
-			}
-		}
-
-		// build a map with all of the transactions
-		// - if the symbol name includes the exchange mnemonic (e.g. nyse:shop)
-		// then strip the exchange from the symbol)
-		ListMultimap<String, Transaction> transactionsMap = ArrayListMultimap.create();
-		for (Transaction t : watchList.transactions) {
-			String symbol = t.getSymbol();
-			if (symbol != null && symbol.contains(":")) {
-				String[] symbolStrings = symbol.split(":");
-				symbol = symbolStrings[1];
-
-			}
-			transactionsMap.put(symbol.toUpperCase(), t);
-		}
-
-		// create positions from the transactions
-		Map<String, Position> positions = new HashMap<>();
-		for (String s : transactionsMap.keySet()) {
-			Position position = new Position(s.toUpperCase());
-			BigDecimal quantity = BigDecimal.ZERO;
-			BigDecimal totalPrice = BigDecimal.ZERO;
-			for (Transaction t : transactionsMap.get(s)) {
-				if (t != null) {
-					if (t.quantity != null) {
-						quantity = quantity.add(t.quantity);
-						if (t.price != null) {
-							totalPrice = totalPrice.add(t.price.multiply(t.quantity));
-						} else {
-							logger.warn("No price available on transaction {}", t);
-						}
-					} else {
-						logger.warn("No quantity available on transaction {}", t);
-					}
-				} else {
-					logger.warn("No transaction found for symbol {}", s);
-				}
-			}
-
-			if (!quantity.equals(BigDecimal.ZERO)) {
-				position.price = totalPrice.divide(quantity, 2, RoundingMode.HALF_UP);
-			} else {
-				position.price = BigDecimal.ZERO;
-				logger.warn("Setting position price to zero to avoid dividing by zero {}", position);
-			}
-			position.quantity = quantity;
-			position.setQuote(stockQuotesMap.get(position.symbol));
-			positions.put(position.symbol, position);
-		}
-
-		return positions.values();
-	}
-
-	public class Position {
-		final String symbol;
-		BigDecimal quantity;
-		BigDecimal price;
-		private StockQuote quote;
-
-		public Position(String symbol) {
-			super();
-			this.symbol = symbol;
-		}
-
-		public StockQuote getQuote() {
-			return quote;
-		}
-
-		public void setQuote(StockQuote quote) {
-			this.quote = quote;
-		}
-
-		@Override
-		public String toString() {
-			return "Position [symbol=" + symbol + "]";
-		}
-
-	}
 
 }

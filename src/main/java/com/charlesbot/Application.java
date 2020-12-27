@@ -6,6 +6,7 @@ import com.charlesbot.iex.IexStockQuoteClient;
 import com.charlesbot.iex.IexStockQuoteConverter;
 import com.charlesbot.model.UserRepository;
 import com.charlesbot.model.WatchListRepository;
+import com.charlesbot.service.PositionService;
 import com.charlesbot.slack.AddToListCommandLineOptionsToStrings;
 import com.charlesbot.slack.ChartCommandLineOptionsToStrings;
 import com.charlesbot.slack.CurrencyChartCommandLineOptionsToStrings;
@@ -72,7 +73,7 @@ public class Application implements WebMvcConfigurer {
 	@Bean
 	public ConversionServiceFactoryBean conversionService(IexStockQuoteClient iexStockQuoteClient, 
 			CryptoCompareClient cryptoCompareClient, WatchListRepository watchListRepository, UserRepository userRepository,
-			PercentRanges percentRanges) {
+			PercentRanges percentRanges, PositionService positionService) {
 		ConversionServiceFactoryBean conversionServiceFactoryBean = new ConversionServiceFactoryBean();
 		Set<Converter<?, ?>> converters = new HashSet<>();
 		
@@ -83,10 +84,10 @@ public class Application implements WebMvcConfigurer {
 		converters.add(new AddToListCommandLineOptionsToStrings(watchListRepository));
 		converters.add(new RemoveFromListCommandLineOptionsToStrings(watchListRepository));
 		converters.add(new ListCommandLineOptionsToStrings(watchListRepository, userRepository));
-		converters.add(new ListQuoteCommandLineOptionsToStrings(watchListRepository, quoteCommandLineOptionsToStrings));
+		converters.add(new ListQuoteCommandLineOptionsToStrings(watchListRepository, quoteCommandLineOptionsToStrings, positionService));
 		converters.add(new HelpCommandLineOptionsToStrings());
 		converters.add(new StringToPortfolioQuoteMessage(iexStockQuoteClient));
-		converters.add(new ListStatsCommandLineOptionsToStrings(watchListRepository, iexStockQuoteClient));
+		converters.add(new ListStatsCommandLineOptionsToStrings(watchListRepository, positionService, iexStockQuoteClient));
 		converters.add(new CurrencyQuoteCommandLineOptionsToStrings(cryptoCompareClient, percentRanges));
 		converters.add(new CurrencyChartCommandLineOptionsToStrings());
 		conversionServiceFactoryBean.setConverters(converters);

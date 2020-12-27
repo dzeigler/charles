@@ -3,21 +3,24 @@ package com.charlesbot.slack;
 import com.charlesbot.cli.CommandLineProcessor;
 import com.charlesbot.cli.ListQuoteCommandLineOptions;
 import com.charlesbot.cli.QuoteCommandLineOptions;
+import com.charlesbot.model.Position;
 import com.charlesbot.model.WatchList;
 import com.charlesbot.model.WatchListRepository;
+import com.charlesbot.service.PositionService;
 import com.google.common.collect.Lists;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class ListQuoteCommandLineOptionsToStrings implements CommandConverter<ListQuoteCommandLineOptions> {
 
-	private WatchListRepository watchListRepository;
-	private QuoteCommandLineOptionsToStrings quoteCommandLineOptionsToString;
-
-	public ListQuoteCommandLineOptionsToStrings(WatchListRepository watchListRepository, QuoteCommandLineOptionsToStrings quoteCommandLineOptionsToString) {
-		this.watchListRepository = watchListRepository;
-		this.quoteCommandLineOptionsToString = quoteCommandLineOptionsToString;
-	}
+	private final WatchListRepository watchListRepository;
+	private final QuoteCommandLineOptionsToStrings quoteCommandLineOptionsToString;
+	private final PositionService positionService;
 
 	@Override
 	public List<String> convert(ListQuoteCommandLineOptions options) {
@@ -34,17 +37,28 @@ public class ListQuoteCommandLineOptionsToStrings implements CommandConverter<Li
 				output.append(warning + "\n");
 			}
 		} else {
-			
 			WatchList watchList = watchListRepository.findByUserIdAndName(options.userId, options.watchListName);
-		
+
 			if (watchList == null) {
 				output.append("No list named " + options.watchListName + " for that user.");
 			} else {
-				List<String> symbols = watchList.transactions.stream()
-			        .filter(tx -> tx != null && tx.getSymbol() != null)
-			        .map(tx -> tx.getSymbol().toUpperCase())
-			        .distinct()
-			        .collect(Collectors.toList());
+				Collection<Position> positionsList = positionService.getPositionsList(watchList);
+				boolean hasPrices = positionsList.stream().anyMatch(p -> p.getPrice().compareTo(BigDecimal.ZERO) != 0 && p.getQuantity().compareTo(BigDecimal.ZERO) != 0);
+				List<String> symbols = new ArrayList<>();
+				if (hasPrices) {
+					symbols = positionsList.stream()
+							.filter(position -> position != null && position.getSymbol() != null)
+							.filter(position -> position.getPrice() != null && position.getQuantity().compareTo(BigDecimal.ZERO) != 0)
+							.map(position -> position.getSymbol().toUpperCase())
+							.distinct()
+							.collect(Collectors.toList());
+				} else {
+					symbols = positionsList.stream()
+							.filter(position -> position != null && position.getSymbol() != null)
+							.map(position -> position.getSymbol().toUpperCase())
+							.distinct()
+							.collect(Collectors.toList());
+				}
 				if (symbols.isEmpty()) {
 					output.append("This list is empty");
 				} else {
