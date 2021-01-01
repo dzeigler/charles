@@ -49,7 +49,7 @@ public class StatsCommandLineOptions extends Command {
 	}
 
 	@Override
-	public void populateOptions(CommandLine commandLine, User user) {
+	public void populateOptions(CommandLine commandLine) {
 		List<String> argList = commandLine.getArgList();
 		if (argList.isEmpty() || commandLine.hasOption('?')) {
 			forceHelp();

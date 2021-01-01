@@ -38,8 +38,7 @@ public class CommandLineProcessor {
 		supportedCommands.put(CurrencyChartCommandLineOptions::matcher, CurrencyChartCommandLineOptions::new);
 		supportedCommands.put(HelpCommandLineOptions::matcher, HelpCommandLineOptions::new);
 	}
-	
-	
+
 	public CommandLineProcessor(UserRepository userRepository) {
 		
 		// create the command line parser
@@ -78,13 +77,9 @@ public class CommandLineProcessor {
 			try {
 				command.setBotUsername(botUserName);
 				CommandLine commandLine = parser.parse(command.getOptions(), arguments);
-
-				User user = userRepository.findById(senderUserId).orElseGet(() -> {
-					User u = new User();
-					u.userId = senderUserId;
-					return userRepository.save(u);
-				});
-				command.populateOptions(commandLine, user);
+				command.setSenderUserId(senderUserId);
+				command.setUserRepository(userRepository);
+				command.populateOptions(commandLine);
 				
 			} catch (Exception e) {
 				log.error("An error occurred while processing [{}] {}", e, commandString);

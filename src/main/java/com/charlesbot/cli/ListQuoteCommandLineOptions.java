@@ -1,6 +1,7 @@
 package com.charlesbot.cli;
 
 import com.charlesbot.model.User;
+import java.util.Optional;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -63,21 +64,13 @@ public class ListQuoteCommandLineOptions extends Command {
 	}
 
 	@Override
-	public void populateOptions(CommandLine commandLine, User user) {
+	public void populateOptions(CommandLine commandLine) {
 		if (commandLine.hasOption("?")) {
 			forceHelp();
 		} else if (commandLine.getArgList().isEmpty()) {
 			forceHelp();
 		} else if (commandLine.getArgList().size() != 1 && commandLine.getArgList().size() != 2) {
 			forceHelp();
-		}
-
-		if (commandLine.getArgList().size() == 1) {
-			if (user.defaultWatchList != null) {
-				watchListName = user.defaultWatchList.name;
-			}
-		} else if (commandLine.getArgList().size() == 2) {
-			watchListName = commandLine.getArgList().get(1);
 		}
 		
 		String userMention = commandLine.getOptionValue('u');
@@ -87,7 +80,17 @@ public class ListQuoteCommandLineOptions extends Command {
 			}
 			this.userId = userMention.replaceAll("[<@>]", "");
 		} else {
-			this.userId = user.userId;
+			this.userId = getSenderUserId();
+		}
+
+
+		if (commandLine.getArgList().size() == 1) {
+			watchListName = getUserRepository().findById(userId)
+					.filter(u -> u.defaultWatchList != null)
+					.map(u -> u.defaultWatchList.name)
+					.orElse(null);
+		} else if (commandLine.getArgList().size() == 2) {
+			watchListName = commandLine.getArgList().get(1);
 		}
 	}
 	

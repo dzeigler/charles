@@ -65,14 +65,14 @@ public class RemoveFromListCommandLineOptions extends Command {
 	}
 
 	@Override
-	public void populateOptions(CommandLine commandLine, User user) {
+	public void populateOptions(CommandLine commandLine) {
 		if (commandLine.getArgList().isEmpty() || commandLine.hasOption('?')) {
 			forceHelp();
 		} else if (commandLine.getArgList().size() < 2) {
 			forceHelp();
 		}
 
-		this.userId = user.userId;
+		this.userId = getSenderUserId();
 		watchListName = commandLine.getArgList().get(1);
 		List<String> subList = commandLine.getArgList().subList(2, commandLine.getArgList().size());
 		this.tickerSymbols.addAll(subList);

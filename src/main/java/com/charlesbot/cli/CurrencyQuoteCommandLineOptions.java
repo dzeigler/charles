@@ -66,7 +66,7 @@ public class CurrencyQuoteCommandLineOptions extends Command {
 	}
 
 	@Override
-	public void populateOptions(CommandLine commandLine, User user) {
+	public void populateOptions(CommandLine commandLine) {
 		if (commandLine.hasOption('?')) {
 			forceHelp();
 			return;

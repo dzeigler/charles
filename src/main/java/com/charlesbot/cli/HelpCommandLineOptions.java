@@ -49,7 +49,7 @@ public class HelpCommandLineOptions extends Command {
 	}
 
 	@Override
-	public void populateOptions(CommandLine commandLine, User user) {
+	public void populateOptions(CommandLine commandLine) {
 		forceHelp();
 	}
 	

@@ -25,7 +25,6 @@ public class CommandLineProcessorTest {
 
 	@BeforeEach
 	public void setup() {
-		when(userRepository.findById(anyString())).thenReturn(Optional.empty());
 		processor = new CommandLineProcessor(userRepository);
 	}
 

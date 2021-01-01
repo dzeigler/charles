@@ -107,7 +107,7 @@ public class ChartCommandLineOptions extends Command {
 	}
 
 	@Override
-	public void populateOptions(CommandLine commandLine, User user) {
+	public void populateOptions(CommandLine commandLine) {
 		if (commandLine.getArgList().isEmpty() || commandLine.getArgList().size() > 1 || commandLine.hasOption('?')) {
 			forceHelp();
 			return;

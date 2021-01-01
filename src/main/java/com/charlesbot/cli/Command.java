@@ -1,8 +1,11 @@
 package com.charlesbot.cli;
 
 import com.charlesbot.model.User;
+import com.charlesbot.model.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 
@@ -12,6 +15,8 @@ public abstract class Command {
 	private List<String> warnings = new ArrayList<>();
 	private List<String> errors = new ArrayList<>();
 	private String botUsername;
+	private String senderUserId;
+	private UserRepository userRepository;
 	
 	public boolean isHelp() {
 		return help;
@@ -47,7 +52,7 @@ public abstract class Command {
 //	public abstract Predicate<String> matcher();
 	
 
-	public abstract void populateOptions(CommandLine commandLine, User user);
+	public abstract void populateOptions(CommandLine commandLine);
 
 	public String getBotUsername() {
 		return botUsername;
@@ -57,4 +62,19 @@ public abstract class Command {
 		this.botUsername = botUsername;
 	}
 
+	public UserRepository getUserRepository() {
+		return userRepository;
+	}
+
+	public void setUserRepository(UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
+
+	public String getSenderUserId() {
+		return senderUserId;
+	}
+
+	public void setSenderUserId(String senderUserId) {
+		this.senderUserId = senderUserId;
+	}
 }

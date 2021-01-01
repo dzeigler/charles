@@ -64,7 +64,7 @@ public class ListCommandLineOptions extends Command {
 	}
 
 	@Override
-	public void populateOptions(CommandLine commandLine, User user) {
+	public void populateOptions(CommandLine commandLine) {
 		if (commandLine.hasOption("?")) {
 			forceHelp();
 		} else if (commandLine.getArgList().isEmpty()) {
@@ -84,7 +84,7 @@ public class ListCommandLineOptions extends Command {
 			}
 			this.userId = userMention.replaceAll("[<@>]", "");
 		} else {
-			this.userId = user.userId;
+			this.userId = getSenderUserId();
 		}
 	}
 	
