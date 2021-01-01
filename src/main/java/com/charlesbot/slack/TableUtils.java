@@ -31,7 +31,7 @@ public class TableUtils {
 		Preconditions.checkArgument(columnsAdded == false);
 		exporter.addColumns(columns);
 		int numberOfColumnSeparators = columns.length + 1;
-		int numberOfNewLines = 1;
+		int numberOfNewLines = System.lineSeparator().length();
 		rowLength = numberOfColumnSeparators + Arrays.stream(columns).mapToInt(c -> c.getWidth()).sum() + numberOfNewLines;
 		columnsAdded = true;
 		return this;
