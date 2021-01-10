@@ -1,9 +1,6 @@
 package com.charlesbot.cli;
 
 import com.charlesbot.model.User;
-import com.charlesbot.model.UserRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -35,7 +32,7 @@ public class ListStatsCommandLineOptions extends Command {
 				.valueSeparator()
 				.build()
 		);
-		// user
+		// shortened
 		options.addOption( 
 			Option.builder("s")
 				.required(false)
@@ -46,12 +43,24 @@ public class ListStatsCommandLineOptions extends Command {
 				.valueSeparator()
 				.build()
 		);
+		// order by list percent
+		options.addOption(
+			Option.builder("l")
+				.required(false)
+				.longOpt("orders by list percent")
+				.hasArg(false)
+				.desc("orders the results by list %")
+				.type(String.class)
+				.valueSeparator()
+				.build()
+		);
 	}
 
 	public String watchListName;
 	public String userId;
 	public User targetUser;
 	public boolean shortened;
+	public boolean orderByListPercent;
 	
 	@Override
 	public String getName() {
@@ -109,6 +118,8 @@ public class ListStatsCommandLineOptions extends Command {
 
 		if (commandLine.hasOption("s")) {
 			shortened = true;
+		} else if (commandLine.hasOption("l")) {
+			orderByListPercent = true;
 		}
 		
 	}

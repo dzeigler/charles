@@ -11,12 +11,9 @@ import com.charlesbot.iex.IexStockQuoteClient;
 import com.charlesbot.model.Position;
 import com.charlesbot.model.StockQuote;
 import com.charlesbot.model.StockQuotes;
-import com.charlesbot.model.Transaction;
 import com.charlesbot.model.WatchList;
 import com.charlesbot.model.WatchListRepository;
 import com.charlesbot.service.PositionService;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ListMultimap;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -91,7 +88,7 @@ public class ListStatsCommandLineOptionsToStrings implements CommandConverter<Li
 					.filter(p -> BigDecimal.ZERO.compareTo(p.getQuantity()) != 0)
 					.collect(Collectors.toList());
 			setPositionQuotes(positions);
-			List<ListStatsRow> rows = buildRows(positions, options.shortened);
+			List<ListStatsRow> rows = buildRows(positions, options.shortened, options.orderByListPercent);
 
 			outputs = new TableUtils().addColumns(columns).addBeanRows(rows).buildTableOutput();
 		}
@@ -116,7 +113,7 @@ public class ListStatsCommandLineOptionsToStrings implements CommandConverter<Li
 				.forEach(p -> p.setQuote(stockQuotesMap.get(p.getSymbol())));
 	}
 
-	private List<ListStatsRow> buildRows(Iterable<Position> positions, boolean totalsOnly) {
+	private List<ListStatsRow> buildRows(Iterable<Position> positions, boolean totalsOnly, boolean orderByListPercent) {
 		List<ListStatsRow> rows = new ArrayList<>();
 		BigDecimal marketValueTotal = BigDecimal.ZERO;
 		for (Position position : positions) {
@@ -180,9 +177,15 @@ public class ListStatsCommandLineOptionsToStrings implements CommandConverter<Li
 		
 		if (totalsOnly == true) {
 			rows = new ArrayList<>();
+		} else if (orderByListPercent == true) {
+			rows = rows.stream().sorted(
+					Comparator.comparing(ListStatsRow::getListPercent, nullsFirst(reverseOrder()))
+							.thenComparing(ListStatsRow::getSymbol))
+					.collect(Collectors.toList());
 		} else {
 			rows = rows.stream().sorted(
-					Comparator.comparing(ListStatsRow::getGainPercent, nullsFirst(reverseOrder())).thenComparing(ListStatsRow::getSymbol))
+					Comparator.comparing(ListStatsRow::getGainPercent, nullsFirst(reverseOrder()))
+							.thenComparing(ListStatsRow::getSymbol))
 					.collect(Collectors.toList());
 		}
 		rows.add(totalRow);
