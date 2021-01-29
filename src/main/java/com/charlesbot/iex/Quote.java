@@ -89,4 +89,12 @@ public class Quote {
 	
 	@JsonProperty
 	public Long extendedPriceTime;
+	
+	@JsonProperty
+	public BigDecimal iexRealtimePrice;
+	
+	@JsonProperty
+	public Long iexLastUpdated;
+	
+	
 }
