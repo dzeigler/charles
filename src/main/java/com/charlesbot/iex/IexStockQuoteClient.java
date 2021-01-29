@@ -100,11 +100,11 @@ public class IexStockQuoteClient {
 				if (quote.symbol != null) {
 					stockQuote.setSymbol(quote.symbol.toString());
 				}
-				if (quote.extendedPrice != null && quote.extendedPrice.compareTo(quote.latestPrice) != 0 
-						&& BigDecimal.ZERO.compareTo(quote.extendedPrice) != 0 
-						&& quote.extendedPriceTime != null && quote.latestUpdate != null 
-						&& quote.extendedPriceTime > quote.latestUpdate) {
-					stockQuote.setExtendedHoursPrice(quote.extendedPrice.setScale(2, RoundingMode.HALF_UP).toString());
+				if (quote.iexRealtimePrice != null && quote.iexRealtimePrice.compareTo(quote.latestPrice) != 0 
+						&& BigDecimal.ZERO.compareTo(quote.iexRealtimePrice) != 0 
+						&& quote.iexLastUpdated != null && quote.latestUpdate != null 
+						&& quote.iexLastUpdated > quote.latestUpdate) {
+					stockQuote.setExtendedHoursPrice(quote.iexRealtimePrice.setScale(2, RoundingMode.HALF_UP).toString());
 					if (quote.extendedChangePercent != null) {
 						stockQuote.setExtendedHoursChangeInPercent(quote.extendedChangePercent.setScale(2, RoundingMode.HALF_UP).toString());
 					}
