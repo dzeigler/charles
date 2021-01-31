@@ -22,7 +22,7 @@ public class IexStockQuoteClient {
 	private RestTemplate restTemplate;
 
 	private String iexApiToken;
-	
+
 	public IexStockQuoteClient(RestTemplate restTemplate, String iexApiToken) {
 		this.restTemplate = restTemplate;
 		this.iexApiToken = iexApiToken;
@@ -81,15 +81,17 @@ public class IexStockQuoteClient {
 				}
 				if (quote.marketCap != null) {
 					String formattedMarketCap = quote.marketCap.toString();
-					if (quote.marketCap.compareTo(new BigDecimal(1000000000)) > 0) {
-						formattedMarketCap = String.format("%.2fB", quote.marketCap.divide(new BigDecimal(1000000000)));
-					} else if (quote.marketCap.compareTo(new BigDecimal(1000000)) > 0) {
-						formattedMarketCap = String.format("%.2fM", quote.marketCap.divide(new BigDecimal(1000000)));
+					if (quote.marketCap.compareTo(new BigDecimal(1_000_000_000_000L)) > 0) {
+						formattedMarketCap = String.format("%.2fT", quote.marketCap.divide(new BigDecimal(1_000_000_000_000L)));
+					} else if (quote.marketCap.compareTo(new BigDecimal(1_000_000_000)) > 0) {
+						formattedMarketCap = String.format("%.2fB", quote.marketCap.divide(new BigDecimal(1_000_000_000)));
+					} else if (quote.marketCap.compareTo(new BigDecimal(1_000_000)) > 0) {
+						formattedMarketCap = String.format("%.2fM", quote.marketCap.divide(new BigDecimal(1_000_000)));
 					}
 					stockQuote.setMarketCap(formattedMarketCap);
 				}
 				if (quote.companyName != null) {
-					stockQuote.setName(quote.companyName.toString());
+					stockQuote.setName(quote.companyName);
 				}
 				if (quote.peRatio != null) {
 					stockQuote.setPe(quote.peRatio.setScale(2, RoundingMode.HALF_UP).toString());
@@ -98,18 +100,20 @@ public class IexStockQuoteClient {
 					stockQuote.setPrice(quote.latestPrice.setScale(2, RoundingMode.HALF_UP).toString());
 				}
 				if (quote.symbol != null) {
-					stockQuote.setSymbol(quote.symbol.toString());
+					stockQuote.setSymbol(quote.symbol);
 				}
-				if (quote.iexRealtimePrice != null && quote.iexRealtimePrice.compareTo(quote.latestPrice) != 0 
+				if (quote.iexRealtimePrice != null && quote.iexRealtimePrice.compareTo(quote.latestPrice) != 0
 						&& BigDecimal.ZERO.compareTo(quote.iexRealtimePrice) != 0 
 						&& quote.iexLastUpdated != null && quote.latestUpdate != null 
 						&& quote.iexLastUpdated > quote.latestUpdate) {
 					stockQuote.setExtendedHoursPrice(quote.iexRealtimePrice.setScale(2, RoundingMode.HALF_UP).toString());
-					if (quote.extendedChangePercent != null) {
-						stockQuote.setExtendedHoursChangeInPercent(quote.extendedChangePercent.setScale(2, RoundingMode.HALF_UP).toString());
+					BigDecimal change = quote.iexRealtimePrice.subtract(quote.latestPrice);
+					BigDecimal changePercent = change.multiply(new BigDecimal(100)).divide(quote.latestPrice, 2, RoundingMode.HALF_UP);
+					if (quote.changePercent != null) {
+						stockQuote.setExtendedHoursChangeInPercent(changePercent.toString());
 					}
-					if (quote.extendedChange != null) {
-						stockQuote.setExtendedHoursChange(quote.extendedChange.setScale(2, RoundingMode.HALF_UP).toString());
+					if (quote.change != null) {
+						stockQuote.setExtendedHoursChange(change.toString());
 					}
 				}
 			}
