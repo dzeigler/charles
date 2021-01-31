@@ -6,6 +6,7 @@ import com.charlesbot.model.WatchListRepository;
 import com.google.common.collect.Lists;
 import com.ullink.slack.simpleslackapi.SlackChannel;
 import com.ullink.slack.simpleslackapi.SlackPersona;
+import com.ullink.slack.simpleslackapi.SlackPreparedMessage;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.ullink.slack.simpleslackapi.listeners.SlackMessagePostedListener;
@@ -56,7 +57,11 @@ public class MessageListener implements SlackMessagePostedListener {
 				
 				for (String reply : replies) {
 					if (StringUtils.isNotBlank(reply)) {
-						session.sendMessage(channel, reply);
+						SlackPreparedMessage message = new SlackPreparedMessage.Builder()
+								.withMessage(reply)
+								.withThreadTimestamp(event.getThreadTimestamp())
+								.build();
+						session.sendMessage(channel, message);
 					}
 				}
 			}
