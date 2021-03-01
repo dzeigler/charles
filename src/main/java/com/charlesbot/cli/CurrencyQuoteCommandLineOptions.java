@@ -13,7 +13,7 @@ public class CurrencyQuoteCommandLineOptions extends Command {
 	public static final String DEFAULT_TO_CURRENCY = "USD";
 	public static final String COMMAND = "!cq";
 	public static final String COMMAND_SYNTAX = COMMAND + " [<FROM_CURRENCY>]...";
-	public static final String COMMAND_HEADER = "FROM_CURRENCY is the code for the currency to look up the price for (e.g. BTC, ETH, etc.). Defaults to BTC BCH XMR ETH DASH LTC";
+	public static final String COMMAND_HEADER = "FROM_CURRENCY is the code for the currency to look up the price for (e.g. BTC, ETH, etc.). Defaults to BTC XMR ETH LTC ADA DOT XLM";
 	public static final String COMMAND_DESCRIPTION = "Returns the price for one unit of the from currency in the to currency.";
 	
 	static Options options;
@@ -73,7 +73,7 @@ public class CurrencyQuoteCommandLineOptions extends Command {
 		} else { 
 			this.fromCurrency = commandLine.getArgList().stream().map(String::toUpperCase).collect(Collectors.toList());
 			if (fromCurrency.isEmpty()) {
-				fromCurrency = Arrays.asList("BTC", "BCH", "XMR", "ETH", "DASH", "LTC");
+				fromCurrency = Arrays.asList("BTC", "ADA", "XMR", "ETH", "DOT", "LTC", "XLM");
 			}
 		}
 		toCurrency = commandLine.getOptionValue('t', DEFAULT_TO_CURRENCY).toUpperCase();
