@@ -102,7 +102,7 @@ public class IexStockQuoteClient {
 				if (quote.symbol != null) {
 					stockQuote.setSymbol(quote.symbol);
 				}
-				if (quote.iexRealtimePrice != null && quote.iexRealtimePrice.compareTo(quote.latestPrice) != 0
+				if (quote.iexRealtimePrice != null && quote.latestPrice != null && quote.iexRealtimePrice.compareTo(quote.latestPrice) != 0
 						&& BigDecimal.ZERO.compareTo(quote.iexRealtimePrice) != 0 
 						&& quote.iexLastUpdated != null && quote.latestUpdate != null 
 						&& quote.iexLastUpdated > quote.latestUpdate) {
