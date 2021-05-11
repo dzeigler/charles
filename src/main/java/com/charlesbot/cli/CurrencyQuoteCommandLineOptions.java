@@ -1,6 +1,9 @@
 package com.charlesbot.cli;
 
 import com.charlesbot.model.User;
+import com.charlesbot.model.WatchList;
+import com.google.common.base.Defaults;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,7 +16,7 @@ public class CurrencyQuoteCommandLineOptions extends Command {
 	public static final String DEFAULT_TO_CURRENCY = "USD";
 	public static final String COMMAND = "!cq";
 	public static final String COMMAND_SYNTAX = COMMAND + " [<FROM_CURRENCY>]...";
-	public static final String COMMAND_HEADER = "FROM_CURRENCY is the code for the currency to look up the price for (e.g. BTC, ETH, etc.). Defaults to BTC XMR ETH LTC ADA DOT XLM";
+	public static final String COMMAND_HEADER = "FROM_CURRENCY is the code for the currency to look up the price for (e.g. BTC, ETH, etc.). If you have defined a watch list named \"cq\" then that list will be the default (see @charles add --help). Otherwise, defaults to BTC ETH XMR XLM ADA LTC DOT";
 	public static final String COMMAND_DESCRIPTION = "Returns the price for one unit of the from currency in the to currency.";
 	
 	static Options options;
@@ -38,7 +41,7 @@ public class CurrencyQuoteCommandLineOptions extends Command {
 	}
 
 	public String toCurrency;
-	public List<String> fromCurrency;
+	public List<String> fromCurrency = new ArrayList<>();
 
 	@Override
 	public String getName() {
@@ -70,11 +73,8 @@ public class CurrencyQuoteCommandLineOptions extends Command {
 		if (commandLine.hasOption('?')) {
 			forceHelp();
 			return;
-		} else { 
+		} else {
 			this.fromCurrency = commandLine.getArgList().stream().map(String::toUpperCase).collect(Collectors.toList());
-			if (fromCurrency.isEmpty()) {
-				fromCurrency = Arrays.asList("BTC", "ADA", "XMR", "ETH", "DOT", "LTC", "XLM");
-			}
 		}
 		toCurrency = commandLine.getOptionValue('t', DEFAULT_TO_CURRENCY).toUpperCase();
 	}

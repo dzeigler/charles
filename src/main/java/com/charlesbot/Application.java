@@ -88,7 +88,7 @@ public class Application implements WebMvcConfigurer {
 		converters.add(new HelpCommandLineOptionsToStrings());
 		converters.add(new StringToPortfolioQuoteMessage(iexStockQuoteClient));
 		converters.add(new ListStatsCommandLineOptionsToStrings(watchListRepository, positionService, iexStockQuoteClient));
-		converters.add(new CurrencyQuoteCommandLineOptionsToStrings(cryptoCompareClient, percentRanges));
+		converters.add(new CurrencyQuoteCommandLineOptionsToStrings(watchListRepository, cryptoCompareClient, percentRanges));
 		converters.add(new CurrencyChartCommandLineOptionsToStrings());
 		conversionServiceFactoryBean.setConverters(converters);
 		return conversionServiceFactoryBean;
