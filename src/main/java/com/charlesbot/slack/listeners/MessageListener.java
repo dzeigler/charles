@@ -60,6 +60,7 @@ public class MessageListener implements SlackMessagePostedListener {
 						SlackPreparedMessage message = new SlackPreparedMessage.Builder()
 								.withMessage(reply)
 								.withThreadTimestamp(event.getThreadTimestamp())
+								.withUnfurl(true)
 								.build();
 						session.sendMessage(channel, message);
 					}
