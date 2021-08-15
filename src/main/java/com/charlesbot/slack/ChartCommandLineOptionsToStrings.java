@@ -30,8 +30,7 @@ public class ChartCommandLineOptionsToStrings implements CommandConverter<ChartC
 					.collect(Collectors.joining(","));
 			String symbol = options.tickerSymbol;
 			
-			String url = MessageFormat.format("<https://api.wsj.net/api/kaavio/charts/big.chart?symb={0}&time={1}&freq={2}&comp={3}&cb={4,number,#}>
-.gif", symbol, timeSpan, frequency, compare, System.currentTimeMillis());
+			String url = MessageFormat.format("<https://api.wsj.net/api/kaavio/charts/big.chart?symb={0}&time={1}&freq={2}&comp={3}&cb={4,number,#}>.gif", symbol, timeSpan, frequency, compare, System.currentTimeMillis());
 			
 			output = url;
 		}
