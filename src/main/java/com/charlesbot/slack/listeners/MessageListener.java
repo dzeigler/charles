@@ -57,10 +57,10 @@ public class MessageListener implements SlackMessagePostedListener {
 				
 				for (String reply : replies) {
 					if (StringUtils.isNotBlank(reply)) {
-						SlackPreparedMessage message = new SlackPreparedMessage.Builder()
-								.withMessage(reply)
-								.withThreadTimestamp(event.getThreadTimestamp())
-								.withUnfurl(true)
+						SlackPreparedMessage message = SlackPreparedMessage.builder()
+								.message(reply)
+								.threadTimestamp(event.getThreadTimestamp())
+								.unfurl(true)
 								.build();
 						session.sendMessage(channel, message);
 					}
